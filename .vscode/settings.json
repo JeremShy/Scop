@@ -1,0 +1,6 @@
+{
+	"files.associations": {
+		"scop.h": "c",
+		"mlx.h": "c"
+	}
+}

@@ -10,9 +10,15 @@
 typedef struct s_data {
 	void	*mlx_ptr;
 	void	*win;
-	GLuint VertexArrayID;
-	GLuint vertexbuffer;
 
+	GLuint vertex_shader_id;
+	GLuint fragment_shader_id;
+	GLuint program_id;
+	GLuint vao_id;
+	GLuint vbo_id;
+	GLuint color_buffer_id;
+	const GLchar* vertex_shader;
+	const GLchar* fragment_shader;
 }					t_data;
 
 #endif
