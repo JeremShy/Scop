@@ -2,7 +2,7 @@ SRC_NAME = main.c
 
 OBJ_PATH = ./obj/
 
-INC_PATH = ./includes ./libsrcs/libft/includes/
+INC_PATH = ./include ./libsrcs/libft/includes/
 
 SRC_PATH = ./srcs/
 
@@ -10,7 +10,7 @@ NAME = scop
 
 CC = gcc
 CFLAGS =  -Wextra -Wall -g
-LFLAGS = -lft -lmlx -framework OpenGL -framework AppKit
+LFLAGS = -lft -lmlx -framework OpenGL -framework AppKit -lglfw3 -framework Cocoa -framework IOKit -framework CoreVideo
 LIB_DIR=./lib/
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
@@ -21,12 +21,22 @@ OBJ_NAME = $(SRC_NAME:.c=.o)
 
 INC = $(addprefix -I,$(INC_PATH))
 
-all : LIB_RULE $(NAME) $(NAME_CH)
+all : LIB_RULE GLFW $(NAME) $(NAME_CH)
 
-$(LCP_NAME) :
+GLFW_SRCS_PATH = libsrcs/glfw-3.2.1
 
 LIB_RULE:
 	@mkdir -p $(LIB_DIR)
+
+GLFW: lib/libglfw3.a
+
+$(GLFW_SRCS_PATH):
+	cd libsrcs && curl -OL 'https://github.com/glfw/glfw/releases/download/3.2.1/glfw-3.2.1.zip'
+	unzip libsrcs/glfw-3.2.1.zip -d libsrcs
+	rm libsrcs/glfw-3.2.1.zip
+
+lib/libglfw3.a: $(GLFW_SRCS_PATH)
+	cd libsrcs/glfw-3.2.1 && cmake -DCMAKE_INSTALL_PREFIX:PATH=../../ . && make && make install
 
 $(NAME) : $(OBJ)
 	make -C libsrcs/libft
@@ -42,14 +52,17 @@ clean:
 	@rmdir -p $(OBJ_PATH) 2> /dev/null || true
 	@make -C libsrcs/libft clean
 	@make -C libsrcs/mlx clean
+	@make -C libsrcs/glfw-3.2.1 clean
 
 fclean: clean
 	@rm -fv $(NAME)
-	@rmdir lib 2> /dev/null || true
 	@make -C libsrcs/mlx fclean
 	@make -C libsrcs/libft fclean
 
+fclean-dep: fclean
+	@rm -rf include/GLFW
+	@rm -rf lib/
 
 re: fclean all
 
-.PHONY : all clean fclean re
+.PHONY : all clean fclean re GLFW
