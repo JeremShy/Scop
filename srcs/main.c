@@ -39,7 +39,7 @@ int8_t	init_all(t_d *data)
         return (0);
 	if (!init_glfw(data))
         return (0);
-    
+
     if (!init_gl_and_draw(data))
         return (0);
     return (1);
@@ -51,20 +51,25 @@ int main(void)
 
     init_all(&data);
 
+    int vao;
+
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+	    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, data.vertices);
+	    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
+
     while (!glfwWindowShouldClose(data.window))
     {
-       	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 
 
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, data.vertices);
-        glEnableVertexAttribArray(0);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glDisableVertexAttribArray(0);
+	glBindVertexArray(vao);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
 
-
-        glfwSwapBuffers(data.window);
-
-        glfwPollEvents();
+	glfwSwapBuffers(data.window);
+	glfwPollEvents();
     }
 
     glfwTerminate();
