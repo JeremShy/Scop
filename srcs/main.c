@@ -54,6 +54,7 @@ int main(void)
     int vao;
 
     glGenVertexArrays(1, &vao);
+
     glBindVertexArray(vao);
 	    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, data.vertices);
 	    glEnableVertexAttribArray(0);
@@ -71,6 +72,7 @@ int main(void)
 	glfwSwapBuffers(data.window);
 	glfwPollEvents();
     }
+    printf("Closing window.\n");
 
     glfwTerminate();
     return 0;
