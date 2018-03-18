@@ -1,4 +1,5 @@
-SRC_NAME = main.c
+SRC_NAME = main.c \
+			shaders.c
 
 OBJ_PATH = ./obj/
 
@@ -36,7 +37,7 @@ $(GLFW_SRCS_PATH):
 	rm libsrcs/glfw-3.2.1.zip
 
 lib/libglfw.dylib: $(GLFW_SRCS_PATH)
-	cd libsrcs/glfw-3.2.1 && cmake -DCMAKE_INSTALL_PREFIX:PATH=../../ -DBUILD_SHARED_LIBS=ON . && make && make install
+	cd libsrcs/glfw-3.2.1 && cmake -DCMAKE_INSTALL_PREFIX:PATH=../../ -DBUILD_SHARED_LIBS=ON -DGLFW_USE_CHDIR=0 . && make && make install
 
 $(NAME) : $(OBJ)
 	make -C libsrcs/libft

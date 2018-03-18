@@ -11,6 +11,12 @@ int8_t	init_glfw(t_d *data)
     if (!glfwInit())
         return (0);
 
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+
     data->window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
     if (!data->window)
     {
@@ -26,11 +32,12 @@ int8_t  init_gl_and_draw(t_d *data)
     data->vertices = malloc(sizeof((float[])
     {-0.5, 0.0, 0.0, 1.0, 0.5, 0.0,
         -0.5, 0.0, 0.5, 0.0, 0.0, -1.0}));
-    ft_memcpy(data->vertices, (float[])
-    {-0.5, 0.0, 0.0, 1.0, 0.5, 0.0,
-        -0.5, 0.0, 0.5, 0.0, 0.0, -1.0}, sizeof((float[])
-    {-0.5, 0.0, 0.0, 1.0, 0.5, 0.0,
-        -0.5, 0.0, 0.5, 0.0, 0.0, -1.0}));
+    ft_memcpy(data->vertices,
+    (float[]){-0.5, 0.0, 0.0, 1.0, 0.5, 0.0,
+        -0.5, 0.0, 0.5, 0.0, 0.0, -1.0},
+    sizeof((float[]){-0.5, 0.0, 0.0, 1.0, 0.5, 0.0,
+            -0.5, 0.0, 0.5, 0.0, 0.0, -1.0}));
+    return (1);
 }
 
 int8_t	init_all(t_d *data)
@@ -39,7 +46,6 @@ int8_t	init_all(t_d *data)
         return (0);
 	if (!init_glfw(data))
         return (0);
-
     if (!init_gl_and_draw(data))
         return (0);
     return (1);
@@ -48,29 +54,53 @@ int8_t	init_all(t_d *data)
 int main(void)
 {
     t_d      data;
-
     init_all(&data);
 
-    int vao;
+    printf("OPengl version : %s\n", glGetString(GL_VERSION));
+
+    // float couleurs[] = {1.0, 0.0, 0.0,  0.0, 1.0, 0.0,  0.0, 0.0, 1.0};
+
+    GLuint vao;
+
+    // if (!(data.vertex_sh = create_and_compile_shader("./srcs/shaders/default_vertex_sh.c", GL_VERTEX_SHADER)))
+    // {
+    //     dprintf(2, "Error while trying to create vertex shader.");
+    //     return (1);
+    // }
+    
+    // if (!(data.fragment_sh = create_and_compile_shader("./srcs/shaders/default_fragment_sh.c", GL_FRAGMENT_SHADER)))
+    // {
+    //     dprintf(2, "Error while trying to create fragment shader.\n");
+    //     return (1);
+    // }
+    // if (!(data.program = create_and_link_program(data.vertex_sh, data.fragment_sh)))
+    // {
+    //     dprintf(2, "Error while trying to create and link program");
+    //     return (1);
+    // }
 
     glGenVertexArrays(1, &vao);
-
     glBindVertexArray(vao);
 	    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, data.vertices);
 	    glEnableVertexAttribArray(0);
+        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 1, couleurs);
+        // glEnableVertexAttribArray(1);
+        // glUseProgram(data.program);
     glBindVertexArray(0);
+
 
     while (!glfwWindowShouldClose(data.window))
     {
-	glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT);
 
+        // glUseProgram(data.program);
+        glBindVertexArray(vao);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(0);
+        // glUseProgram(0);
 
-	glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-	glBindVertexArray(0);
-
-	glfwSwapBuffers(data.window);
-	glfwPollEvents();
+        glfwSwapBuffers(data.window);
+        glfwPollEvents();
     }
     printf("Closing window.\n");
 
