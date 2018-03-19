@@ -35,14 +35,12 @@ int8_t	init_glfw(t_d *data)
 int8_t  init_gl_and_draw(t_d *data)
 {
     data->sizeof_vertices = sizeof((float[])
-        {-0.5, 0.0, 0.0, 1.0, 0.5, 0.0,
-        -0.5, 0.0, 0.5, 0.0, 0.0, -1.0});
+        {-0.5, 0.0, 0.0, 1.0, 0.5, 0.0});
     
     data->vertices = malloc(data->sizeof_vertices);
     ft_memcpy(data->vertices,
         (float[])
-            {-0.5, 0.0, 0.0, 1.0, 0.5, 0.0,
-            -0.5, 0.0, 0.5, 0.0, 0.0, -1.0},
+            {-0.5, 0.0, 0.0, 1.0, 0.5, 0.0},
         data->sizeof_vertices);
     return (1);
 }
@@ -101,7 +99,6 @@ int main(void)
             glBindBuffer(GL_ARRAY_BUFFER, data.buffer);
                 glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
                 glEnableVertexAttribArray(0); // vertices
-
                 glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(data.sizeof_vertices));
                 glEnableVertexAttribArray(1);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -115,7 +112,7 @@ int main(void)
 
         glUseProgram(data.program);
             glBindVertexArray(vao);
-                glDrawArrays(GL_TRIANGLES, 0, 6);
+                glDrawArrays(GL_TRIANGLES, 0, 3);
             glBindVertexArray(0);
         glUseProgram(0);
 
