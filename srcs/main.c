@@ -34,14 +34,16 @@ int8_t	init_glfw(t_d *data)
 
 int8_t  init_gl_and_draw(t_d *data)
 {
-    data->vertices = malloc(sizeof((float[])
-    {-0.5, 0.0, 0.0, 1.0, 0.5, 0.0,
-        -0.5, 0.0, 0.5, 0.0, 0.0, -1.0}));
+    data->sizeof_vertices = sizeof((float[])
+        {-0.5, 0.0, 0.0, 1.0, 0.5, 0.0,
+        -0.5, 0.0, 0.5, 0.0, 0.0, -1.0});
+    
+    data->vertices = malloc(data->sizeof_vertices);
     ft_memcpy(data->vertices,
-    (float[]){-0.5, 0.0, 0.0, 1.0, 0.5, 0.0,
-        -0.5, 0.0, 0.5, 0.0, 0.0, -1.0},
-    sizeof((float[]){-0.5, 0.0, 0.0, 1.0, 0.5, 0.0,
-            -0.5, 0.0, 0.5, 0.0, 0.0, -1.0}));
+        (float[])
+            {-0.5, 0.0, 0.0, 1.0, 0.5, 0.0,
+            -0.5, 0.0, 0.5, 0.0, 0.0, -1.0},
+        data->sizeof_vertices);
     return (1);
 }
 
@@ -64,8 +66,16 @@ int main(void)
     printf("OPengl version : %s\n", glGetString(GL_VERSION));
 
     float couleurs[] = {1.0, 0.0, 0.0,  0.0, 1.0, 0.0,  0.0, 0.0, 1.0};
+    size_t  sizeof_couleurs = sizeof(couleurs);
 
     GLuint vao;
+
+    glGenBuffers(1, &(data.buffer));
+    glBindBuffer(GL_ARRAY_BUFFER, data.buffer);
+        glBufferData(GL_ARRAY_BUFFER, data.sizeof_vertices + sizeof_couleurs, 0, GL_STATIC_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, data.sizeof_vertices, data.vertices);
+        glBufferSubData(GL_ARRAY_BUFFER, data.sizeof_vertices, sizeof_couleurs, couleurs);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     if (!(data.vertex_sh = create_and_compile_shader("./srcs/shaders/default_vertex_sh.c", GL_VERTEX_SHADER)))
     {
@@ -85,13 +95,18 @@ int main(void)
     }
 
     glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-	    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, data.vertices);
-	    glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 1, couleurs);
-        glEnableVertexAttribArray(1);
-        glUseProgram(data.program);
-    glBindVertexArray(0);
+
+    glUseProgram(data.program);
+        glBindVertexArray(vao);
+            glBindBuffer(GL_ARRAY_BUFFER, data.buffer);
+                glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+                glEnableVertexAttribArray(0); // vertices
+
+                glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(data.sizeof_vertices));
+                glEnableVertexAttribArray(1);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    glUseProgram(0);
 
 
     while (!glfwWindowShouldClose(data.window))
@@ -99,7 +114,9 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(data.program);
-            glDrawArrays(GL_TRIANGLES, 0, 3);
+            glBindVertexArray(vao);
+                glDrawArrays(GL_TRIANGLES, 0, 6);
+            glBindVertexArray(0);
         glUseProgram(0);
 
         glfwSwapBuffers(data.window);

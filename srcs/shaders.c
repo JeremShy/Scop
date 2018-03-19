@@ -15,6 +15,12 @@ int8_t	check_compilation(GLuint shader)
 	return (0);
 }
 
+static GLuint close_and_return(int fd, GLuint ret)
+{
+	close(fd);
+	return (ret);
+}
+
 GLuint	create_and_compile_shader(const char *filename, GLenum shaderType) //Returns 0 on error
 {
 	GLuint		ret;
@@ -30,23 +36,13 @@ GLuint	create_and_compile_shader(const char *filename, GLenum shaderType) //Retu
 	if (fd == -1)
 		return (0);
 	if (fstat(fd, &buf) == -1)
-	{
-		close(fd);
-		return (0);
-	}
+		return (close_and_return(fd, 0));
 	if (!(file_content = malloc(sizeof(GLchar) * (buf.st_size + 1))))
+		return (close_and_return(fd, 0));
+	if ((r = read(fd, file_content, buf.st_size + 1)) != buf.st_size)
 	{
-		close(fd);
-		return (0);
-	}
-	
-	r = read(fd, file_content, buf.st_size + 1);
-	if (r != buf.st_size)
-	{
-		dprintf(2, "ERROR ! in create_and_compile_shader.\n");
-		close(fd);
 		free(file_content);
-		return (0);
+		return (close_and_return(fd, 0));
 	}
 	file_content[r] = '\0';
 	length = buf.st_size;
