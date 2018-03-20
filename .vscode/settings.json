@@ -5,7 +5,8 @@
 		"glad.h": "c",
 		"gl3.h": "c",
 		"glfw3.h": "c",
-		"fcntl.h": "c"
+		"fcntl.h": "c",
+		"libftmatrices.h": "c"
 	},
 	"C_Cpp.errorSquiggles": "Disabled"
 }

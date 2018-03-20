@@ -26,8 +26,11 @@ all : LIB_RULE GLFW $(NAME) $(NAME_CH)
 
 GLFW_SRCS_PATH = libsrcs/glfw-3.2.1
 
+$(LIB_DIR)libftmatrices.a:
+
 LIB_RULE:
 	@mkdir -p $(LIB_DIR)
+	@make -C libsrcs/libftmatrices
 
 GLFW: lib/libglfw.dylib
 
@@ -39,10 +42,8 @@ $(GLFW_SRCS_PATH):
 lib/libglfw.dylib: $(GLFW_SRCS_PATH)
 	cd libsrcs/glfw-3.2.1 && cmake -DCMAKE_INSTALL_PREFIX:PATH=../../ -DBUILD_SHARED_LIBS=ON -DGLFW_USE_CHDIR=0 . && make && make install
 
-$(NAME) : $(OBJ)
+$(NAME) : $(LIB_DIR)libftmatrices.a $(OBJ)
 	make -C libsrcs/libft
-	make -C libsrcs/libftmatrices
-#	make -C libsrcs/mlx
 	$(CC) $(CFLAGS) $(OBJ) -L $(LIB_DIR) $(LFLAGS) -o $@ 
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
@@ -54,12 +55,10 @@ clean:
 	@rmdir -p $(OBJ_PATH) 2> /dev/null || true
 	@make -C libsrcs/libft clean
 	@make -C libsrcs/libftmatrices clean
-#	@make -C libsrcs/mlx clean
 	@make -C libsrcs/glfw-3.2.1 clean
 
 fclean: clean
 	@rm -fv $(NAME)
-#	@make -C libsrcs/mlx fclean
 	@make -C libsrcs/libft fclean
 	@make -C libsrcs/libftmatrices fclean
 
@@ -70,4 +69,4 @@ fclean-dep: fclean
 
 re: fclean all
 
-.PHONY : all clean fclean re GLFW
+.PHONY : all clean fclean re GLFW LIB_RULE

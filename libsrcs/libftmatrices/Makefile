@@ -12,7 +12,7 @@
 
 SRC_PATH = ./
 
-SRC_NAME = dummy.c
+SRC_NAME = mat4x4_set_identity.c
 OBJ_PATH = ./obj/
 
 INC_PATH = ./includes/ ../libft/includes

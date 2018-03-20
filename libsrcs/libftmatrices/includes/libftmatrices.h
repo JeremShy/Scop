@@ -3,6 +3,9 @@
 # include <libft.h>
 # include <stdio.h>
 
-void	dummy();
+typedef	int32_t t_mat4x4[4][4];
+
+void	mat4x4_set_identity(t_mat4x4 matrice);
+
 
 #endif
