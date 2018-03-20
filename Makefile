@@ -3,7 +3,7 @@ SRC_NAME = main.c \
 
 OBJ_PATH = ./obj/
 
-INC_PATH = ./include ./libsrcs/libft/includes/ ./libsrcs/glfw-3.2.1/deps
+INC_PATH = ./include ./libsrcs/libft/includes/ ./libsrcs/glfw-3.2.1/deps ./libsrcs/libftmatrices/includes
 
 SRC_PATH = ./srcs/
 
@@ -11,7 +11,7 @@ NAME = scop
 
 CC = gcc
 CFLAGS =  -Wextra -Wall -g
-LFLAGS = -lft -framework OpenGL -framework AppKit -lglfw
+LFLAGS = -lft -framework OpenGL -framework AppKit -lglfw -lftmatrices
 LIB_DIR=./lib/
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
@@ -41,6 +41,7 @@ lib/libglfw.dylib: $(GLFW_SRCS_PATH)
 
 $(NAME) : $(OBJ)
 	make -C libsrcs/libft
+	make -C libsrcs/libftmatrices
 #	make -C libsrcs/mlx
 	$(CC) $(CFLAGS) $(OBJ) -L $(LIB_DIR) $(LFLAGS) -o $@ 
 
@@ -52,6 +53,7 @@ clean:
 	@rm -fv $(OBJ)
 	@rmdir -p $(OBJ_PATH) 2> /dev/null || true
 	@make -C libsrcs/libft clean
+	@make -C libsrcs/libftmatrices clean
 #	@make -C libsrcs/mlx clean
 	@make -C libsrcs/glfw-3.2.1 clean
 
@@ -59,6 +61,7 @@ fclean: clean
 	@rm -fv $(NAME)
 #	@make -C libsrcs/mlx fclean
 	@make -C libsrcs/libft fclean
+	@make -C libsrcs/libftmatrices fclean
 
 fclean-dep: fclean
 	@rm -rf include/GLFW

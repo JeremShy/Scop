@@ -5,6 +5,7 @@
 # include <libft.h>
 # define GLFW_INCLUDE_GLCOREARB
 # include <GLFW/glfw3.h>
+# include <libftmatrices.h>
 
 #define BUFFER_OFFSET(offset) ((char*)NULL + (offset))
 
