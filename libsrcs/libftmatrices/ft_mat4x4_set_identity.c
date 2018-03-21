@@ -1,6 +1,6 @@
 #include <libftmatrices.h>
 
-void	mat4x4_set_identity(t_mat4x4 matrice)
+void	ft_mat4x4_set_identity(t_mat4x4 matrice)
 {
 	ft_putstr("coucou\n");
 	int	i;

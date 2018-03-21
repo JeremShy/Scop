@@ -59,10 +59,7 @@ int8_t	init_all(t_d *data)
 int main(void)
 {
     t_d      data;
-    t_mat4x4    matrice_test;
 
-
-    mat4x4_set_identity(matrice_test);
     init_all(&data);
 
     printf("OPengl version : %s\n", glGetString(GL_VERSION));

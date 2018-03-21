@@ -12,7 +12,14 @@
 
 SRC_PATH = ./
 
-SRC_NAME = mat4x4_set_identity.c
+SRC_NAME = ft_mat4x4_set_identity.c \
+			ft_mat4x4_print.c \
+			ft_mat4x4_mult.c \
+			ft_mat4x4_copy.c \
+			ft_mat4x4_mult_with_int.c \
+			ft_vec4_init.c \
+			ft_vec4_mult.c
+
 OBJ_PATH = ./obj/
 
 INC_PATH = ./includes/ ../libft/includes
@@ -24,6 +31,7 @@ NAME = ../../lib/libftmatrices.a
 CC = gcc
 
 CFLAGS = -Werror -Wall -Wextra -c -g
+# CFLAGS = -Wall -Wextra -c -g
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 
