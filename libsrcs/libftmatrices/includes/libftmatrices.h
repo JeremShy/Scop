@@ -7,6 +7,10 @@ typedef	int t_mat4x4[4][4]; // mat4x4[line][column]
 typedef int	t_vec4[4];
 
 void	ft_mat4x4_set_identity(t_mat4x4 matrice);
+void	ft_mat4x4_set_zero(t_mat4x4 *m);
+void	ft_mat4x4_set_projection(t_mat4x4 m, double array[4]);
+
+
 void	ft_mat4x4_print(t_mat4x4 matrice);
 void	ft_mat4x4_mult(t_mat4x4 ret, t_mat4x4 m1, t_mat4x4 m2);
 void	ft_mat4x4_copy(t_mat4x4 dest, t_mat4x4 src);

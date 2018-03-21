@@ -8,7 +8,10 @@
 		"fcntl.h": "c",
 		"libftmatrices.h": "c",
 		"type_traits": "c",
-		"libft.h": "c"
+		"libft.h": "c",
+		"queue": "c",
+		"iterator": "c",
+		"vector": "c"
 	},
 	"C_Cpp.errorSquiggles": "Disabled"
 }

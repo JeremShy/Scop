@@ -13,6 +13,8 @@
 SRC_PATH = ./
 
 SRC_NAME = ft_mat4x4_set_identity.c \
+			ft_mat4x4_set_zero.c \
+			ft_mat4x4_set_projection.c \
 			ft_mat4x4_print.c \
 			ft_mat4x4_mult.c \
 			ft_mat4x4_copy.c \

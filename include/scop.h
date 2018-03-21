@@ -14,13 +14,17 @@ typedef struct s_d {
 	float		*vertices;
 	size_t		sizeof_vertices;
 
-	GLuint	vertex_sh;
-	GLuint	fragment_sh;
-	GLuint	program;
-	GLuint	buffer;
+	GLuint		vertex_sh;
+	GLuint		fragment_sh;
+	GLuint		program;
+	GLuint		buffer;
+	GLuint		vao;
+
+	t_mat4x4	projection;
+	t_mat4x4	modelview;
 }					t_d;
 
 GLuint	create_and_compile_shader(const char *filename, GLenum shaderType);
-GLuint create_and_link_program(GLuint vertex_sh, GLuint fragment_sh);
+GLuint	create_and_link_program(GLuint vertex_sh, GLuint fragment_sh);
 
 #endif
