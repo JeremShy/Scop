@@ -60,6 +60,18 @@ int main(void)
 {
     t_d      data;
 
+    t_mat4x4 m1;
+    t_vec4  vec;
+
+    ft_vec4_init(vec, (t_vec4){3, 4, 2, 0});
+    ft_mat4x4_copy(m1, (t_mat4x4){{5, 1, 6, 0},
+                        {1, 4, 7, 0},
+                        {4, 2, 1, 0},
+                        {0, 0, 0, 0}});
+    ft_mat4x4_mult_with_vec4(vec, m1, vec);
+    ft_vec4_print(vec);
+    return (0);
+
     init_all(&data);
 
     printf("OPengl version : %s\n", glGetString(GL_VERSION));
