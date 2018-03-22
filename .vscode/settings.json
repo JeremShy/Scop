@@ -11,7 +11,8 @@
 		"libft.h": "c",
 		"queue": "c",
 		"iterator": "c",
-		"vector": "c"
+		"vector": "c",
+		"iosfwd": "c"
 	},
 	"C_Cpp.errorSquiggles": "Disabled"
 }

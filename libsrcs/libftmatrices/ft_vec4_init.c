@@ -1,6 +1,6 @@
 #include <libftmatrices.h>
 
-void	ft_vec4_init(t_vec4 vec, double tab[4])
+void	ft_vec4_init(t_vec4 vec, const double tab[4])
 {
 	vec[0] = tab[0];
 	vec[1] = tab[1];

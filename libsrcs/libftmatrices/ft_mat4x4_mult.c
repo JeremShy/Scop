@@ -1,18 +1,24 @@
 #include <libftmatrices.h>
 
-static void	compound_mult(t_mat4x4 m1, t_mat4x4 m2)
+static void	compound_mult(t_mat4x4 ret, const t_mat4x4 m2) // not : ret == m1
 {
 	printf("Detected compound mult.\n");
 	t_mat4x4	tmp;
 
-	ft_mat4x4_copy(tmp, m1);
-	ft_mat4x4_mult(m1, tmp, m2);
+	ft_mat4x4_copy(tmp, ret);
+
+	printf("Multiplying : \n");
+	ft_mat4x4_print(tmp);
+	printf("by\n");
+	ft_mat4x4_print(m2);
+
+	ft_mat4x4_mult(ret, tmp, m2);
 }
 
-static int32_t	get_res_at(t_mat4x4 a, t_mat4x4 b, int8_t i, int8_t j)
+static double	get_res_at(const t_mat4x4 a, const t_mat4x4 b, int8_t i, int8_t j)
 {
 	int8_t	k;
-	int32_t	sum;
+	double	sum;
 
 	k = 0;
 	sum = 0;
@@ -24,13 +30,13 @@ static int32_t	get_res_at(t_mat4x4 a, t_mat4x4 b, int8_t i, int8_t j)
 	return (sum);
 }
 
-void		ft_mat4x4_mult(t_mat4x4 ret, t_mat4x4 m1, t_mat4x4 m2)
+void		ft_mat4x4_mult(t_mat4x4 ret, const t_mat4x4 m1, const t_mat4x4 m2)
 {
 	int8_t	i;
 	int8_t	j;
 
 	if (ret == m1)
-		return (compound_mult(m1, m2));
+		return (compound_mult(ret, m2));
 	i = 0;
 	while (i < 4)
 	{

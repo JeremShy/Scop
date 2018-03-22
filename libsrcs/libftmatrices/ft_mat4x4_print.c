@@ -1,6 +1,6 @@
 #include <libftmatrices.h>
 
-void	ft_mat4x4_print(t_mat4x4 matrice)
+void	ft_mat4x4_print(const t_mat4x4 matrice)
 {
 	int	i;
 

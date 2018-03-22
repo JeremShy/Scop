@@ -1,6 +1,6 @@
 #include <libftmatrices.h>
 
-void	ft_mat4x4_mult_with_int(t_mat4x4 rez, t_mat4x4 m, int r)
+void	ft_mat4x4_mult_with_real(t_mat4x4 rez, const t_mat4x4 m, double r)
 {
 	int	i;
 	int	j;

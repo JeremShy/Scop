@@ -1,6 +1,6 @@
 #include <libftmatrices.h>
 
-void    ft_mat4x4_to_float_array(float dest[16], t_mat4x4 matrice)
+void    ft_mat4x4_to_float_array(float dest[16], const t_mat4x4 matrice)
 {
     int i;
     int j;

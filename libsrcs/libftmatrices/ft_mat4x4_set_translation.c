@@ -1,6 +1,6 @@
 #include <libftmatrices.h>
 
-void	ft_mat4x4_set_translation(t_mat4x4 m, t_vec4 v)
+void	ft_mat4x4_set_translation(t_mat4x4 m, const t_vec4 v)
 {
 	ft_mat4x4_set_identity(m);
 	m[0][3] = v[0];

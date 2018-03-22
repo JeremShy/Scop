@@ -1,6 +1,6 @@
 #include <libftmatrices.h>
 
-void	ft_mat4x4_set_projection(t_mat4x4 m, double array[4])
+void	ft_mat4x4_set_projection(t_mat4x4 m, const double array[4])
 {
 	double	fov;
 	double	ratio;
