@@ -29,20 +29,20 @@ int8_t	init_glfw(t_d *data)
         return (0);
     }
    glfwMakeContextCurrent(data->window);
+   glfwGetWindowSize(data->window, &data->width, &data->height);
+   printf("Window size : %d - %d\n", data->width, data->height);
    return (1);
 }
 
 int8_t  init_gl_and_draw(t_d *data)
 {
     data->sizeof_vertices = sizeof((float[])
-        {-0.5, 0.0, 0.0, 1.0, 0.5, 0.0,
-            -0.5, 0.0, 0.0, -1.0, 0.5, 0.0});
-    
+        {0.0, 0.0, -1.0,  0.5, 0.0, -1.0,  0.0, 0.5, -1.0});
+
     data->vertices = malloc(data->sizeof_vertices);
     ft_memcpy(data->vertices,
         (float[])
-            {-0.5, 0.0, 0.0, 1.0, 0.5, 0.0,
-                -0.5, 0.0, 0.0, -1.0, 0.5, 0.0},
+            {0.0, 0.0, -1.0,  0.5, 0.0, -1.0,  0.0, 0.5, -1.0},
         data->sizeof_vertices);
     return (1);
 }
@@ -86,15 +86,20 @@ void    init_vbo(t_d *data, float couleurs[], size_t sizeof_couleurs)
 
 void    init_vao(t_d *data)
 {
+    ft_mat4x4_to_float_array(data->float_projection, data->projection);
+    ft_mat4x4_to_float_array(data->float_modelview, data->modelview);
+
     glGenVertexArrays(1, &data->vao);
     glUseProgram(data->program);
         glBindVertexArray(data->vao);
             glBindBuffer(GL_ARRAY_BUFFER, data->buffer);
-                glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+                glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
                 glEnableVertexAttribArray(0); // vertices
                 glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(data->sizeof_vertices));
                 glEnableVertexAttribArray(1);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
+                glUniformMatrix4fv(glGetUniformLocation(data->program, "modelview"), 1, GL_FALSE, data->float_modelview);
+                glUniformMatrix4fv(glGetUniformLocation(data->program, "projection"), 1, GL_FALSE, data->float_projection);
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
     glUseProgram(0);
 }
@@ -107,12 +112,10 @@ int main(void)
 
     printf("OPengl version : %s\n", glGetString(GL_VERSION));
 
-    float couleurs[] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0,
-                        -1.0, 0.0, 0.0,  0.0, 1.0, 0.21,  0.0, 0.5, 1.0};
+    float couleurs[] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
     size_t  sizeof_couleurs = sizeof(couleurs);
 
     init_vbo(&data, couleurs, sizeof_couleurs);
-
     if (!init_shaders(&data, "./srcs/shaders/default.frag", "./srcs/shaders/default.vert"))
         return (1);
     if (!(data.program = create_and_link_program(data.vertex_sh, data.fragment_sh)))
@@ -120,20 +123,32 @@ int main(void)
         dprintf(2, "Error while trying to create and link program\n");
         return (1);
     }
+    ft_mat4x4_set_projection(data.projection,
+        (double[4]){70.0, (double)data.width / data.height, 1.0, 100.0});
+    // ft_mat4x4_set_identity(data.modelview);
+    t_vec3 translation_vector;
+    ft_vec3_init(translation_vector, (double[3]){0.9, 0.0, 0.0});
+    ft_vec3_print(translation_vector);
 
+    ft_mat4x4_set_translation(data.modelview, translation_vector);
+    ft_mat4x4_print(data.modelview);
     init_vao(&data);
+
     while (!glfwWindowShouldClose(data.window))
     {
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(data.program);
             glBindVertexArray(data.vao);
-                glDrawArrays(GL_TRIANGLES, 0, 6);
+                glDrawArrays(GL_TRIANGLES, 0, 3);
             glBindVertexArray(0);
         glUseProgram(0);
 
         glfwSwapBuffers(data.window);
         glfwPollEvents();
+
+        ft_mat4x4_to_float_array(data.float_projection, data.projection);
+        ft_mat4x4_to_float_array(data.float_modelview, data.modelview);
     }
     printf("Closing window.\n");
 

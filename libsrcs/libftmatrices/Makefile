@@ -15,13 +15,17 @@ SRC_PATH = ./
 SRC_NAME = ft_mat4x4_set_identity.c \
 			ft_mat4x4_set_zero.c \
 			ft_mat4x4_set_projection.c \
+			ft_mat4x4_set_translation.c \
 			ft_mat4x4_print.c \
 			ft_mat4x4_mult.c \
 			ft_mat4x4_copy.c \
 			ft_mat4x4_mult_with_int.c \
 			ft_mat4x4_mult_with_vec4.c \
+			ft_mat4x4_to_float_array.c \
 			ft_vec4_init.c \
-			ft_vec4_print.c
+			ft_vec4_print.c \
+			ft_vec3_init.c \
+			ft_vec3_print.c
 
 OBJ_PATH = ./obj/
 

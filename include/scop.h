@@ -20,8 +20,14 @@ typedef struct s_d {
 	GLuint		buffer;
 	GLuint		vao;
 
+	int			width;
+	int			height;
+
 	t_mat4x4	projection;
 	t_mat4x4	modelview;
+
+	float		float_projection[4 * 4];
+	float		float_modelview[4 * 4];
 }					t_d;
 
 GLuint	create_and_compile_shader(const char *filename, GLenum shaderType);

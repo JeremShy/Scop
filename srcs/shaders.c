@@ -57,7 +57,7 @@ GLuint	create_and_compile_shader(const char *filename, GLenum shaderType) //Retu
 GLuint create_and_link_program(GLuint vertex_sh, GLuint fragment_sh)
 {
 	GLuint	ret;
-	GLuint	i;
+	GLint	i;
 
 	ret = glCreateProgram();
 	glAttachShader(ret, vertex_sh);

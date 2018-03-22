@@ -11,7 +11,7 @@ NAME = scop
 
 CC = gcc
 CFLAGS =  -Wextra -Wall -g
-LFLAGS = -lft -framework OpenGL -framework AppKit -lglfw -lftmatrices
+LFLAGS = -lft -framework OpenGL -framework AppKit -lglfw -lftmatrices -lm
 LIB_DIR=./lib/
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
