@@ -127,7 +127,7 @@ int main(void)
         (double[4]){70.0, (double)data.width / data.height, 1.0, 100.0});
     // ft_mat4x4_set_identity(data.modelview);
     t_vec3 translation_vector;
-    ft_vec3_init(translation_vector, (double[3]){0.9, 0.0, 0.0});
+    ft_vec3_init(translation_vector, (double[3]){0.0, 0.0, 0.0});
     ft_vec3_print(translation_vector);
 
     ft_mat4x4_set_translation(data.modelview, translation_vector);
@@ -147,8 +147,8 @@ int main(void)
         glfwSwapBuffers(data.window);
         glfwPollEvents();
 
-        ft_mat4x4_to_float_array(data.float_projection, data.projection);
-        ft_mat4x4_to_float_array(data.float_modelview, data.modelview);
+        // ft_mat4x4_to_float_array(data.float_projection, data.projection);
+        // ft_mat4x4_to_float_array(data.float_modelview, data.modelview);
     }
     printf("Closing window.\n");
 

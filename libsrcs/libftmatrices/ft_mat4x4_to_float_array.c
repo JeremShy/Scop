@@ -11,7 +11,7 @@ void    ft_mat4x4_to_float_array(float dest[16], t_mat4x4 matrice)
         j = 0;
         while (j < 4)
         {
-            dest[i * 4 + j] = matrice[i][j];
+            dest[j * 4 + i] = matrice[i][j];
             j++;
         }
         i++;
