@@ -126,10 +126,17 @@ int main(void)
     ft_mat4x4_set_projection(data.projection,
         (double[4]){70.0, (double)data.width / data.height, 1.0, 100.0});
     ft_mat4x4_set_identity(data.modelview);
+
     t_vec3 translation_vector;
-    ft_vec3_init(translation_vector, (double[3]){0.1, 0.1, 0.0});
+    t_vec3 rotation_vector;
+
+
+    ft_vec3_init(translation_vector, (double[3]){0.4, 0.0, 0.0});
+    ft_vec3_init(rotation_vector, (double[3]){0.0, 0.0, 1.0});
+
     ft_vec3_print(translation_vector);
 
+    ft_mat4x4_rotate(data.modelview, 60.0f, rotation_vector);
     ft_mat4x4_translate(data.modelview, translation_vector);
     ft_mat4x4_print(data.modelview);
     init_vao(&data);

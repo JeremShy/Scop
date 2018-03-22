@@ -17,11 +17,13 @@ SRC_NAME = ft_mat4x4_set_identity.c \
 			ft_mat4x4_set_projection.c \
 			ft_mat4x4_set_translation.c \
 			ft_mat4x4_set_rotation.c \
+			ft_mat4x4_set_scale.c \
 			ft_mat4x4_print.c \
 			ft_mat4x4_mult.c \
 			ft_mat4x4_copy.c \
 			ft_mat4x4_translate.c \
 			ft_mat4x4_rotate.c \
+			ft_mat4x4_scale.c \
 			ft_mat4x4_mult_with_real.c \
 			ft_mat4x4_mult_with_vec4.c \
 			ft_mat4x4_to_float_array.c \

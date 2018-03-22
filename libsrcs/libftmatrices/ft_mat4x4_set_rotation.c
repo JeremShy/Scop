@@ -7,13 +7,14 @@ void	ft_mat4x4_set_rotation(t_mat4x4 matrice, double angle, const t_vec3 axis)
 	double	s;
 	double	d;
 
-	c = cos(angle);
-	s = cos(angle);
+	c = cos(degrees_to_radians(angle));
+	s = sin(degrees_to_radians(angle));
 	d = 1 - c;
 
 	ft_vec3_copy(v, axis);
 	ft_vec3_normalize(v);
-	matrice[0][0] = v[0] * d + c;
+	ft_vec3_print(v);
+	matrice[0][0] = v[0] * v[0] * d + c;
 	matrice[0][1] = v[0] * v[1] * d - v[2] * s;
 	matrice[0][2] = v[0] * v[2] * d + v[1] * s;
 	matrice[0][3] = 0;

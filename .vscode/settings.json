@@ -12,7 +12,8 @@
 		"queue": "c",
 		"iterator": "c",
 		"vector": "c",
-		"iosfwd": "c"
+		"iosfwd": "c",
+		"stdio.h": "c"
 	},
 	"C_Cpp.errorSquiggles": "Disabled"
 }
