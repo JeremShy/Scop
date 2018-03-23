@@ -13,7 +13,11 @@
 		"iterator": "c",
 		"vector": "c",
 		"iosfwd": "c",
-		"stdio.h": "c"
+		"stdio.h": "c",
+		"math.h": "c",
+		"__functional_03": "c",
+		"functional": "c",
+		"__tuple": "c"
 	},
 	"C_Cpp.errorSquiggles": "Disabled"
 }

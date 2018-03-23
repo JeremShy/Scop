@@ -18,6 +18,7 @@ SRC_NAME = ft_mat4x4_set_identity.c \
 			ft_mat4x4_set_translation.c \
 			ft_mat4x4_set_rotation.c \
 			ft_mat4x4_set_scale.c \
+			ft_mat4x4_set_look_at.c \
 			ft_mat4x4_print.c \
 			ft_mat4x4_mult.c \
 			ft_mat4x4_copy.c \
@@ -39,6 +40,7 @@ SRC_NAME = ft_mat4x4_set_identity.c \
 			ft_vec3_sub.c \
 			ft_vec3_add.c \
 			ft_vec3_cross.c \
+			ft_vec3_dot.c \
 			ft_vec3_copy.c
 
 OBJ_PATH = ./obj/
