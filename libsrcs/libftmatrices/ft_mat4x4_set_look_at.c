@@ -28,6 +28,7 @@ void	ft_mat4x4_set_look_at(t_mat4x4 matrice, const t_vec3 eye, const t_vec3 targ
 	// matrice[3][1] = 
 	// matrice[3][2] = 
 	// matrice[3][3] =
+	//https://www.3dgep.com/understanding-the-view-matrix/#Look_At_Camera
 }
 
 void	ft_mat4x4_set_look_at_from_double_array(t_mat4x4 matrice, double eye[3], double target[3], double up[3])
