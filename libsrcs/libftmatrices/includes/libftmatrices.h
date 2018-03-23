@@ -27,9 +27,13 @@ void	ft_mat4x4_mult(t_mat4x4 ret, const t_mat4x4 m1, const t_mat4x4 m2);
 void	ft_mat4x4_copy(t_mat4x4 dest, const t_mat4x4 src);
 void	ft_mat4x4_mult_with_real(t_mat4x4 rez, const t_mat4x4 m, double r);
 void	ft_mat4x4_mult_with_vec4(t_vec4 rez, const t_mat4x4 m1, const t_vec4 vec);
-void	ft_mat4x4_translate(t_mat4x4 m, const t_vec4 v);
+
+void	ft_mat4x4_translate(t_mat4x4 m, const t_vec3 v);
 void	ft_mat4x4_rotate(t_mat4x4 matrice, double angle, const t_vec3 axis);
 void	ft_mat4x4_scale(t_mat4x4 matrice, const t_vec3 scale);
+void	ft_mat4x4_translate_from_double_array(t_mat4x4 m, const t_vec3 v);
+void	ft_mat4x4_rotate_from_double_array(t_mat4x4 matrice, double angle, const t_vec3 axis);
+void	ft_mat4x4_scale_from_double_array(t_mat4x4 matrice, const t_vec3 scale);
 
 void    ft_mat4x4_to_float_array(float dest[16], const t_mat4x4 matrice);
 

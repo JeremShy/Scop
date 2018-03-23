@@ -22,7 +22,7 @@ int8_t	init_glfw(t_d *data)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwSetErrorCallback(error_callback);
 
-    data->window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    data->window = glfwCreateWindow(800, 600, "Hello World", NULL, NULL);
     if (!data->window)
     {
         glfwTerminate();
@@ -127,17 +127,8 @@ int main(void)
         (double[4]){70.0, (double)data.width / data.height, 1.0, 100.0});
     ft_mat4x4_set_identity(data.modelview);
 
-    t_vec3 translation_vector;
-    t_vec3 rotation_vector;
-
-
-    ft_vec3_init(translation_vector, (double[3]){0.4, 0.0, 0.0});
-    ft_vec3_init(rotation_vector, (double[3]){0.0, 0.0, 1.0});
-
-    ft_vec3_print(translation_vector);
-
-    ft_mat4x4_rotate(data.modelview, 60.0f, rotation_vector);
-    ft_mat4x4_translate(data.modelview, translation_vector);
+    ft_mat4x4_rotate_from_double_array(data.modelview, 60.0f, (double[3]){0.0, 0.0, 1.0});
+    ft_mat4x4_translate_from_double_array(data.modelview, (double[3]){0.1, 0.0, 0.0});
     ft_mat4x4_print(data.modelview);
     init_vao(&data);
 
