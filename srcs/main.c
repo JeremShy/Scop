@@ -87,7 +87,6 @@ void    init_vao(t_d *data, int vao_nbr, int first, int last)
 {
 	int	i;
 
-	ft_mat4x4_to_float_array(data->float_projection, data->projection);
 	i = first;
 	while (i <= last)
 	{
@@ -136,6 +135,7 @@ int main(void)
 	if (!(data.program = create_and_link_program(data.vertex_sh, data.fragment_sh)))
 		return (2);
 	ft_mat4x4_set_projection(data.projection, (double[4]){12.0, (double)data.width / data.height, 1.0, 100.0});
+	ft_mat4x4_to_float_array(data.float_projection, data.projection);
 
 	ft_mat4x4_set_identity(data.modelview[0]);
 	ft_mat4x4_rotate_from_double_array(data.modelview[0], -45.0f, (double[3]){0.0, 0.0, 1.0});
@@ -143,15 +143,15 @@ int main(void)
 
 	ft_mat4x4_set_identity(data.modelview[1]);
 
-
-	init_vao(&data, 1, 1, 1);
+	init_vao(&data, 0, 0, 0);
+	init_vao(&data, 1, 1, 1); // BUG HERE
 
 	while (!glfwWindowShouldClose(data.window))
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(data.program);
-			glBindVertexArray(data.vao[1]);
+			glBindVertexArray(data.vao[0]);
 				glDrawArrays(GL_TRIANGLES, 0, 3);
 			glBindVertexArray(0);
 		glUseProgram(0);
