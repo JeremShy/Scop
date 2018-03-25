@@ -2,16 +2,9 @@
 
 static void	compound_mult(t_mat4x4 ret, const t_mat4x4 m2) // not : ret == m1
 {
-	printf("Detected compound mult.\n");
 	t_mat4x4	tmp;
 
 	ft_mat4x4_copy(tmp, ret);
-
-	printf("Multiplying : \n");
-	ft_mat4x4_print(tmp);
-	printf("by\n");
-	ft_mat4x4_print(m2);
-
 	ft_mat4x4_mult(ret, tmp, m2);
 }
 

@@ -41,4 +41,3 @@ void	ft_mat4x4_set_look_at_from_double_array(t_mat4x4 matrice, const double eye[
 	ft_vec3_init(vec_up, up);
 	ft_mat4x4_set_look_at(matrice, vec_eye, vec_target, vec_up);
 }
-

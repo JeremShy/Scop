@@ -31,7 +31,6 @@ GLuint	create_and_compile_shader(const char *filename, GLenum shaderType) //Retu
 	GLint		length;
 
 	ret = glCreateShader(shaderType);
-	printf("ret = %u\n" , ret);
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
 		return (0);

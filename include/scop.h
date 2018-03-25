@@ -16,13 +16,17 @@ typedef struct s_d {
 	int			width;
 	int			height;
 
-	float		*vertices[MAX_OBJECTS_NBR];
 
 	GLuint		vertex_sh;
 	GLuint		fragment_sh;
 	GLuint		program;
 
+	size_t		nbr_of_objects;
+
+	float		*vertices[MAX_OBJECTS_NBR];
+	float		*colors[MAX_OBJECTS_NBR];
 	size_t		sizeof_vertices[MAX_OBJECTS_NBR];
+	size_t		sizeof_colors[MAX_OBJECTS_NBR];
 	GLuint		buffer[MAX_OBJECTS_NBR];
 	GLuint		vao[MAX_OBJECTS_NBR];
 	t_mat4x4	projection;

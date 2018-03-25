@@ -20,5 +20,4 @@ void	ft_mat4x4_set_projection(t_mat4x4 m, const double array[4])
 	m[2][2] = (-1 * (far + near)) / (far - near);
 	m[3][2] = -1;
 	m[2][3] = (-1 * (2 * far * near) / (far - near));
-	printf("%e\n", m[2][3]);
 }
