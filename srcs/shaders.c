@@ -1,7 +1,6 @@
 #include <scop.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
 int8_t	check_compilation(GLuint shader)
 {
 	GLsizei i;

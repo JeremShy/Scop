@@ -37,7 +37,7 @@ void	ft_mat4x4_translate_from_double_array(t_mat4x4 m, const t_vec3 v);
 void	ft_mat4x4_rotate_from_double_array(t_mat4x4 matrice, double angle, const t_vec3 axis);
 void	ft_mat4x4_scale_from_double_array(t_mat4x4 matrice, const t_vec3 scale);
 
-void    ft_mat4x4_to_float_array(float dest[16], const t_mat4x4 matrice);
+void	ft_mat4x4_to_float_array(float dest[16], const t_mat4x4 matrice);
 
 void	ft_vec4_init(t_vec4 vec, const double tab[4]);
 void	ft_vec4_print(const t_vec4 v);
