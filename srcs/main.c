@@ -131,7 +131,7 @@ int main(void)
 
 	init_all(&data);
 	printf("OPengl version : %s\n", glGetString(GL_VERSION));
-	if (!init_shaders(&data, "./srcs/shaders/default.frag", "./srcs/shaders/default.vert"))
+	if (!init_shaders(&data, "./srcs/shaders/couleur2D.frag", "./srcs/shaders/couleur2D.vert"))
 		return (1);
 	if (!(data.program = create_and_link_program(data.vertex_sh, data.fragment_sh)))
 		return (2);
@@ -140,48 +140,45 @@ int main(void)
 	glUniform4f(loc, 1.0f, 0.f, 0.f, 1.f);
 	glUseProgram(0);
 
-	t_mat4x4 view;
-	t_mat4x4 model;
-	init_matrices(view, model, &data);
-
-	t_mat4x4 mvp;
-
-	ft_mat4x4_mult(mvp, data.projection, model);
-	ft_mat4x4_mult(mvp, mvp, view);
-
-	float mvp_f[16];
-	ft_mat4x4_to_float_array(mvp_f, mvp);
-
-	GLuint MatrixID = glGetUniformLocation(data.program, "MVP");
-	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, mvp_f);
+	// t_mat4x4 view;
+	// t_mat4x4 model;
+	// init_matrices(view, model, &data);
+	// t_mat4x4 mvp;
+	// ft_mat4x4_mult(mvp, data.projection, model);
+	// ft_mat4x4_mult(mvp, mvp, view);
+	// float mvp_f[16];
+	// ft_mat4x4_to_float_array(mvp_f, mvp);
+	// GLuint MatrixID = glGetUniformLocation(data.program, "MVP");
+	// glUniformMatrix4fv(MatrixID, 1, GL_FALSE, mvp_f);
 
 	// add_vertex(&data, (float[]){0.0, 0.0,  1, 0.0,  0.0, 1}, 6, 0);
 	// add_color(&data, (float[]){1.0, 0.0, 0.0,   0.0, 1.0, 0.0,   0.0, 0.0, 1.0}, 9, 0);
 
-	add_vertex(&data, (float[]){0.0, 0.0, -1.0,  0.5, 0.0, -1.0,  0.0, 0.5, -1.0}, 9, 0);
-	add_color(&data, (float[]){1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0}, 9, 0);
+	add_vertex(&data, (float[]){-1.0, -1.0,  1.0, -1.0,  0.0, 1.0}, 6, 0);
+	add_color(&data, (float[]){0.0, 1.0, 0.0,  1.0, 0.0, 0.0,  0.0, 0.0, 1.0}, 9, 0);
 	init_vbo_triangle(&data, 0);
 
-	
 	GLuint vao = 0;
 	glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glBindBuffer(GL_ARRAY_BUFFER, data.buffer[0]);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)data.sizeof_vertices[0]);
 
+	glBindVertexArray(vao);
+		glBindBuffer(GL_ARRAY_BUFFER, data.buffer[0]);
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)data.sizeof_vertices[0]);
+			glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 
 	while (!glfwWindowShouldClose(data.window))
 	{
-		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(data.program);
 		glBindVertexArray(vao);
 
-				glDrawArrays(GL_TRIANGLES, 0, 3);
+			glDrawArrays(GL_TRIANGLES, 0, 3);
 
+		glBindVertexArray(0);
 		glfwPollEvents();
 		glfwSwapBuffers(data.window);
 
