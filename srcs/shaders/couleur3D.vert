@@ -25,8 +25,8 @@ out vec3 color;
 void main()
 {
     // Position finale du vertex en 3D
-
     gl_Position = projection * modelview * vec4(in_Vertex, 1.0);
+    // gl_Position = projection * vec4(in_Vertex, 1.0);
 
 	color = in_Color;
 }

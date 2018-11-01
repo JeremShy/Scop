@@ -20,4 +20,11 @@ void	ft_mat4x4_set_projection(t_mat4x4 m, const double array[4])
 	m[2][2] = (-1 * (far + near)) / (far - near);
 	m[3][2] = -1;
 	m[2][3] = (-1 * (2 * far * near) / (far - near));
+	// m[3][3] = 1;
+	// m[0][0] = atan(60 * M_PI / 180.);
+	// m[1][1] = atan(60 * M_PI / 180. * ratio);
+	// m[2][2] = -1 * (far + near) / (far - near);
+	// m[2][3] = -1 * (2 * far * near) / (far - near);
+	// m[3][2] = -1;
+	// m[3][3] = 1;
 }

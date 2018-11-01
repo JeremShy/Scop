@@ -1,4 +1,5 @@
 #include <scop.h>
+#include <cglm/cglm.h>   /* for inline */
 
 int8_t  init_data(t_d *data)
 {
@@ -118,19 +119,21 @@ void    init_vao(t_d *data, int vao_nbr, int first, int last)
 void	init_matrices(t_mat4x4 view, t_mat4x4 model, t_d *data)
 {
 	ft_mat4x4_set_projection(data->projection, (double[]){60, (double)data->width / data->height, 0.1 ,100.0});
-	// ft_mat4x4_print(data->projection);
 	// ft_mat4x4_set_identity(data->projection);
 	ft_mat4x4_to_float_array(data->float_projection, data->projection);
 
-	ft_mat4x4_set_look_at_from_double_array(view, (double[]){0, 0, -2}, (double[]){0, 0, 0}, (double[]){0, 1, 0});
+	ft_mat4x4_set_look_at_from_double_array(view, (double[]){0, 0, -5}, (double[]){0, 0, 0}, (double[]){0, 1, 0});
 	// ft_mat4x4_set_identity(view);
 
 	ft_mat4x4_set_identity(model);
+	ft_mat4x4_rotate(model, 90, (double[]){0, 0, 1.});
+	ft_mat4x4_rotate(model, 60, (double[]){1., 0, 0});
 }
 
 int main(void)
 {
 	t_d		data;
+
 
 	init_all(&data);
 	printf("OPengl version : %s\n", glGetString(GL_VERSION));
@@ -144,6 +147,13 @@ int main(void)
 
 	init_matrices(view, model, &data);
 
+
+	printf("fovy : %f\n", (M_PI / 3) / ((float)data.width / data.height));
+	printf("ratio : %f\n", (float) data.width / data.height);
+	printf("near : %f\n", .1);
+	printf("far : %f\n", 100.);
+
+
 	t_mat4x4 modelview;
 	ft_mat4x4_mult(modelview, view, model);
 
@@ -152,6 +162,9 @@ int main(void)
 
 	GLfloat projection_f[16];
 	ft_mat4x4_to_float_array(projection_f, data.projection);
+
+	GLfloat view_f[16];
+	ft_mat4x4_to_float_array(view_f, view);
 
 	printf("modelview : \n");
 	ft_mat4x4_print(modelview);
@@ -164,8 +177,10 @@ int main(void)
 	// add_vertex(&data, (float[]){0.0, 0.0,  1, 0.0,  0.0, 1}, 6, 0);
 	// add_color(&data, (float[]){1.0, 0.0, 0.0,   0.0, 1.0, 0.0,   0.0, 0.0, 1.0}, 9, 0);
 
-	add_vertex(&data, (float[]){-1.0, -1.0, 0.0,  1.0, -1.0, 0.0,  0.0, 1.0, 0.0}, 9, 0);
-	add_color(&data, (float[]){1.0, 1.0, 0.0,  1.0, 0.0, 1.0,  0.0, 1.0, 1.0}, 9, 0);
+	add_vertex(&data, (float[]){-1.0, 1.0, 0.0,  1.0, 1.0, 0.0,  1.0, -1.0, 0.0,
+								-1.0, 1.0, 0.0,  -1.0, -1.0, 0.0,  1.0, -1.0, 0.0}, 18, 0);
+	add_color(&data, (float[]){1.0, 1.0, 0.0,  1.0, 0.0, 1.0,  0.0, 1.0, 1.0,
+								1.0, 1.0, 0.0,  1.0, 0.0, 1.0,  0.0, 1.0, 1.0}, 18, 0);
 	init_vbo_triangle(&data, 0);
 
 	GLuint vao = 0;
@@ -180,6 +195,8 @@ int main(void)
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
+	// glm_mat4_mult(c_model, c_view, c_viewmodel);
+
 	while (!glfwWindowShouldClose(data.window))
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -188,7 +205,7 @@ int main(void)
 		glBindVertexArray(vao);
 			glUniformMatrix4fv(modelviewID, 1, GL_FALSE, modelview_f);
 			glUniformMatrix4fv(projID, 1, GL_FALSE, projection_f);
-			glDrawArrays(GL_TRIANGLES, 0, 3);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
 
 		glfwPollEvents();
