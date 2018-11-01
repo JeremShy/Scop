@@ -55,7 +55,7 @@ clean:
 	@rmdir -p $(OBJ_PATH) 2> /dev/null || true
 	@make -C libsrcs/libft clean
 	@make -C libsrcs/libftmatrices clean
-	@make -C libsrcs/glfw-3.2.1 clean
+	@make -C libsrcs/glfw-3.2.1 clean || true
 
 fclean: clean
 	@rm -fv $(NAME)

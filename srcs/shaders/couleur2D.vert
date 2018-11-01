@@ -8,7 +8,6 @@
 in vec2 in_Vertex;
 in vec3 in_Color;
 
-
 // Sortie
 
 out vec3 color;
@@ -25,5 +24,6 @@ void main()
 
     // Envoi de la couleur au Fragment Shader
 
+    // color = in_Color;
     color = in_Color;
 }

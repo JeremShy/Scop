@@ -76,6 +76,7 @@ int8_t    init_shaders(t_d *data, const char *frag, const char *vert)
 void    init_vbo_triangle(t_d *data, int vbo_nbr)
 {
 	glGenBuffers(1, &(data->buffer[vbo_nbr]));
+
 	glBindBuffer(GL_ARRAY_BUFFER, data->buffer[vbo_nbr]);
 		glBufferData(GL_ARRAY_BUFFER, data->sizeof_vertices[vbo_nbr] + data->sizeof_colors[vbo_nbr], 0, GL_STATIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, data->sizeof_vertices[vbo_nbr], data->vertices[vbo_nbr]);
@@ -117,11 +118,13 @@ void    init_vao(t_d *data, int vao_nbr, int first, int last)
 void	init_matrices(t_mat4x4 view, t_mat4x4 model, t_d *data)
 {
 	ft_mat4x4_set_projection(data->projection, (double[]){60, (double)data->width / data->height, 0.1 ,100.0});
-
-	ft_mat4x4_print(data->projection);
-
+	// ft_mat4x4_print(data->projection);
+	// ft_mat4x4_set_identity(data->projection);
 	ft_mat4x4_to_float_array(data->float_projection, data->projection);
+
 	ft_mat4x4_set_look_at_from_double_array(view, (double[]){0, 0, -2}, (double[]){0, 0, 0}, (double[]){0, 1, 0});
+	// ft_mat4x4_set_identity(view);
+
 	ft_mat4x4_set_identity(model);
 }
 
@@ -131,31 +134,38 @@ int main(void)
 
 	init_all(&data);
 	printf("OPengl version : %s\n", glGetString(GL_VERSION));
-	if (!init_shaders(&data, "./srcs/shaders/couleur2D.frag", "./srcs/shaders/couleur2D.vert"))
+	if (!init_shaders(&data, "./srcs/shaders/couleur3D.frag", "./srcs/shaders/couleur3D.vert"))
 		return (1);
 	if (!(data.program = create_and_link_program(data.vertex_sh, data.fragment_sh)))
 		return (2);
-	GLint loc = glGetUniformLocation(data.program, "inputColour");
-	glUseProgram(data.program);
-	glUniform4f(loc, 1.0f, 0.f, 0.f, 1.f);
-	glUseProgram(0);
 
-	// t_mat4x4 view;
-	// t_mat4x4 model;
-	// init_matrices(view, model, &data);
-	// t_mat4x4 mvp;
-	// ft_mat4x4_mult(mvp, data.projection, model);
-	// ft_mat4x4_mult(mvp, mvp, view);
-	// float mvp_f[16];
-	// ft_mat4x4_to_float_array(mvp_f, mvp);
-	// GLuint MatrixID = glGetUniformLocation(data.program, "MVP");
-	// glUniformMatrix4fv(MatrixID, 1, GL_FALSE, mvp_f);
+	t_mat4x4 view;
+	t_mat4x4 model;
+
+	init_matrices(view, model, &data);
+
+	t_mat4x4 modelview;
+	ft_mat4x4_mult(modelview, view, model);
+
+	GLfloat modelview_f[16];
+	ft_mat4x4_to_float_array(modelview_f, modelview);
+
+	GLfloat projection_f[16];
+	ft_mat4x4_to_float_array(projection_f, data.projection);
+
+	printf("modelview : \n");
+	ft_mat4x4_print(modelview);
+	printf("projection : \n");
+	ft_mat4x4_print(data.projection);
+
+	GLuint modelviewID = glGetUniformLocation(data.program, "modelview");
+	GLuint projID = glGetUniformLocation(data.program, "projection");
 
 	// add_vertex(&data, (float[]){0.0, 0.0,  1, 0.0,  0.0, 1}, 6, 0);
 	// add_color(&data, (float[]){1.0, 0.0, 0.0,   0.0, 1.0, 0.0,   0.0, 0.0, 1.0}, 9, 0);
 
-	add_vertex(&data, (float[]){-1.0, -1.0,  1.0, -1.0,  0.0, 1.0}, 6, 0);
-	add_color(&data, (float[]){0.0, 1.0, 0.0,  1.0, 0.0, 0.0,  0.0, 0.0, 1.0}, 9, 0);
+	add_vertex(&data, (float[]){-1.0, -1.0, 0.0,  1.0, -1.0, 0.0,  0.0, 1.0, 0.0}, 9, 0);
+	add_color(&data, (float[]){1.0, 1.0, 0.0,  1.0, 0.0, 1.0,  0.0, 1.0, 1.0}, 9, 0);
 	init_vbo_triangle(&data, 0);
 
 	GLuint vao = 0;
@@ -163,7 +173,7 @@ int main(void)
 
 	glBindVertexArray(vao);
 		glBindBuffer(GL_ARRAY_BUFFER, data.buffer[0]);
-			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 			glEnableVertexAttribArray(0);
 			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)data.sizeof_vertices[0]);
 			glEnableVertexAttribArray(1);
@@ -174,16 +184,15 @@ int main(void)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(data.program);
+		
 		glBindVertexArray(vao);
-
+			glUniformMatrix4fv(modelviewID, 1, GL_FALSE, modelview_f);
+			glUniformMatrix4fv(projID, 1, GL_FALSE, projection_f);
 			glDrawArrays(GL_TRIANGLES, 0, 3);
-
 		glBindVertexArray(0);
+
 		glfwPollEvents();
 		glfwSwapBuffers(data.window);
-
-		// ft_mat4x4_to_float_array(data.float_projection, data.projection);
-		// ft_mat4x4_to_float_array(data.float_modelview, data.modelview);
 	}
 	printf("Closing window.\n");
 

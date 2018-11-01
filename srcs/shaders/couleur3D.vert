@@ -1,6 +1,6 @@
 // Version du GLSL
 
-#version 150 core
+#version 400 core
 
 
 // Entrées
@@ -28,8 +28,5 @@ void main()
 
     gl_Position = projection * modelview * vec4(in_Vertex, 1.0);
 
-
-    // Envoi de la couleur au Fragment Shader
-
-    color = in_Color;
+	color = in_Color;
 }
