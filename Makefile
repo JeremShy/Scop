@@ -1,5 +1,7 @@
 SRC_NAME = main.c \
-			shaders.c
+			shaders.c \
+			\
+			obj_parser/main.c
 
 OBJ_PATH = ./obj/
 
@@ -48,6 +50,7 @@ $(NAME) : $(LIB_DIR)libftmatrices.a $(OBJ)
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	mkdir -p $(OBJ_PATH)
+	@mkdir -p $(shell dirname $@)
 	$(CC) $(CFLAGS) $(INC) -o $@ -c $<
 
 clean:

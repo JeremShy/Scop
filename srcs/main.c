@@ -58,6 +58,7 @@ int8_t	init_all(t_d *data)
 		return (0);
 
 	glEnable(GL_MULTISAMPLE); 
+	glEnable(GL_DEPTH_TEST); 
 	return (1);
 }
 
@@ -124,12 +125,12 @@ void	init_matrices(t_mat4x4 view, t_mat4x4 model, t_d *data)
 	// ft_mat4x4_set_identity(data->projection);
 	ft_mat4x4_to_float_array(data->float_projection, data->projection);
 
-	ft_mat4x4_set_look_at_from_double_array(view, (double[]){0, 0, -5}, (double[]){0, 0, 0}, (double[]){0, 1, 0});
+	ft_mat4x4_set_look_at_from_double_array(view, (double[]){3, 3, 3}, (double[]){0, 0, 0}, (double[]){0, 1, 0});
 	// ft_mat4x4_set_identity(view);
 
 	ft_mat4x4_set_identity(model);
-	ft_mat4x4_rotate(model, 90, (double[]){0, 0, 1.});
-	ft_mat4x4_rotate(model, 60, (double[]){1., 0, 0});
+	// ft_mat4x4_rotate(model, 90, (double[]){0, 0, 1.});
+	// ft_mat4x4_rotate(model, 60, (double[]){1., 0, 0});
 }
 
 int main(void)
@@ -179,11 +180,68 @@ int main(void)
 	// add_vertex(&data, (float[]){0.0, 0.0,  1, 0.0,  0.0, 1}, 6, 0);
 	// add_color(&data, (float[]){1.0, 0.0, 0.0,   0.0, 1.0, 0.0,   0.0, 0.0, 1.0}, 9, 0);
 
-	add_vertex(&data, (float[]){-1.0, 1.0, 0.0,  1.0, 1.0, 0.0,  1.0, -1.0, 0.0,
-								-1.0, 1.0, 0.0,  -1.0, -1.0, 0.0,  1.0, -1.0, 0.0}, 18, 0);
-	add_color(&data, (float[]){1.0, 1.0, 0.0,  1.0, 0.0, 1.0,  0.0, 1.0, 1.0,
-								1.0, 1.0, 0.0,  1.0, 0.0, 1.0,  0.0, 1.0, 1.0}, 18, 0);
+	add_vertex(&data, (float[]){-1.0, -1.0, -1.0,   1.0, -1.0, -1.0,   1.0, 1.0, -1.0,     // Face 1
+
+                    -1.0, -1.0, -1.0,   -1.0, 1.0, -1.0,   1.0, 1.0, -1.0,     // Face 1
+
+
+                    1.0, -1.0, 1.0,   1.0, -1.0, -1.0,   1.0, 1.0, -1.0,       // Face 2
+
+                    1.0, -1.0, 1.0,   1.0, 1.0, 1.0,   1.0, 1.0, -1.0,         // Face 2
+
+
+                    -1.0, -1.0, 1.0,   1.0, -1.0, 1.0,   1.0, -1.0, -1.0,      // Face 3
+
+                    -1.0, -1.0, 1.0,   -1.0, -1.0, -1.0,   1.0, -1.0, -1.0,    // Face 3
+
+
+                    -1.0, -1.0, 1.0,   1.0, -1.0, 1.0,   1.0, 1.0, 1.0,        // Face 4
+
+                    -1.0, -1.0, 1.0,   -1.0, 1.0, 1.0,   1.0, 1.0, 1.0,        // Face 4
+
+
+                    -1.0, -1.0, -1.0,   -1.0, -1.0, 1.0,   -1.0, 1.0, 1.0,     // Face 5
+
+                    -1.0, -1.0, -1.0,   -1.0, 1.0, -1.0,   -1.0, 1.0, 1.0,     // Face 5
+
+
+                    -1.0, 1.0, 1.0,   1.0, 1.0, 1.0,   1.0, 1.0, -1.0,         // Face 6
+
+                    -1.0, 1.0, 1.0,   -1.0, 1.0, -1.0,   1.0, 1.0, -1.0}
+		, 108, 0);
+	add_color(&data, (float[])
+		{1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,           // Face 1
+
+                    1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,           // Face 1
+
+
+                    0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,           // Face 2
+
+                    0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,           // Face 2
+
+
+                    0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,           // Face 3
+
+                    0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,           // Face 3
+
+
+                    1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,           // Face 4
+
+                    1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,           // Face 4
+
+
+                    0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,           // Face 5
+
+                    0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,           // Face 5
+
+
+                    0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,           // Face 6
+
+                    0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0},
+		108, 0);
 	init_vbo_triangle(&data, 0);
+
+	obj_parser_main("objects/test.obj");
 
 	GLuint vao = 0;
 	glGenVertexArrays(1, &vao);
@@ -207,7 +265,7 @@ int main(void)
 		glBindVertexArray(vao);
 			glUniformMatrix4fv(modelviewID, 1, GL_FALSE, modelview_f);
 			glUniformMatrix4fv(projID, 1, GL_FALSE, projection_f);
-			glDrawArrays(GL_TRIANGLES, 0, 6);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 
 		glfwPollEvents();

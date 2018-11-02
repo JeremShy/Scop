@@ -36,7 +36,28 @@ typedef struct s_d {
 	float		float_modelview[MAX_OBJECTS_NBR][4 * 4];
 }					t_d;
 
+typedef struct	s_obj {
+	char	*name;
+
+	char	*material;
+
+	t_vec3	*vertices;
+	int		vertices_nbr;
+
+	t_vec3	*tex_vertices;
+	int		tex_vertices_nbr;
+
+	t_vec3	*normales;
+	int		normales_nbr;
+
+	int8_t	error;
+}				t_obj;
+
+
 GLuint	create_and_compile_shader(const char *filename, GLenum shaderType);
 GLuint	create_and_link_program(GLuint vertex_sh, GLuint fragment_sh);
+
+t_obj	obj_parser_main(char *file);
+
 
 #endif
