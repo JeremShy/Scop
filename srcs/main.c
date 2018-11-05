@@ -121,16 +121,16 @@ void    init_vao(t_d *data, int vao_nbr, int first, int last)
 
 void	init_matrices(t_mat4x4 view, t_mat4x4 model, t_d *data)
 {
-	ft_mat4x4_set_projection(data->projection, (double[]){60, (double)data->width / data->height, 0.1 ,100.0});
+	ft_mat4x4_set_projection(data->projection, (float[]){60, (float)data->width / data->height, 0.1 ,100.0});
 	// ft_mat4x4_set_identity(data->projection);
 	ft_mat4x4_to_float_array(data->float_projection, data->projection);
 
-	ft_mat4x4_set_look_at_from_double_array(view, (double[]){3, 3, 3}, (double[]){0, 0, 0}, (double[]){0, 1, 0});
+	ft_mat4x4_set_look_at_from_float_array(view, (float[]){3, 3, 3}, (float[]){0, 0, 0}, (float[]){0, 1, 0});
 	// ft_mat4x4_set_identity(view);
 
 	ft_mat4x4_set_identity(model);
-	// ft_mat4x4_rotate(model, 90, (double[]){0, 0, 1.});
-	// ft_mat4x4_rotate(model, 60, (double[]){1., 0, 0});
+	// ft_mat4x4_rotate(model, 90, (float[]){0, 0, 1.});
+	// ft_mat4x4_rotate(model, 60, (float[]){1., 0, 0});
 }
 
 int main(void)

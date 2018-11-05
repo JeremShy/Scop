@@ -93,11 +93,46 @@ void	handle_o(char *line, t_obj *ret)
 
 void	handle_v(char *line, t_obj *ret)
 {
-	double x;
-	double y;
-	double z;
+	t_vec3	v;
+	char	**tab;
+	int	i;
 
 	debut_handle(&line, ret, 1);
+	if (ret->error)
+		return ;
+	tab = split_whitespace(line);
+	if (!tab)
+	{
+		ret->error = 1;
+		return ;
+	}
+	i = 0;
+	while (tab[i])
+	{
+		if (i == 3 && tab[i][0] != '#')
+		{
+			ret->error = 1;
+			return ;
+		}
+		if (check_float(tab[i]))
+		{
+			v[i] = atof(tab[i]);
+			if (ft_strchr(tab[i], '#') && i < 3)
+			{
+				ret->error = 1;
+				return ;
+			}
+		}
+		else
+		{
+			ret->error = 1;
+			return ;
+		}
+		i++;
+	}
+	ft_vec3_copy(ret->vertices[ret->vertices_nbr], v);
+	ft_vec3_print(ret->vertices[ret->vertices_nbr]);
+	ret->vertices_nbr++;
 }
 
 void parse_line(char *line, t_obj *ret)

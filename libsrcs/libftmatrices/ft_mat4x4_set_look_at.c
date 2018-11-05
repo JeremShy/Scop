@@ -30,7 +30,7 @@ void	ft_mat4x4_set_look_at(t_mat4x4 matrice, const t_vec3 eye, const t_vec3 targ
 	matrice[3][3] = 1;
 }
 
-void	ft_mat4x4_set_look_at_from_double_array(t_mat4x4 matrice, const double eye[3], const double target[3], const double up[3])
+void	ft_mat4x4_set_look_at_from_float_array(t_mat4x4 matrice, const float eye[3], const float target[3], const float up[3])
 {
 	t_vec3	vec_eye;
 	t_vec3	vec_target;

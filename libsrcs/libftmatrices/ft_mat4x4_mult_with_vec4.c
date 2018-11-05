@@ -8,10 +8,10 @@ static void	compound_mult(const t_mat4x4 m1, t_vec4 rez) // Note:  vec == rez
 	ft_mat4x4_mult_with_vec4(rez, m1, tmp);
 }
 
-static double	do_mult(const t_mat4x4 m1, const t_vec4 vec, int8_t i)
+static float	do_mult(const t_mat4x4 m1, const t_vec4 vec, int8_t i)
 {
 	int8_t	j;
-	double	rez;
+	float	rez;
 
 	j = 0;
 	rez = 0.0;

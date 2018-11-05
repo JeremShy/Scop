@@ -8,10 +8,10 @@ static void	compound_mult(t_mat4x4 ret, const t_mat4x4 m2) // not : ret == m1
 	ft_mat4x4_mult(ret, tmp, m2);
 }
 
-static double	get_res_at(const t_mat4x4 a, const t_mat4x4 b, int8_t i, int8_t j)
+static float	get_res_at(const t_mat4x4 a, const t_mat4x4 b, int8_t i, int8_t j)
 {
 	int8_t	k;
-	double	sum;
+	float	sum;
 
 	k = 0;
 	sum = 0;

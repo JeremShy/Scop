@@ -2,7 +2,7 @@
 
 void	ft_vec3_normalize(t_vec3 vector)
 {
-	double	magnitude;
+	float	magnitude;
 
 	magnitude = ft_vec3_get_magnitude(vector);
 	vector[0] = vector[0] / magnitude;

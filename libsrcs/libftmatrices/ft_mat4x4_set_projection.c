@@ -1,12 +1,12 @@
 #include <libftmatrices.h>
 
-void	ft_mat4x4_set_projection(t_mat4x4 m, const double array[4])
+void	ft_mat4x4_set_projection(t_mat4x4 m, const float array[4])
 {
-	double	fov;
-	double	ratio;
-	double	near;
-	double	far;
-	double	tan_half_fov;
+	float	fov;
+	float	ratio;
+	float	near;
+	float	far;
+	float	tan_half_fov;
 
 	fov = array[0];
 	ratio = array[1];

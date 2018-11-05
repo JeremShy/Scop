@@ -1,11 +1,11 @@
 #include <libftmatrices.h>
 
-void	ft_mat4x4_set_rotation(t_mat4x4 matrice, double angle, const t_vec3 axis)
+void	ft_mat4x4_set_rotation(t_mat4x4 matrice, float angle, const t_vec3 axis)
 {
 	t_vec3	v;
-	double	c;
-	double	s;
-	double	d;
+	float	c;
+	float	s;
+	float	d;
 
 	c = cos(degrees_to_radians(angle));
 	s = sin(degrees_to_radians(angle));

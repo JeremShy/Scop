@@ -51,6 +51,7 @@ typedef struct	s_obj {
 	int		normales_nbr;
 
 	int8_t	error;
+	int		vertices_nbr_mem;
 }				t_obj;
 
 
@@ -58,6 +59,7 @@ GLuint	create_and_compile_shader(const char *filename, GLenum shaderType);
 GLuint	create_and_link_program(GLuint vertex_sh, GLuint fragment_sh);
 
 t_obj	obj_parser_main(char *file);
-
-
+char	**split_whitespace(char const *s);
+int		check_float(char *str);
+float	ft_atof(char *str);
 #endif
