@@ -2,6 +2,7 @@ SRC_NAME = main.c \
 			shaders.c \
 			\
 			obj_parser/main.c \
+			obj_parser/handle_vertices.c \
 			obj_parser/split_whitespace.c \
 			obj_parser/tools.c
 

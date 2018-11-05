@@ -78,6 +78,20 @@ void	handle_mtllib(char *line, t_obj *ret)
 		ret->error = 1;
 }
 
+void	handle_usemtl(char *line, t_obj *ret)
+{
+	//ignore;
+	(void)line;
+	(void)ret;
+}
+
+void	handle_s(char *line, t_obj *ret)
+{
+	//ignore;
+	(void)line;
+	(void)ret;
+}
+
 void	handle_o(char *line, t_obj *ret)
 {
 	int	len;
@@ -91,50 +105,6 @@ void	handle_o(char *line, t_obj *ret)
 		ret->error = 1;
 }
 
-void	handle_v(char *line, t_obj *ret)
-{
-	t_vec3	v;
-	char	**tab;
-	int	i;
-
-	debut_handle(&line, ret, 1);
-	if (ret->error)
-		return ;
-	tab = split_whitespace(line);
-	if (!tab)
-	{
-		ret->error = 1;
-		return ;
-	}
-	i = 0;
-	while (tab[i])
-	{
-		if (i == 3 && tab[i][0] != '#')
-		{
-			ret->error = 1;
-			return ;
-		}
-		if (check_float(tab[i]))
-		{
-			v[i] = atof(tab[i]);
-			if (ft_strchr(tab[i], '#') && i < 3)
-			{
-				ret->error = 1;
-				return ;
-			}
-		}
-		else
-		{
-			ret->error = 1;
-			return ;
-		}
-		i++;
-	}
-	ft_vec3_copy(ret->vertices[ret->vertices_nbr], v);
-	ft_vec3_print(ret->vertices[ret->vertices_nbr]);
-	ret->vertices_nbr++;
-}
-
 void parse_line(char *line, t_obj *ret)
 {
 	ignore_whitespaces(&line);
@@ -143,13 +113,18 @@ void parse_line(char *line, t_obj *ret)
 	printf("handling line : [%s]\n", line);
 	if (ft_strncmp(line, "mtllib", 6) == 0)
 		handle_mtllib(line, ret);
+	else if (ft_strncmp(line, "usemtl", 6) == 0)
+		handle_usemtl(line, ret);
+	else if (ft_strncmp(line, "vn", 2) == 0)
+		handle_vn(line, ret);
 	else if (ft_strncmp(line, "o", 1) == 0) // /!\ Order lul
 		handle_o(line, ret);
-	else if (ft_strncmp(line, "v", 1) == 0) // /!\ Order lul
+	else if (ft_strncmp(line, "v", 1) == 0)
 		handle_v(line, ret);
-
-	// else
-	// 	ret->error = 1;
+	else if (ft_strncmp(line, "s", 1) == 0)
+		handle_s(line, ret);
+	else
+		ret->error = 1;
 }
 
 t_obj	obj_parser_main(char *file)

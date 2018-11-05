@@ -54,3 +54,17 @@ float			ft_atof(char *str)
 		signe = signe * 10;
 	return (n / signe);
 }
+
+int8_t	free_str_dtab(char **tab)
+{
+	int	i;
+
+	i = 0;
+	while (tab && tab[i])
+	{
+		free(tab[i]);
+		i++;
+	}
+	free(tab);
+	return (0);
+}
