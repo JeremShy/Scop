@@ -56,11 +56,21 @@ GLuint create_and_link_program(GLuint vertex_sh, GLuint fragment_sh)
 {
 	GLuint	ret;
 	GLint	i;
+	int		success;
+	GLchar buffer[1024];
 
 	ret = glCreateProgram();
 	glAttachShader(ret, vertex_sh);
 	glAttachShader(ret, fragment_sh);
 	glLinkProgram(ret);
+
+	glGetProgramiv(ret, GL_LINK_STATUS, &success);
+	if(!success) {
+		glGetProgramInfoLog(ret, 1024, NULL, buffer);
+		printf("Error while linking : %s\n", buffer);
+	}
+	glDeleteShader(vertex_sh);
+	glDeleteShader(fragment_sh);
 
 	glGetProgramiv(ret, GL_LINK_STATUS, &i);
 	if (i != GL_TRUE)

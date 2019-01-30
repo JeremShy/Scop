@@ -1,12 +1,12 @@
 // Version du GLSL
 
-#version 400 core
+#version 410 core
 
 
 // Entrées
 
-in vec3 in_Vertex;
-in vec3 in_Color;
+layout (location = 0) in vec3 in_Vertex;
+layout (location = 1) in vec3 in_Color;
 
 
 // Uniform

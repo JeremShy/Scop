@@ -12,13 +12,20 @@ void error_callback(int error, const char* description)
 	fprintf(stderr, "Error: %s - errno = %d\n", description, error);
 }
 
+void resize_callback(GLFWwindow* window, int width, int height)
+{
+	printf("Resized : %d - %d\n", width, height);
+	glViewport(0, 0, width, height);
+	// TODO : Reset matrix
+}
+
 int8_t	init_glfw(t_d *data)
 {
 	if (!glfwInit())
 		return (0);
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_SAMPLES, 3);
@@ -30,9 +37,11 @@ int8_t	init_glfw(t_d *data)
 		glfwTerminate();
 		return (0);
 	}
+	glfwSetFramebufferSizeCallback(data->window, resize_callback);
 	glfwMakeContextCurrent(data->window);
 	glfwGetWindowSize(data->window, &data->width, &data->height);
 	printf("Window size : %d - %d\n", data->width, data->height);
+	glViewport(0, 0, data->width, data->height);
 	return (1);
 }
 
@@ -245,19 +254,23 @@ int main(void)
 	GLuint vao = 0;
 	glGenVertexArrays(1, &vao);
 
+	glBindBuffer(GL_ARRAY_BUFFER, data.buffer[0]);
 	glBindVertexArray(vao);
-		glBindBuffer(GL_ARRAY_BUFFER, data.buffer[0]);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 			glEnableVertexAttribArray(0);
 			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)data.sizeof_vertices[0]);
 			glEnableVertexAttribArray(1);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// glm_mat4_mult(c_model, c_view, c_viewmodel);
 
+
+	glClearColor(.2, .3, .3, 1);
 	while (!glfwWindowShouldClose(data.window))
 	{
+		if (glfwGetKey(data.window, GLFW_KEY_ESCAPE))
+			glfwSetWindowShouldClose(data.window, true);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(data.program);
 		

@@ -1,6 +1,6 @@
 // Version du GLSL
 
-#version 400 core
+#version 410 core
 
 
 // Entrée
