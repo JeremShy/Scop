@@ -119,94 +119,57 @@ int main(void)
 
 	init_all(&data);
 	printf("OPengl version : %s\n", glGetString(GL_VERSION));
-	if (!init_shaders(&data, "./srcs/shaders/couleur3D.frag", "./srcs/shaders/couleur3D.vert"))
+	if (!init_shaders(&data, "./srcs/shaders/couleur2D.frag", "./srcs/shaders/couleur2D.vert"))
 		return (1);
 	if (!(data.program = create_and_link_program(data.vertex_sh, data.fragment_sh)))
 		return (2);
 
-	t_mat4x4 view;
-	t_mat4x4 model;
+	// t_mat4x4 view;
+	// t_mat4x4 model;
 
-	init_matrices(view, model, &data);
-
-
-	printf("fovy : %f\n", (M_PI / 3) / ((float)data.width / data.height));
-	printf("ratio : %f\n", (float) data.width / data.height);
-	printf("near : %f\n", .1);
-	printf("far : %f\n", 100.);
+	// init_matrices(view, model, &data);
 
 
-	t_mat4x4 modelview;
-	ft_mat4x4_mult(modelview, view, model);
+	// printf("fovy : %f\n", (M_PI / 3) / ((float)data.width / data.height));
+	// printf("ratio : %f\n", (float) data.width / data.height);
+	// printf("near : %f\n", .1);
+	// printf("far : %f\n", 100.);
 
-	GLfloat modelview_f[16];
-	ft_mat4x4_to_float_array(modelview_f, modelview);
 
-	GLfloat projection_f[16];
-	ft_mat4x4_to_float_array(projection_f, data.projection);
+	// t_mat4x4 modelview;
+	// ft_mat4x4_mult(modelview, view, model);
 
-	GLfloat view_f[16];
-	ft_mat4x4_to_float_array(view_f, view);
+	// GLfloat modelview_f[16];
+	// ft_mat4x4_to_float_array(modelview_f, modelview);
 
-	printf("modelview : \n");
-	ft_mat4x4_print(modelview);
-	printf("projection : \n");
-	ft_mat4x4_print(data.projection);
+	// GLfloat projection_f[16];
+	// ft_mat4x4_to_float_array(projection_f, data.projection);
 
-	GLuint modelviewID = glGetUniformLocation(data.program, "modelview");
-	GLuint projID = glGetUniformLocation(data.program, "projection");
+	// GLfloat view_f[16];
+	// ft_mat4x4_to_float_array(view_f, view);
+
+	// printf("modelview : \n");
+	// ft_mat4x4_print(modelview);
+	// printf("projection : \n");
+	// ft_mat4x4_print(data.projection);
+
+	// GLuint modelviewID = glGetUniformLocation(data.program, "modelview");
+	// GLuint projID = glGetUniformLocation(data.program, "projection");
 
 	// add_vertex(&data, (float[]){0.0, 0.0,  1, 0.0,  0.0, 1}, 6, 0);
 	// add_color(&data, (float[]){1.0, 0.0, 0.0,   0.0, 1.0, 0.0,   0.0, 0.0, 1.0}, 9, 0);
 
 	add_vertex(&data, (float[]){
-					 1.0, 1.0, 1.0,    1.0, 1.0, -1.0,    1.0, -1.0, 1.0,    1.0, -1.0, -1.0,
-					-1.0, 1.0, 1.0,   -1.0, 1.0, -1.0,   -1.0, -1.0, 1.0,   -1.0, -1.0, -1.0
-}
-		, 24, 0);
+	     0.5f,  0.5f, 0.0f,  // top right
+	     0.5f, -0.5f, 0.0f,  // bottom right
+	    -0.5f, -0.5f, 0.0f,  // bottom left
+	    -0.5f,  0.5f, 0.0f   // top left 
+		}, 12, 0);
 
-	add_vertex(&data, (float[]){
-		0,1,2, 1,2,3, // L
-		4,5,6, 5,6,7, // R
-		0,1,4, 1,4,5, // B
-		2,3,6, 3,6,7, // F
-		0,2,4, 2,4,6, // U
-		1,3,5, 3,5,7  // D
-	}, 36, 1);
-
-	add_color(&data, (float[])
-		{1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,           // Face 1
-
-                    1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,           // Face 1
-
-
-                    0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,           // Face 2
-
-                    0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,           // Face 2
-
-
-                    0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,           // Face 3
-
-                    0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,           // Face 3
-
-
-                    1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,           // Face 4
-
-                    1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,           // Face 4
-
-
-                    0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,           // Face 5
-
-                    0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,           // Face 5
-
-
-                    0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,           // Face 6
-
-                    0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0},
-		108, 0);
-	// init_vbo_triangle(&data, 0);
-
-	obj_parser_main("objects/test.obj");
+	unsigned int indices[] = {  // note that we start from 0!
+		0, 1, 3,   // first triangle
+		1, 2, 3    // second triangle
+	};  
 
 	GLuint vao = 0;
 	glGenVertexArrays(1, &vao);
@@ -214,20 +177,19 @@ int main(void)
 	GLuint ebo = 0;
 	glGenBuffers(1, &ebo);
 
+	glGenBuffers(1, &data.buffer[0]);
+
 	glBindVertexArray(vao);
 		glBindBuffer(GL_ARRAY_BUFFER, data.buffer[0]);
-			glBufferData(GL_ARRAY_BUFFER, data.sizeof_vertices[0] + data.sizeof_colors[0], 0, GL_STATIC_DRAW);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, data.sizeof_vertices[0], data.vertices[0]);
-			glBufferSubData(GL_ARRAY_BUFFER, data.sizeof_vertices[0], data.sizeof_colors[0], data.colors[0]);
+			// glBufferData(GL_ARRAY_BUFFER, data.sizeof_vertices[0], 0, GL_STATIC_DRAW);
+			// glBufferSubData(GL_ARRAY_BUFFER, 0, data.sizeof_vertices[0], data.vertices[0]);
+			glBufferData(GL_ARRAY_BUFFER, data.sizeof_vertices[0], data.vertices[0], GL_STATIC_DRAW);
 
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.sizeof_vertices[1], data.vertices[1], GL_STATIC_DRAW);
-
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)data.sizeof_vertices[0]);
-			glEnableVertexAttribArray(1);
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -244,10 +206,10 @@ int main(void)
 		glUseProgram(data.program);
 
 		glBindVertexArray(vao);
-			glUniformMatrix4fv(modelviewID, 1, GL_FALSE, modelview_f);
-			glUniformMatrix4fv(projID, 1, GL_FALSE, projection_f);
+			// glUniformMatrix4fv(modelviewID, 1, GL_FALSE, modelview_f);
+			// glUniformMatrix4fv(projID, 1, GL_FALSE, projection_f);
 			// glDrawArrays(GL_TRIANGLES, 0, 36);
-			glDrawElements(GL_TRIANGLES, 36, GL_FLOAT, 0);
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
 		glfwPollEvents();

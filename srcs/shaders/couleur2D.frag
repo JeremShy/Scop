@@ -1,6 +1,6 @@
 // Version du GLSL
 
-#version 400 core
+#version 410 core
 
 
 // Entrée
@@ -19,5 +19,5 @@ void main()
 {
     // Couleur finale du pixel
 
-    out_Color = vec4(color, 1.0);
+    out_Color = vec4(1, 1, 1, 1.0);
 }
