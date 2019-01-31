@@ -5,7 +5,9 @@
 
 // Entrée
 
-in vec3 color;
+in vec2 texCoord;
+
+uniform sampler2D tex;
 
 
 // Sortie 
@@ -19,5 +21,5 @@ void main()
 {
     // Couleur finale du pixel
 
-    out_Color = vec4(1, 1, 1, 1.0);
+    out_Color = texture(tex, texCoord);
 }

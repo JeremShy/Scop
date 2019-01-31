@@ -1,6 +1,9 @@
 #include <scop.h>
 #include <cglm/cglm.h>   /* for inline */
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 int8_t  init_data(t_d *data)
 {
 	ft_bzero(data, sizeof(t_d));
@@ -78,7 +81,7 @@ int8_t    init_shaders(t_d *data, const char *frag, const char *vert)
 		dprintf(2, "Error while trying to create vertex shader.\n");
 		return (0);
 	}
-	if (!(data->fragment_sh = create_and_compile_shader(frag, GL_FRAGMENT_SHADER)))
+ 	if (!(data->fragment_sh = create_and_compile_shader(frag, GL_FRAGMENT_SHADER)))
 	{
 		dprintf(2, "Error while trying to create fragment shader.\n");
 		return (0);
@@ -124,6 +127,13 @@ int main(void)
 	if (!(data.program = create_and_link_program(data.vertex_sh, data.fragment_sh)))
 		return (2);
 
+	t_mat4x4 rotation;
+
+	ft_mat4x4_set_rotation(rotation, 45, (float[]){0, 0, 1});
+
+	GLfloat rot_f[16];
+	ft_mat4x4_to_float_array(rot_f, rotation);
+
 	// t_mat4x4 view;
 	// t_mat4x4 model;
 
@@ -159,17 +169,46 @@ int main(void)
 	// add_vertex(&data, (float[]){0.0, 0.0,  1, 0.0,  0.0, 1}, 6, 0);
 	// add_color(&data, (float[]){1.0, 0.0, 0.0,   0.0, 1.0, 0.0,   0.0, 0.0, 1.0}, 9, 0);
 
+
+	create_image_from_png(&data, 0, "../Doom_nukem/resources/stone_blocks.png");
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	// int width, height, nrChannels;
+	// unsigned char *imgdata = stbi_load("textures/container.jpg", &width, &height, &nrChannels, 0); 
+	// printf("%d - %d\n", width, height);
+
+
+
+		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data.img[0].w, data.img[0].h, 0, GL_BGRA, GL_UNSIGNED_BYTE, data.img[0].data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
 	add_vertex(&data, (float[]){
-	     0.5f,  0.5f, 0.0f,  // top right
-	     0.5f, -0.5f, 0.0f,  // bottom right
-	    -0.5f, -0.5f, 0.0f,  // bottom left
-	    -0.5f,  0.5f, 0.0f   // top left 
-		}, 12, 0);
+	     0,  1, 0.0f,  // top right
+	     -1, -1, 0.0f,  // bottom right
+	    1, -1, 0.0f,  // bottom left
+	    // -0.8f,  0.8f, 0.0f   // top left 
+		}, 9, 0);
+
+	add_vertex(&data, (float[]){
+		0, 2,
+		-2, -2,
+		2, -2,
+	}, 6, 1);
 
 	unsigned int indices[] = {  // note that we start from 0!
-		0, 1, 3,   // first triangle
-		1, 2, 3    // second triangle
-	};  
+		0, 1, 2,   // first triangle
+		// 1, 2, 3    // second triangle
+	};
+
+	add_color(&data, (float[]){
+			1,0,0,  0,1,0,  0,0,1,  1,0,1
+		}, 12, 0);
 
 	GLuint vao = 0;
 	glGenVertexArrays(1, &vao);
@@ -181,19 +220,28 @@ int main(void)
 
 	glBindVertexArray(vao);
 		glBindBuffer(GL_ARRAY_BUFFER, data.buffer[0]);
-			// glBufferData(GL_ARRAY_BUFFER, data.sizeof_vertices[0], 0, GL_STATIC_DRAW);
-			// glBufferSubData(GL_ARRAY_BUFFER, 0, data.sizeof_vertices[0], data.vertices[0]);
-			glBufferData(GL_ARRAY_BUFFER, data.sizeof_vertices[0], data.vertices[0], GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, data.sizeof_vertices[0] + data.sizeof_colors[0] + data.sizeof_vertices[1], 0, GL_STATIC_DRAW);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, data.sizeof_vertices[0], data.vertices[0]);
+			glBufferSubData(GL_ARRAY_BUFFER, data.sizeof_vertices[0], data.sizeof_colors[0], data.colors[0]);
+			glBufferSubData(GL_ARRAY_BUFFER, data.sizeof_vertices[0] + data.sizeof_colors[0], data.sizeof_vertices[1], data.vertices[1]);
 
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)data.sizeof_vertices[0]);
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*)data.sizeof_vertices[0] + data.sizeof_colors[0]);
+			glEnableVertexAttribArray(2);
+
 	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	// glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// glm_mat4_mult(c_model, c_view, c_viewmodel);
+
+
+	unsigned int transformLoc = glGetUniformLocation(data.program, "obj");
 
 
 	glClearColor(.2, .3, .3, 1);
@@ -205,10 +253,14 @@ int main(void)
 
 		glUseProgram(data.program);
 
+		// glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
 		glBindVertexArray(vao);
 			// glUniformMatrix4fv(modelviewID, 1, GL_FALSE, modelview_f);
 			// glUniformMatrix4fv(projID, 1, GL_FALSE, projection_f);
 			// glDrawArrays(GL_TRIANGLES, 0, 36);
+			glUniformMatrix4fv(transformLoc, 1, GL_FALSE, rot_f);
+
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 

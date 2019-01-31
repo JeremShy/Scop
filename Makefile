@@ -1,10 +1,21 @@
 SRC_NAME = main.c \
 			shaders.c \
+			binary_tools.c \
 			\
 			obj_parser/main.c \
 			obj_parser/handle_vertices.c \
 			obj_parser/split_whitespace.c \
-			obj_parser/tools.c
+			obj_parser/tools.c \
+			png/filter.c \
+			png/filter_2.c \
+			png/globals_inflate.c \
+			png/huffman_get_code_from_length.c \
+			png/inflate.c \
+			png/inflate_2.c \
+			png/parser.c \
+			png/parser_2.c \
+			png/resize.c \
+			png/tree.c
 
 OBJ_PATH = ./obj/
 

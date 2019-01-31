@@ -7,10 +7,31 @@
 # include <GLFW/glfw3.h>
 # include <libftmatrices.h>
 
+# include <sys/mman.h>
+
 # define MAX_VERTICES_NBR 8192
 # define MAX_OBJECTS_NBR 16
 
 #define BUFFER_OFFSET(offset) ((char*)NULL + (offset))
+
+
+typedef struct	s_ivec2 {
+	int	x;
+	int	y;
+}				t_ivec2;
+
+typedef struct	s_vec2 {
+	int	x;
+	int	y;
+}				t_vec2;
+
+
+typedef struct	s_img {
+	uint16_t	w;
+	uint16_t	h;
+	uint8_t		*data;
+}				t_img;
+
 
 typedef struct s_d {
 	GLFWwindow	*window;
@@ -39,6 +60,9 @@ typedef struct s_d {
 
 	float		float_projection[4 * 4];
 	float		float_modelview[MAX_OBJECTS_NBR][4 * 4];
+
+	t_img		img[255];
+	uint16_t	max_img_id;
 }					t_d;
 
 typedef struct	s_obj {
@@ -58,6 +82,13 @@ typedef struct	s_obj {
 	int8_t	error;
 }				t_obj;
 
+uint32_t	get_conv_32(const uint32_t *nbr);
+uint64_t	get_conv_64(const uint64_t *nbr);
+uint8_t		reverse_byte_ptr(const uint8_t *input);
+uint8_t		reverse_byte(const uint8_t in);
+
+
+uint8_t			create_image_from_png(t_d *data, int id_img, const char *name);
 
 GLuint	create_and_compile_shader(const char *filename, GLenum shaderType);
 GLuint	create_and_link_program(GLuint vertex_sh, GLuint fragment_sh);
@@ -74,5 +105,7 @@ char	**split_whitespace(char const *s);
 int		check_float(char *str);
 float	ft_atof(char *str);
 int8_t	free_str_dtab(char **tab);
+
+
 
 #endif

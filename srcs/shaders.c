@@ -1,7 +1,7 @@
 #include <scop.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-int8_t	check_compilation(GLuint shader)
+int8_t	check_compilation(GLuint shader, const char *filename)
 {
 	GLsizei i;
 	GLchar buffer[1024];
@@ -10,7 +10,7 @@ int8_t	check_compilation(GLuint shader)
 	if (i == GL_TRUE)
 		return (shader);
 	glGetShaderInfoLog(shader, 1024, &i, buffer);
-	printf("COMPILATION ERROR  : \n%s\n", buffer);
+	printf("COMPILATION ERROR  [%s] : \n%s\n", filename, buffer);
 	return (0);
 }
 
@@ -48,8 +48,7 @@ GLuint	create_and_compile_shader(const char *filename, GLenum shaderType) //Retu
 	free(file_content);
 	close(fd);
 	glCompileShader(ret);
-	check_compilation(ret);
-	return (check_compilation(ret));
+	return (check_compilation(ret, filename));
 }
 
 GLuint create_and_link_program(GLuint vertex_sh, GLuint fragment_sh)
