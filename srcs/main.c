@@ -97,36 +97,6 @@ void    init_vbo_triangle(t_d *data, int vbo_nbr)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void    init_vao(t_d *data, int vao_nbr, int first, int last)
-{
-	int	i;
-
-	i = first;
-	while (i <= last)
-	{
-		ft_mat4x4_to_float_array(data->float_modelview[i], data->modelview[i]);
-		i++;
-	}
-
-	glGenVertexArrays(1, &data->vao[vao_nbr]);
-	glUseProgram(data->program);
-		glBindVertexArray(data->vao[vao_nbr]);
-				i = first;
-				while (i <= last)
-				{
-					glBindBuffer(GL_ARRAY_BUFFER, data->buffer[i]);
-					glVertexAttribPointer(i * 2, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-					glEnableVertexAttribArray(i * 2); // vertices
-					glVertexAttribPointer(i * 2 + 1, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(data->sizeof_vertices[i]));
-					glEnableVertexAttribArray(i * 2 + 1); // couleurs
-					glUniformMatrix4fv(glGetUniformLocation(data->program, "modelview"), 1, GL_FALSE, data->float_modelview[i]);
-					glUniformMatrix4fv(glGetUniformLocation(data->program, "projection"), 1, GL_FALSE, data->float_projection);
-					glBindBuffer(GL_ARRAY_BUFFER, 0);
-					i++;
-				}
-		glBindVertexArray(0);
-	glUseProgram(0);
-}
 
 void	init_matrices(t_mat4x4 view, t_mat4x4 model, t_d *data)
 {
@@ -189,34 +159,21 @@ int main(void)
 	// add_vertex(&data, (float[]){0.0, 0.0,  1, 0.0,  0.0, 1}, 6, 0);
 	// add_color(&data, (float[]){1.0, 0.0, 0.0,   0.0, 1.0, 0.0,   0.0, 0.0, 1.0}, 9, 0);
 
-	add_vertex(&data, (float[]){-1.0, -1.0, -1.0,   1.0, -1.0, -1.0,   1.0, 1.0, -1.0,     // Face 1
-                    -1.0, -1.0, -1.0,   -1.0, 1.0, -1.0,   1.0, 1.0, -1.0,     // Face 1
+	add_vertex(&data, (float[]){
+					 1.0, 1.0, 1.0,    1.0, 1.0, -1.0,    1.0, -1.0, 1.0,    1.0, -1.0, -1.0,
+					-1.0, 1.0, 1.0,   -1.0, 1.0, -1.0,   -1.0, -1.0, 1.0,   -1.0, -1.0, -1.0
+}
+		, 24, 0);
 
+	add_vertex(&data, (float[]){
+		0,1,2, 1,2,3, // L
+		4,5,6, 5,6,7, // R
+		0,1,4, 1,4,5, // B
+		2,3,6, 3,6,7, // F
+		0,2,4, 2,4,6, // U
+		1,3,5, 3,5,7  // D
+	}, 36, 1);
 
-                    1.0, -1.0, 1.0,   1.0, -1.0, -1.0,   1.0, 1.0, -1.0,       // Face 2
-
-                    1.0, -1.0, 1.0,   1.0, 1.0, 1.0,   1.0, 1.0, -1.0,         // Face 2
-
-
-                    -1.0, -1.0, 1.0,   1.0, -1.0, 1.0,   1.0, -1.0, -1.0,      // Face 3
-
-                    -1.0, -1.0, 1.0,   -1.0, -1.0, -1.0,   1.0, -1.0, -1.0,    // Face 3
-
-
-                    -1.0, -1.0, 1.0,   1.0, -1.0, 1.0,   1.0, 1.0, 1.0,        // Face 4
-
-                    -1.0, -1.0, 1.0,   -1.0, 1.0, 1.0,   1.0, 1.0, 1.0,        // Face 4
-
-
-                    -1.0, -1.0, -1.0,   -1.0, -1.0, 1.0,   -1.0, 1.0, 1.0,     // Face 5
-
-                    -1.0, -1.0, -1.0,   -1.0, 1.0, -1.0,   -1.0, 1.0, 1.0,     // Face 5
-
-
-                    -1.0, 1.0, 1.0,   1.0, 1.0, 1.0,   1.0, 1.0, -1.0,         // Face 6
-
-                    -1.0, 1.0, 1.0,   -1.0, 1.0, -1.0,   1.0, 1.0, -1.0}
-		, 108, 0);
 	add_color(&data, (float[])
 		{1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,           // Face 1
 
@@ -247,15 +204,26 @@ int main(void)
 
                     0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0},
 		108, 0);
-	init_vbo_triangle(&data, 0);
+	// init_vbo_triangle(&data, 0);
 
 	obj_parser_main("objects/test.obj");
 
 	GLuint vao = 0;
 	glGenVertexArrays(1, &vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER, data.buffer[0]);
+	GLuint ebo = 0;
+	glGenBuffers(1, &ebo);
+
 	glBindVertexArray(vao);
+		glBindBuffer(GL_ARRAY_BUFFER, data.buffer[0]);
+			glBufferData(GL_ARRAY_BUFFER, data.sizeof_vertices[0] + data.sizeof_colors[0], 0, GL_STATIC_DRAW);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, data.sizeof_vertices[0], data.vertices[0]);
+			glBufferSubData(GL_ARRAY_BUFFER, data.sizeof_vertices[0], data.sizeof_colors[0], data.colors[0]);
+
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.sizeof_vertices[1], data.vertices[1], GL_STATIC_DRAW);
+
+
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 			glEnableVertexAttribArray(0);
 			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)data.sizeof_vertices[0]);
@@ -272,12 +240,14 @@ int main(void)
 		if (glfwGetKey(data.window, GLFW_KEY_ESCAPE))
 			glfwSetWindowShouldClose(data.window, true);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		glUseProgram(data.program);
-		
+
 		glBindVertexArray(vao);
 			glUniformMatrix4fv(modelviewID, 1, GL_FALSE, modelview_f);
 			glUniformMatrix4fv(projID, 1, GL_FALSE, projection_f);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
+			// glDrawArrays(GL_TRIANGLES, 0, 36);
+			glDrawElements(GL_TRIANGLES, 36, GL_FLOAT, 0);
 		glBindVertexArray(0);
 
 		glfwPollEvents();
