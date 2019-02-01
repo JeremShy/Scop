@@ -183,53 +183,64 @@ int main(void)
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 	add_vertex(&data, (float[]){
-		-1, -1, 0.0f,  // bottom right
-		-1,  1, 0.0f,  // top right
-		1, -1, 0.0f,  // bottom left
-		1, 1, 0.0f,
-	}, 12, 0);
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
-	add_vertex(&data, (float[]){
-		-1, -1,
-		-1, 1,
-		1, -1,
-		1, 1,
-	}, 8, 1);
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
 
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-	unsigned int indices[] = {  // note that we start from 0!
-		0, 1, 2,   // first triangle
-		1, 2, 3,   // first triangle
-	};
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-	add_color(&data, (float[]){
-			1,0,0,  0,1,0,  0,0,1,  1,0,1
-		}, 12, 0);
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+	}, 36 * 5, 0);
+
 
 	GLuint vao = 0;
 	glGenVertexArrays(1, &vao);
-
-	GLuint ebo = 0;
-	glGenBuffers(1, &ebo);
 
 	glGenBuffers(1, &data.buffer[0]);
 
 	glBindVertexArray(vao);
 		glBindBuffer(GL_ARRAY_BUFFER, data.buffer[0]);
-			glBufferData(GL_ARRAY_BUFFER, data.sizeof_vertices[0] + data.sizeof_colors[0] + data.sizeof_vertices[1], 0, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, data.sizeof_vertices[0], 0, GL_STATIC_DRAW);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, data.sizeof_vertices[0], data.vertices[0]);
-			glBufferSubData(GL_ARRAY_BUFFER, data.sizeof_vertices[0], data.sizeof_colors[0], data.colors[0]);
-			glBufferSubData(GL_ARRAY_BUFFER, data.sizeof_vertices[0] + data.sizeof_colors[0], data.sizeof_vertices[1], data.vertices[1]);
 
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), NULL);
 			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)data.sizeof_vertices[0]);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*)data.sizeof_vertices[0] + data.sizeof_colors[0]);
-			glEnableVertexAttribArray(2);
 
 	glBindVertexArray(0);
 	// glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -283,7 +294,8 @@ int main(void)
 			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view_f);
 			glUniformMatrix4fv(projLoc, 1, GL_FALSE, proj_f);
 
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+			// glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
 		glfwPollEvents();
