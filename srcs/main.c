@@ -127,12 +127,6 @@ int main(void)
 	if (!(data.program = create_and_link_program(data.vertex_sh, data.fragment_sh)))
 		return (2);
 
-	t_mat4x4 rotation;
-
-	ft_mat4x4_set_rotation(rotation, 45, (float[]){0, 0, 1});
-
-	GLfloat rot_f[16];
-	ft_mat4x4_to_float_array(rot_f, rotation);
 
 	// t_mat4x4 view;
 	// t_mat4x4 model;
@@ -189,21 +183,23 @@ int main(void)
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 	add_vertex(&data, (float[]){
-	     0,  1, 0.0f,  // top right
-	     -1, -1, 0.0f,  // bottom right
-	    1, -1, 0.0f,  // bottom left
-	    // -0.8f,  0.8f, 0.0f   // top left 
-		}, 9, 0);
+		-1, -1, 0.0f,  // bottom right
+		-1,  1, 0.0f,  // top right
+		1, -1, 0.0f,  // bottom left
+		1, 1, 0.0f,
+	}, 12, 0);
 
 	add_vertex(&data, (float[]){
-		0, 2,
-		-2, -2,
-		2, -2,
-	}, 6, 1);
+		-1, -1,
+		-1, 1,
+		1, -1,
+		1, 1,
+	}, 8, 1);
+
 
 	unsigned int indices[] = {  // note that we start from 0!
 		0, 1, 2,   // first triangle
-		// 1, 2, 3    // second triangle
+		1, 2, 3,   // first triangle
 	};
 
 	add_color(&data, (float[]){
@@ -243,6 +239,28 @@ int main(void)
 
 	unsigned int transformLoc = glGetUniformLocation(data.program, "obj");
 
+	t_mat4x4	model;
+	GLfloat		model_f[16];
+
+	ft_mat4x4_set_rotation(model, -55.0f, (t_vec3){1, 0, 0});
+	ft_mat4x4_to_float_array(model_f, model);
+
+	t_mat4x4	view;
+	GLfloat	view_f[16];
+
+	ft_mat4x4_set_translation(view, (t_vec3){0, 0, -3});
+	ft_mat4x4_to_float_array(view_f, view);
+
+	t_mat4x4	proj;
+	GLfloat		proj_f[16];
+
+	ft_mat4x4_set_projection(proj, (float[]){45, (float)data.width / data.height, .1f, 100.0f});
+	ft_mat4x4_to_float_array(proj_f, proj);
+
+	int modelLoc = glGetUniformLocation(data.program, "model");
+	int viewLoc = glGetUniformLocation(data.program, "view");
+	int projLoc = glGetUniformLocation(data.program, "projection");
+
 
 	glClearColor(.2, .3, .3, 1);
 	while (!glfwWindowShouldClose(data.window))
@@ -250,6 +268,8 @@ int main(void)
 		if (glfwGetKey(data.window, GLFW_KEY_ESCAPE))
 			glfwSetWindowShouldClose(data.window, true);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
 
 		glUseProgram(data.program);
 
@@ -259,7 +279,9 @@ int main(void)
 			// glUniformMatrix4fv(modelviewID, 1, GL_FALSE, modelview_f);
 			// glUniformMatrix4fv(projID, 1, GL_FALSE, projection_f);
 			// glDrawArrays(GL_TRIANGLES, 0, 36);
-			glUniformMatrix4fv(transformLoc, 1, GL_FALSE, rot_f);
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model_f);
+			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view_f);
+			glUniformMatrix4fv(projLoc, 1, GL_FALSE, proj_f);
 
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);

@@ -1,9 +1,12 @@
 #include <libftmatrices.h>
 
-void	ft_vec4_init(t_vec4 vec, const float tab[4])
+t_vec4	ft_vec4_init(const float tab[4])
 {
-	vec[0] = tab[0];
-	vec[1] = tab[1];
-	vec[2] = tab[2];
-	vec[3] = tab[3];
+	t_vec4	vec;
+
+	vec.x = tab[0];
+	vec.y = tab[1];
+	vec.z = tab[2];
+	vec.w = tab[3];
+	return (vec);
 }

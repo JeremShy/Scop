@@ -33,15 +33,26 @@ SRC_NAME = ft_mat4x4_set_identity.c \
 			ft_mat4x4_to_float_array.c \
 			ft_vec4_init.c \
 			ft_vec4_print.c \
+			ft_vec4_to_vec3.c \
 			ft_vec3_init.c \
+			ft_vec3_dot.c \
 			ft_vec3_print.c \
-			ft_vec3_get_magnitude.c \
+			ft_vec3_get_norme.c \
 			ft_vec3_normalize.c \
 			ft_vec3_sub.c \
 			ft_vec3_add.c \
 			ft_vec3_cross.c \
-			ft_vec3_dot.c \
-			ft_vec3_copy.c
+			ft_vec3_to_vec4.c \
+			ft_vec3_scalar_mult.c \
+			ft_vec3_rotate.c \
+			ft_vec2_dot.c \
+			ft_vec2_print.c \
+			ft_vec2_get_norme.c \
+			ft_vec2_normalize.c \
+			ft_vec2_add.c \
+			ft_vec2_dot.c \
+			ft_vec2_sub.c \
+			ft_vec2_get_normal.c
 
 OBJ_PATH = ./obj/
 

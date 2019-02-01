@@ -1,8 +1,11 @@
 #include <libftmatrices.h>
 
-void	ft_vec3_init(t_vec3 vec, const float tab[3])
+t_vec3	ft_vec3_init(const float tab[3])
 {
-	vec[0] = tab[0];
-	vec[1] = tab[1];
-	vec[2] = tab[2];
+	t_vec3	vec;
+
+	vec.x = tab[0];
+	vec.y = tab[1];
+	vec.z = tab[2];
+	return (vec);
 }

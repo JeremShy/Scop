@@ -1,19 +1,12 @@
 #include <libftmatrices.h>
 
-static void	compound_cross(t_vec3 dst, const t_vec3 v2)
+t_vec3		ft_vec3_cross(const t_vec3 v1, const t_vec3 v2)
 {
-	t_vec3	tmp;
+	t_vec3	dst;
 
-	ft_vec3_copy(tmp, dst);
-	ft_vec3_cross(dst, tmp, v2);
-}
+	dst.x = v1.y * v2.z - v1.z * v2.y;
+	dst.y = v1.z * v2.x - v1.x * v2.z;
+	dst.z = v1.x * v2.y - v1.y * v2.x;
 
-void		ft_vec3_cross(t_vec3 dst, const t_vec3 v1, const t_vec3 v2)
-{
-	if (dst == v1)
-		return (compound_cross(dst, v2));
-
-	dst[0] = v1[1] * v2[2] - v1[2] * v2[1];
-	dst[1] = v1[2] * v2[0] - v1[0] * v2[2];
-	dst[2] = v1[0] * v2[1] - v1[1] * v2[0];
+	return (dst);
 }

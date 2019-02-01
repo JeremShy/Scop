@@ -20,11 +20,6 @@ typedef struct	s_ivec2 {
 	int	y;
 }				t_ivec2;
 
-typedef struct	s_vec2 {
-	int	x;
-	int	y;
-}				t_vec2;
-
 
 typedef struct	s_img {
 	uint16_t	w;
@@ -96,7 +91,6 @@ GLuint	create_and_link_program(GLuint vertex_sh, GLuint fragment_sh);
 void	debut_handle(char **line, t_obj *ret, int size);
 t_obj	obj_parser_main(char *file);
 
-int8_t	get_three_floats(char *line, t_vec3 ret);
 void	handle_v(char *line, t_obj *ret);
 void	handle_vn(char *line, t_obj *ret);
 

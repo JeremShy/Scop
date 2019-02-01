@@ -2,5 +2,5 @@
 
 void	ft_vec4_print(const t_vec4 v)
 {
-	printf("{%f, %f, %f, %f}\n", v[0], v[1], v[2], v[3]);
+	printf("{%f, %f, %f, %f}\n", v.x, v.y, v.z, v.w);
 }

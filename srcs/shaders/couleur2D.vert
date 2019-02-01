@@ -11,7 +11,9 @@ layout (location = 2) in vec2 aTexCoord;
 
 // Sortie
 
-uniform mat4 obj;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
 out vec2 texCoord;
 
@@ -22,8 +24,8 @@ void main()
 {
     // Position finale du vertex
 
-    gl_Position = obj * vec4(in_Vertex, 1.0);
-
+	// gl_Position = projection * view * model * vec4(in_Vertex, 1.0);
+	gl_Position = projection * view * model * vec4(in_Vertex, 1.0);
 
     // Envoi de la couleur au Fragment Shader
 
