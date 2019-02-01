@@ -272,6 +272,19 @@ int main(void)
 	int viewLoc = glGetUniformLocation(data.program, "view");
 	int projLoc = glGetUniformLocation(data.program, "projection");
 
+	t_vec3 cubePositions[] = {
+		(t_vec3){ 0.0f,  0.0f,  0.0f},
+		(t_vec3){ 2.0f,  5.0f, -15.0f},
+		(t_vec3){-1.5f, -2.2f, -2.5f},
+		(t_vec3){-3.8f, -2.0f, -12.3f},
+		(t_vec3){ 2.4f, -0.4f, -3.5f},
+		(t_vec3){-1.7f,  3.0f, -7.5f},
+		(t_vec3){ 1.3f, -2.0f, -2.5f},
+		(t_vec3){ 1.5f,  2.0f, -2.5f},
+		(t_vec3){ 1.5f,  0.2f, -1.5f},
+		(t_vec3){-1.3f,  1.0f, -1.5}
+	};
+
 
 	glClearColor(.2, .3, .3, 1);
 	while (!glfwWindowShouldClose(data.window))
@@ -287,15 +300,28 @@ int main(void)
 		// glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
 		glBindVertexArray(vao);
+		int i = 0;
+		while (i < 10)
+		{
 			// glUniformMatrix4fv(modelviewID, 1, GL_FALSE, modelview_f);
 			// glUniformMatrix4fv(projID, 1, GL_FALSE, projection_f);
 			// glDrawArrays(GL_TRIANGLES, 0, 36);
+
+			ft_mat4x4_set_translation(model, cubePositions[i]);
+			float angle = 20.0f * i; 
+			ft_mat4x4_rotate(model, angle, (t_vec3){1, .3, .5});
+			// ourShader.setMat4("model", model);
+
+			ft_mat4x4_to_float_array(model_f, model);
+
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model_f);
 			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view_f);
 			glUniformMatrix4fv(projLoc, 1, GL_FALSE, proj_f);
 
 			glDrawArrays(GL_TRIANGLES, 0, 36);
+			i++;
 			// glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		}
 		glBindVertexArray(0);
 
 		glfwPollEvents();
