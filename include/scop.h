@@ -11,6 +11,7 @@
 
 # define MAX_VERTICES_NBR 8192
 # define MAX_OBJECTS_NBR 16
+# define MAX_VERTICES_FACE 16
 
 #define BUFFER_OFFSET(offset) ((char*)NULL + (offset))
 
@@ -60,22 +61,44 @@ typedef struct s_d {
 	uint16_t	max_img_id;
 }					t_d;
 
+struct s_face {
+	int		v_index[MAX_VERTICES_FACE];
+	uint8_t	v_index_nbr;
+
+	int		t_index[MAX_VERTICES_FACE];
+	uint8_t	t_index_nbr;
+
+	int		vn_index[MAX_VERTICES_FACE];
+	uint8_t	vn_index;
+};
+
 typedef struct	s_obj {
-	char	*name;
+	char			*name;
 
-	char	*material;
+	char			*material;
 
-	t_vec3	vertices[MAX_VERTICES_NBR];
-	int		vertices_nbr;
+	t_vec3			vertices[MAX_VERTICES_NBR];
+	int				vertices_nbr;
 
-	t_vec3	tex_vertices[MAX_VERTICES_NBR];
-	int		tex_vertices_nbr;
+	t_vec3			tex_vertices[MAX_VERTICES_NBR];
+	int				tex_vertices_nbr;
 
-	t_vec3	normales[MAX_VERTICES_NBR];
-	int		normales_nbr;
+	t_vec3			normales[MAX_VERTICES_NBR];
+	int				normales_nbr;
+
+	struct s_face	faces[MAX_VERTICES_NBR];
+	int				faces_nbr;
 
 	int8_t	error;
 }				t_obj;
+
+
+typedef void (t_obj_func)(char *, t_obj *);
+
+struct	s_obj_parsing {
+	char		*name;
+	t_obj_func	*f;
+};
 
 uint32_t	get_conv_32(const uint32_t *nbr);
 uint64_t	get_conv_64(const uint64_t *nbr);
@@ -91,6 +114,10 @@ GLuint	create_and_link_program(GLuint vertex_sh, GLuint fragment_sh);
 void	debut_handle(char **line, t_obj *ret, int size);
 t_obj	obj_parser_main(char *file);
 
+void	handle_mtllib(char *line, t_obj *ret);
+void	handle_usemtl(char *line, t_obj *ret);
+void	handle_s(char *line, t_obj *ret);
+void	handle_o(char *line, t_obj *ret);
 void	handle_v(char *line, t_obj *ret);
 void	handle_vn(char *line, t_obj *ret);
 

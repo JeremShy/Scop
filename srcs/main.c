@@ -127,41 +127,11 @@ int main(void)
 	if (!(data.program = create_and_link_program(data.vertex_sh, data.fragment_sh)))
 		return (2);
 
-
-	// t_mat4x4 view;
-	// t_mat4x4 model;
-
-	// init_matrices(view, model, &data);
-
-
-	// printf("fovy : %f\n", (M_PI / 3) / ((float)data.width / data.height));
-	// printf("ratio : %f\n", (float) data.width / data.height);
-	// printf("near : %f\n", .1);
-	// printf("far : %f\n", 100.);
-
-
-	// t_mat4x4 modelview;
-	// ft_mat4x4_mult(modelview, view, model);
-
-	// GLfloat modelview_f[16];
-	// ft_mat4x4_to_float_array(modelview_f, modelview);
-
-	// GLfloat projection_f[16];
-	// ft_mat4x4_to_float_array(projection_f, data.projection);
-
-	// GLfloat view_f[16];
-	// ft_mat4x4_to_float_array(view_f, view);
-
-	// printf("modelview : \n");
-	// ft_mat4x4_print(modelview);
-	// printf("projection : \n");
-	// ft_mat4x4_print(data.projection);
-
-	// GLuint modelviewID = glGetUniformLocation(data.program, "modelview");
-	// GLuint projID = glGetUniformLocation(data.program, "projection");
-
-	// add_vertex(&data, (float[]){0.0, 0.0,  1, 0.0,  0.0, 1}, 6, 0);
-	// add_color(&data, (float[]){1.0, 0.0, 0.0,   0.0, 1.0, 0.0,   0.0, 0.0, 1.0}, 9, 0);
+	t_obj obj = obj_parser_main("objects/cube.obj");
+	if (obj.error)
+	{
+		printf("ERROR !\n");
+	}
 
 
 	create_image_from_png(&data, 0, "../Doom_nukem/resources/stone_blocks.png");
@@ -169,16 +139,6 @@ int main(void)
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
-	// int width, height, nrChannels;
-	// unsigned char *imgdata = stbi_load("textures/container.jpg", &width, &height, &nrChannels, 0); 
-	// printf("%d - %d\n", width, height);
-
-
-
-		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data.img[0].w, data.img[0].h, 0, GL_BGRA, GL_UNSIGNED_BYTE, data.img[0].data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -243,9 +203,6 @@ int main(void)
 			glEnableVertexAttribArray(1);
 
 	glBindVertexArray(0);
-	// glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	// glm_mat4_mult(c_model, c_view, c_viewmodel);
 
 
 	unsigned int transformLoc = glGetUniformLocation(data.program, "obj");

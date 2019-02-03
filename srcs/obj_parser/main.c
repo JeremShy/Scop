@@ -1,6 +1,17 @@
 #include <scop.h>
 #include <fcntl.h>
 
+static struct s_obj_parsing obj_parsing[] = {
+	{"mtllib", handle_mtllib},
+	{"usemtl", handle_usemtl},
+	{"s", handle_s},
+	{"o", handle_o},
+	{"vn", handle_vn},
+	{"v", handle_v},
+	{NULL, NULL}
+};
+
+
 int8_t	is_whitespace(char c)
 {
 	if (c == ' ' || c == '\t' || c == '#')
@@ -107,24 +118,20 @@ void	handle_o(char *line, t_obj *ret)
 
 void parse_line(char *line, t_obj *ret)
 {
+	int	i;
+
 	ignore_whitespaces(&line);
 	if (line[0] == '\0')
 		return ;
 	printf("handling line : [%s]\n", line);
-	if (ft_strncmp(line, "mtllib", 6) == 0)
-		handle_mtllib(line, ret);
-	else if (ft_strncmp(line, "usemtl", 6) == 0)
-		handle_usemtl(line, ret);
-	else if (ft_strncmp(line, "vn", 2) == 0)
-		handle_vn(line, ret);
-	else if (ft_strncmp(line, "o", 1) == 0) // /!\ Order lul
-		handle_o(line, ret);
-	else if (ft_strncmp(line, "v", 1) == 0)
-		handle_v(line, ret);
-	else if (ft_strncmp(line, "s", 1) == 0)
-		handle_s(line, ret);
-	else
-		ret->error = 1;
+	i = 0;
+	while (obj_parsing[i].name)
+	{
+		if (ft_strncmp(line, obj_parsing[i].name, ft_strlen(obj_parsing[i].name)) == 0)
+			return (obj_parsing[i].f(line, ret));
+		i++;
+	}
+	ret->error = 1;
 }
 
 t_obj	obj_parser_main(char *file)
