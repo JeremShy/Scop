@@ -53,6 +53,7 @@ static uint8_t	fill_data_point(char **line, t_obj *obj)
 	if (**line == ' ')
 	{
 		printf("return 1 nbr 0\n");
+		(*line)++;
 		return (1);
 	}
 	else if (**line != '#' && **line != '\n' && **line != '\0')
