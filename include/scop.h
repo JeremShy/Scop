@@ -63,13 +63,10 @@ typedef struct s_d {
 
 struct s_face {
 	int		v_index[MAX_VERTICES_FACE];
-	uint8_t	v_index_nbr;
-
 	int		t_index[MAX_VERTICES_FACE];
-	uint8_t	t_index_nbr;
-
 	int		vn_index[MAX_VERTICES_FACE];
-	uint8_t	vn_index;
+
+	uint8_t	v_nbr;
 };
 
 typedef struct	s_obj {
@@ -120,6 +117,8 @@ void	handle_s(char *line, t_obj *ret);
 void	handle_o(char *line, t_obj *ret);
 void	handle_v(char *line, t_obj *ret);
 void	handle_vn(char *line, t_obj *ret);
+
+void	handle_f(char *line, t_obj *ret);
 
 char	**split_whitespace(char const *s);
 

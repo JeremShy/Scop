@@ -6,6 +6,7 @@ SRC_NAME = main.c \
 			obj_parser/handle_vertices.c \
 			obj_parser/split_whitespace.c \
 			obj_parser/tools.c \
+			obj_parser/face.c \
 			png/filter.c \
 			png/filter_2.c \
 			png/globals_inflate.c \

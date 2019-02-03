@@ -8,6 +8,7 @@ static struct s_obj_parsing obj_parsing[] = {
 	{"o", handle_o},
 	{"vn", handle_vn},
 	{"v", handle_v},
+	{"f", handle_f},
 	{NULL, NULL}
 };
 
