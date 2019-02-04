@@ -142,67 +142,114 @@ int main(void)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data.img[0].w, data.img[0].h, 0, GL_BGRA, GL_UNSIGNED_BYTE, data.img[0].data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
-	add_vertex(&data, (float[]){
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	// add_vertex(&data, (float[]){
+ //    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+ //     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+ //     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+ //     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+ //    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+ //    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+ //    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+ //     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+ //     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+ //     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+ //    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+ //    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
 
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+ //    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+ //    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+ //    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+ //    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+ //    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+ //    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+ //     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+ //     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+ //     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+ //     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+ //     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+ //     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+ //    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+ //     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+ //     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+ //     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+ //    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+ //    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
 
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-	}, 36 * 5, 0);
+ //    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+ //     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+ //     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+ //     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+ //    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+ //    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+	// }, 36 * 5, 0);
 
+		add_vertex(&data, (float[]){
+			-.5f, -.5f, -.5f,
+			-.5f, -.5f, .5f,
+			-.5f, .5f, -.5f,
+			-.5f, .5f, .5f,
+			.5f, -.5f, -.5f,
+			.5f, -.5f, .5f,
+			.5f, .5f, -.5f,
+			.5f, .5f, .5f,
+
+    	}, 24, 0);
+
+	unsigned int indices[] = {
+		0, 2, 6, 4,
+		2, 3, 7, 6,
+		1, 3, 7, 5,
+		0, 1, 5, 4,
+		4, 5, 7, 6,
+		0, 1, 3, 2,
+	};
 
 	GLuint vao = 0;
 	glGenVertexArrays(1, &vao);
-
+	GLuint ebo = 0;
+	glGenBuffers(1, &ebo);
 	glGenBuffers(1, &data.buffer[0]);
-
 	glBindVertexArray(vao);
 		glBindBuffer(GL_ARRAY_BUFFER, data.buffer[0]);
-			glBufferData(GL_ARRAY_BUFFER, data.sizeof_vertices[0], 0, GL_STATIC_DRAW);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, data.sizeof_vertices[0], data.vertices[0]);
-
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), NULL);
+			glBufferData(GL_ARRAY_BUFFER, data.sizeof_vertices[0], data.vertices[0], GL_STATIC_DRAW);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-			glEnableVertexAttribArray(1);
-
 	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// GLuint vao = 0;
+	// glGenVertexArrays(1, &vao);
+
+	// unsigned int ebo;
+	// glGenBuffers(1, &ebo);
+
+
+
+	// glGenBuffers(1, &data.buffer[0]);
+
+	// glBindVertexArray(vao);
+	// 	// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	// 	glBindBuffer(GL_ARRAY_BUFFER, data.buffer[0]);
+			
+	// 		// glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); 
+	// 		glBufferData(GL_ARRAY_BUFFER, data.sizeof_vertices[0], 0, GL_STATIC_DRAW);
+	// 		// glBufferSubData(GL_ARRAY_BUFFER, 0, data.sizeof_vertices[0], data.vertices[0]);
+
+	// 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	// 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); 
+
+	// 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	// 		glEnableVertexAttribArray(0);
+	// 		// glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	// 		// glEnableVertexAttribArray(1);
+
+	// glBindVertexArray(0);
+	// glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 
 	unsigned int transformLoc = glGetUniformLocation(data.program, "obj");
@@ -229,20 +276,6 @@ int main(void)
 	int viewLoc = glGetUniformLocation(data.program, "view");
 	int projLoc = glGetUniformLocation(data.program, "projection");
 
-	t_vec3 cubePositions[] = {
-		(t_vec3){ 0.0f,  0.0f,  0.0f},
-		(t_vec3){ 2.0f,  5.0f, -15.0f},
-		(t_vec3){-1.5f, -2.2f, -2.5f},
-		(t_vec3){-3.8f, -2.0f, -12.3f},
-		(t_vec3){ 2.4f, -0.4f, -3.5f},
-		(t_vec3){-1.7f,  3.0f, -7.5f},
-		(t_vec3){ 1.3f, -2.0f, -2.5f},
-		(t_vec3){ 1.5f,  2.0f, -2.5f},
-		(t_vec3){ 1.5f,  0.2f, -1.5f},
-		(t_vec3){-1.3f,  1.0f, -1.5}
-	};
-
-
 	glClearColor(.2, .3, .3, 1);
 	while (!glfwWindowShouldClose(data.window))
 	{
@@ -250,35 +283,43 @@ int main(void)
 			glfwSetWindowShouldClose(data.window, true);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-
 		glUseProgram(data.program);
 
 		// glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		// glBindTexture(GL_TEXTURE_2D, texture);
 		glBindVertexArray(vao);
-		int i = 0;
-		while (i < 10)
-		{
-			// glUniformMatrix4fv(modelviewID, 1, GL_FALSE, modelview_f);
-			// glUniformMatrix4fv(projID, 1, GL_FALSE, projection_f);
-			// glDrawArrays(GL_TRIANGLES, 0, 36);
 
-			ft_mat4x4_set_translation(model, cubePositions[i]);
-			float angle = 20.0f * i; 
-			ft_mat4x4_rotate(model, angle, (t_vec3){1, .3, .5});
-			// ourShader.setMat4("model", model);
+		// ft_mat4x4_set_translation(model, cubePositions[i]);
+		// float angle = 20.0f * i; 
+		// ft_mat4x4_rotate(model, 0, (t_vec3){1, .3, .5});
 
-			ft_mat4x4_to_float_array(model_f, model);
+		ft_mat4x4_to_float_array(model_f, model);
 
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model_f);
-			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view_f);
-			glUniformMatrix4fv(projLoc, 1, GL_FALSE, proj_f);
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model_f);
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view_f);
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, proj_f);
 
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-			i++;
-			// glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		}
+		// int i;
+
+		// i = 0;
+		// while (i < 6)
+		// {
+		// 	glDrawArrays(GL_TRIANGLE_FAN, i * 4, 4);
+		// 	// glBegin(GL_TRIANGLE_FAN);
+		// 	// 	glVertex3f(data.vertices[0][i]);
+		// 	// 	glVertex3f(data.vertices[0][i + 1]);
+		// 	// 	glVertex3f(data.vertices[0][i + 2]);
+		// 	// 	glVertex3f(data.vertices[0][i + 3]);
+		// 	// glEnd();
+
+		// 	i++;
+		// }
+
+		// glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, 0);
+		GLsizei count[] = {4,4,4,4,4,4};
+		const GLvoid * const indic[] = {0, 16, 32, 48, 64, 80};
+		glMultiDrawElements(GL_TRIANGLE_FAN, count, GL_UNSIGNED_INT, indic, 6);
+		// glDrawArrays(GL_TRIANGLE_FAN, 0, 12);
 		glBindVertexArray(0);
 
 		glfwPollEvents();
