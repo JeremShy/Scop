@@ -85,6 +85,12 @@ typedef struct	s_obj {
 
 	struct s_face	faces[MAX_VERTICES_NBR];
 	int				faces_nbr;
+	
+	uint			indices_nbr;
+	uint			*indices;
+	GLvoid			**offset;
+	
+	GLsizei			*counts;
 
 	int8_t	error;
 }				t_obj;

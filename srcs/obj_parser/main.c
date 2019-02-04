@@ -135,6 +135,39 @@ void parse_line(char *line, t_obj *ret)
 	ret->error = 1;
 }
 
+void	init_obj(t_obj *obj)
+{
+	int		i;
+	int		j;
+	int		curr;
+	uint	count;
+
+	i = 0;
+	curr = 0;
+	count = 0;
+	printf("ON A : %u\n", obj->indices_nbr);
+
+	obj->indices = malloc(sizeof(unsigned int) * obj->indices_nbr);
+	obj->counts = malloc(sizeof(GLsizei) * obj->faces_nbr);
+	obj->offset = malloc(sizeof(GLvoid *) * obj->faces_nbr);
+	while (i < obj->faces_nbr)
+	{
+		j = 0;
+		while (j < obj->faces[i].v_nbr)
+		{
+			obj->indices[curr] = obj->faces[i].v_index[j];
+			printf("%d: indice add %d\n", curr, obj->indices[curr]);
+			j++;
+			curr++;
+		}
+		obj->counts[i] = j;
+		obj->offset[i] = (GLvoid *)(count * sizeof(unsigned int));
+		printf("count add %d\n",obj->counts[i]);
+		i++;
+		count += j;
+	}
+}
+
 t_obj	obj_parser_main(char *file)
 {
 	int fd;
@@ -160,6 +193,7 @@ t_obj	obj_parser_main(char *file)
 		}
 		free(line);
 	}
+	init_obj(&ret);
 	printf("[%s]\n", ret.material);
 	printf("[%s]\n", ret.name);
 	return (ret);

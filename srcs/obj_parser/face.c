@@ -4,17 +4,18 @@ static void		copy_ret_in_obj(uint ret[3], t_obj *obj)
 {
 	struct s_face	*face;
 
-	printf("Trying to copy ret = {%u, %u, %u} in v_nbr : %d\n", ret[0], ret[1], ret[2], obj->faces[obj->faces_nbr].v_nbr);
+	printf("Trying to copy ret = {%u, %u, %u} in v_nbr : %d\n", ret[0] - 1, ret[1] - 1, ret[2] - 1, obj->faces[obj->faces_nbr].v_nbr);
 
 	if (ret[0] == 0)
 		obj->error = 1;
 	else if (ret[0] > obj->vertices_nbr || ret[1] > obj->tex_vertices_nbr || ret[2] > obj->normales_nbr)
 		obj->error = 1;
 	face = &obj->faces[obj->faces_nbr];
-	face->v_index[face->v_nbr] = ret[0];
-	face->v_index[face->v_nbr] = ret[1];
-	face->v_index[face->v_nbr] = ret[2];
+	face->v_index[face->v_nbr] = ret[0] - 1;
+	face->t_index[face->v_nbr] = ret[1] - 1;
+	face->vn_index[face->v_nbr] = ret[2] - 1;
 	face->v_nbr++;
+	obj->indices_nbr++;
 	if (face->v_nbr > MAX_VERTICES_FACE)
 		obj->error = 1;
 }
