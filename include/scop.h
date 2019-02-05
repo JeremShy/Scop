@@ -9,7 +9,7 @@
 
 # include <sys/mman.h>
 
-# define MAX_VERTICES_NBR 8192
+# define MAX_VERTICES_NBR 8192 * 2
 # define MAX_OBJECTS_NBR 16
 # define MAX_VERTICES_FACE 16
 
@@ -59,7 +59,20 @@ typedef struct s_d {
 
 	t_img		img[255];
 	uint16_t	max_img_id;
+	t_vec3		eye;
+	t_vec3		dir;
 }					t_d;
+
+struct	s_cam
+{
+	t_mat4x4	view;
+	t_mat4x4	proj;
+	t_mat4x4	model;
+	GLfloat		view_f[16];
+	GLfloat		proj_f[16];
+	GLfloat		model_f[16];
+	t_vec3		up;
+};
 
 struct s_face {
 	int		v_index[MAX_VERTICES_FACE];
@@ -74,17 +87,23 @@ typedef struct	s_obj {
 
 	char			*material;
 
-	t_vec3			vertices[MAX_VERTICES_NBR];
+	t_vec3			*vertices;
 	int				vertices_nbr;
+	int				vertices_curr;
 
-	t_vec3			tex_vertices[MAX_VERTICES_NBR];
+	t_vec2			*textures;
+
+	t_vec3			*tex_vertices;
 	int				tex_vertices_nbr;
+	int				tex_vertices_curr;
 
-	t_vec3			normales[MAX_VERTICES_NBR];
+	t_vec3			*normales;
 	int				normales_nbr;
+	int				normales_curr;
 
-	struct s_face	faces[MAX_VERTICES_NBR];
+	struct s_face	*faces;
 	int				faces_nbr;
+	int				faces_curr;
 	
 	uint			indices_nbr;
 	uint			*indices;
@@ -120,9 +139,11 @@ t_obj	obj_parser_main(char *file);
 void	handle_mtllib(char *line, t_obj *ret);
 void	handle_usemtl(char *line, t_obj *ret);
 void	handle_s(char *line, t_obj *ret);
+void	handle_g(char *line, t_obj *ret);
 void	handle_o(char *line, t_obj *ret);
 void	handle_v(char *line, t_obj *ret);
 void	handle_vn(char *line, t_obj *ret);
+void	handle_vt(char *line, t_obj *ret);
 
 void	handle_f(char *line, t_obj *ret);
 

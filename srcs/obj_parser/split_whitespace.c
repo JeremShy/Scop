@@ -2,7 +2,7 @@
 
 static int		ft_isspace(char car)
 {
-	if (car == '\t' || car == ' ')
+	if (car == '\t' || car == ' ' || car == '\xd')
 		return (1);
 	else
 		return (0);

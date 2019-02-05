@@ -101,26 +101,98 @@ void    init_vbo_triangle(t_d *data, int vbo_nbr)
 }
 
 
-void	init_matrices(t_mat4x4 view, t_mat4x4 model, t_d *data)
+// void	init_matrices(t_mat4x4 view, t_mat4x4 model, t_d *data)
+// {
+// 	ft_mat4x4_set_projection(data->projection, (float[]){60, (float)data->width / data->height, 0.1 ,100.0});
+// 	// ft_mat4x4_set_identity(data->projection);
+// 	ft_mat4x4_to_float_array(data->float_projection, data->projection);
+
+// 	ft_mat4x4_set_look_at_from_float_array(view, (float[]){3, 3, 3}, (float[]){0, 0, 0}, (float[]){0, 1, 0});
+// 	// ft_mat4x4_set_identity(view);
+
+// 	ft_mat4x4_set_identity(model);
+// 	// ft_mat4x4_rotate(model, 90, (float[]){0, 0, 1.});
+// 	// ft_mat4x4_rotate(model, 60, (float[]){1., 0, 0});
+// }
+
+
+void	key_event(t_d *data, struct s_cam *cam)
 {
-	ft_mat4x4_set_projection(data->projection, (float[]){60, (float)data->width / data->height, 0.1 ,100.0});
-	// ft_mat4x4_set_identity(data->projection);
-	ft_mat4x4_to_float_array(data->float_projection, data->projection);
+	// t_mat4x4 rotation;
+	t_vec3	transl;
 
-	ft_mat4x4_set_look_at_from_float_array(view, (float[]){3, 3, 3}, (float[]){0, 0, 0}, (float[]){0, 1, 0});
-	// ft_mat4x4_set_identity(view);
+	if (glfwGetKey(data->window, GLFW_KEY_ESCAPE))
+		glfwSetWindowShouldClose(data->window, true);
+	if (glfwGetKey(data->window, GLFW_KEY_W))
+	{
+		printf("W\n");
+		transl = ft_vec3_scalar_mult(data->dir, -1);
+		data->eye = ft_vec3_add(data->eye, transl);
+		ft_mat4x4_set_look_at(cam->view, data->eye, ft_vec3_sub(data->eye, data->dir), cam->up);
 
-	ft_mat4x4_set_identity(model);
-	// ft_mat4x4_rotate(model, 90, (float[]){0, 0, 1.});
-	// ft_mat4x4_rotate(model, 60, (float[]){1., 0, 0});
+	}
+	if (glfwGetKey(data->window, GLFW_KEY_S))
+	{
+		printf("S\n");
+		transl = ft_vec3_scalar_mult(data->dir, 1);
+		data->eye = ft_vec3_add(data->eye, transl);
+		ft_mat4x4_set_look_at(cam->view, data->eye, ft_vec3_sub(data->eye, data->dir), cam->up);
+	}
+	if (glfwGetKey(data->window, GLFW_KEY_A))
+	{
+		printf("A\n");
+
+		transl = ft_vec3_cross(data->dir, (t_vec3){0,1,0});
+		transl = ft_vec3_scalar_mult(transl, 1);
+		data->eye = ft_vec3_add(data->eye, transl);
+		ft_mat4x4_set_look_at(cam->view, data->eye, ft_vec3_sub(data->eye, data->dir), cam->up);
+
+	}
+	if (glfwGetKey(data->window, GLFW_KEY_D))
+	{
+		printf("D\n");
+		transl = ft_vec3_cross(data->dir, (t_vec3){0,1,0});
+		transl = ft_vec3_scalar_mult(transl, -1);
+		data->eye = ft_vec3_add(data->eye, transl);
+		ft_mat4x4_set_look_at(cam->view, data->eye, ft_vec3_sub(data->eye, data->dir), cam->up);
+	}
+	if (glfwGetKey(data->window, GLFW_KEY_LEFT))
+	{
+		printf("LEFT\n");
+		data->dir = ft_vec3_rotate(data->dir, 1, (t_vec3){0,1,0});
+		ft_mat4x4_set_look_at(cam->view, data->eye, ft_vec3_sub(data->eye, data->dir), cam->up);
+
+	}
+	if (glfwGetKey(data->window, GLFW_KEY_RIGHT))
+	{
+		printf("RIGHT\n");
+		data->dir = ft_vec3_rotate(data->dir, -1, (t_vec3){0,1,0});
+		ft_mat4x4_set_look_at(cam->view, data->eye, ft_vec3_sub(data->eye, data->dir), cam->up);
+	}
+	if (glfwGetKey(data->window, GLFW_KEY_UP))
+	{
+		printf("UP\n");
+		data->dir = ft_vec3_rotate(data->dir, -1, ft_vec3_cross(data->dir, (t_vec3){0,1,0}));
+		ft_mat4x4_set_look_at(cam->view, data->eye, ft_vec3_sub(data->eye, data->dir), cam->up);
+
+	}
+	if (glfwGetKey(data->window, GLFW_KEY_DOWN))
+	{
+		printf("DOWN\n");
+		data->dir = ft_vec3_rotate(data->dir, 1, ft_vec3_cross(data->dir, (t_vec3){0,1,0}));
+		ft_mat4x4_set_look_at(cam->view, data->eye, ft_vec3_sub(data->eye, data->dir), cam->up);
+	}
+	ft_mat4x4_to_float_array(cam->view_f, cam->view);
 }
 
-int main(void)
+int main(int ac, char **av)
 {
-	t_d		data;
-	uint 	last;
-	uint 	delta;
+	t_d				data;
+	uint 			last;
+	uint 			delta;
 	struct timeval	tp;
+	float			rot;
+	struct s_cam 	cam;
 
 	init_all(&data);
 	printf("OPengl version : %s\n", glGetString(GL_VERSION));
@@ -129,20 +201,30 @@ int main(void)
 	if (!(data.program = create_and_link_program(data.vertex_sh, data.fragment_sh)))
 		return (2);
 
-	t_obj obj = obj_parser_main("objects/teapot2.obj");
+	t_obj obj = obj_parser_main(av[1]);
 	if (obj.error)
 	{
 		printf("ERROR !\n");
+		exit(EXIT_FAILURE);
 	}
 
 
-	create_image_from_png(&data, 0, "../Doom_nukem/resources/stone_blocks.png");
+	create_image_from_png(&data, 0, "textures/Cat_diffuse.png");
+	// create_image_from_png(&data, 0, "textures/Cat_diffuse.png");
+
 	unsigned int texture;
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data.img[0].w, data.img[0].h, 0, GL_BGRA, GL_UNSIGNED_BYTE, data.img[0].data);
 		glGenerateMipmap(GL_TEXTURE_2D);
+
+	// int q = 0;
+	// while (q < obj.indices_nbr)
+	// {
+	// 	printf("#%d: %f %f\n", q, obj.textures[q].x, obj.textures[q].y);
+	// 	q++;
+	// }
 
 	GLuint vao = 0;
 	glGenVertexArrays(1, &vao);
@@ -151,34 +233,46 @@ int main(void)
 	glGenBuffers(1, &data.buffer[0]);
 	glBindVertexArray(vao);
 		glBindBuffer(GL_ARRAY_BUFFER, data.buffer[0]);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(t_vec3) * obj.vertices_nbr, obj.vertices, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(t_vec3) * (obj.vertices_nbr) + sizeof(t_vec2) * obj.indices_nbr, 0, GL_STATIC_DRAW);
+			// glBufferData(GL_ARRAY_BUFFER, sizeof(t_vec3) * obj.tex_vertices_nbr, obj.tex_vertices, GL_STATIC_DRAW);
+			
+			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(t_vec3) * obj.vertices_nbr, obj.vertices);
+			glBufferSubData(GL_ARRAY_BUFFER, sizeof(t_vec3) * obj.vertices_nbr, sizeof(t_vec2) * obj.indices_nbr, obj.textures);
+			
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL);
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), sizeof(t_vec3) * obj.vertices_nbr);
+			glEnableVertexAttribArray(1);
+
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * obj.indices_nbr, obj.indices, GL_STATIC_DRAW);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-			glEnableVertexAttribArray(0);
+
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	unsigned int transformLoc = glGetUniformLocation(data.program, "obj");
 
-	t_mat4x4	model;
-	GLfloat		model_f[16];
+	// rot = 180;
+	// ft_mat4x4_set_rotation(model, 0, (t_vec3){1, 0, 0});
+	// ft_mat4x4_set_translation(model, (t_vec3){0, 0, 1});
+	data.eye = (t_vec3){0, 0, 300};
+	data.dir = (t_vec3){0, 0, 1};
 
-	ft_mat4x4_set_rotation(model, 0, (t_vec3){1, 0, 0});
-	ft_mat4x4_to_float_array(model_f, model);
+	ft_mat4x4_set_identity(cam.model);
+	ft_mat4x4_to_float_array(cam.model_f, cam.model);
 
-	t_mat4x4	view;
-	GLfloat	view_f[16];
 
-	ft_mat4x4_set_translation(view, (t_vec3){0, 0, -10});
-	ft_mat4x4_to_float_array(view_f, view);
 
-	t_mat4x4	proj;
-	GLfloat		proj_f[16];
+	// dir = ft_vec4_to_vec3(ft_mat4x4_mult_with_vec4(model, (t_vec4){0, 0, 0, 1}));
+	cam.up = (t_vec3){0,1,0};
+	ft_mat4x4_set_look_at(cam.view, data.eye, ft_vec3_sub(data.eye, data.dir), cam.up);
+	// ft_mat4x4_translate(cam.view, (t_vec3){0, 0, -50});
+	ft_mat4x4_to_float_array(cam.view_f, cam.view);
 
-	ft_mat4x4_set_projection(proj, (float[]){45, (float)data.width / data.height, .1f, 100.0f});
-	ft_mat4x4_to_float_array(proj_f, proj);
+
+	ft_mat4x4_set_projection(cam.proj, (float[]){45, (float)data.width / data.height, .1f, 1000.0f});
+	ft_mat4x4_to_float_array(cam.proj_f, cam.proj);
 
 	int modelLoc = glGetUniformLocation(data.program, "model");
 	int viewLoc = glGetUniformLocation(data.program, "view");
@@ -187,30 +281,42 @@ int main(void)
 	glClearColor(.2, .3, .3, 1);
 	gettimeofday(&tp, NULL);
 	last = (tp.tv_sec * 1000 + tp.tv_usec / 1000);
+
+	// t_vec3			*tex_vertices;
+	// int				tex_vertices_nbr;
+	// int				tex_vertices_curr;
+
+	// int q = 0;
+	// while (q < obj.tex_vertices_nbr)
+	// {
+	// 	printf("vt #%d: %f %f %f\n", q, obj.tex_vertices[q].x, obj.tex_vertices[q].y, obj.tex_vertices[q].z);
+	// 	q++;
+	// }
+
 	while (!glfwWindowShouldClose(data.window))
 	{
 		delta = (tp.tv_sec * 1000 + tp.tv_usec / 1000) - last;
 		last = (tp.tv_sec * 1000 + tp.tv_usec / 1000);
 
-		if (glfwGetKey(data.window, GLFW_KEY_ESCAPE))
-			glfwSetWindowShouldClose(data.window, true);
+		key_event(&data, &cam);
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(data.program);
 
-		// glActiveTexture(GL_TEXTURE0);
-		// glBindTexture(GL_TEXTURE_2D, texture);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
 		glBindVertexArray(vao);
 
-		// ft_mat4x4_set_translation(model, cubePositions[i]);
-		// float angle = 20.0f; 
-		ft_mat4x4_rotate(model, 90 * delta / 1000.0, (t_vec3){0, 1, 0});
+		// ft_mat4x4_set_rotation(cam.model, rot + 90 * delta / 1000.0, (t_vec3){1, 0, 0});
+		// // ft_mat4x4_scale(cam.model, (t_vec3){0.5, 0.5, 0.5});
+		// // ft_mat4x4_translate(cam.model, (t_vec3){0, 0, 0});
+		// ft_mat4x4_to_float_array(cam.model_f, cam.model);
+		// rot += 90 * delta / 1000.0;
 
-		ft_mat4x4_to_float_array(model_f, model);
-
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model_f);
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view_f);
-		glUniformMatrix4fv(projLoc, 1, GL_FALSE, proj_f);
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, cam.model_f);
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, cam.view_f);
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, cam.proj_f);
 
 
 		glMultiDrawElements(GL_TRIANGLE_FAN, obj.counts, GL_UNSIGNED_INT, obj.offset, obj.faces_nbr);

@@ -6,7 +6,9 @@ static struct s_obj_parsing obj_parsing[] = {
 	{"usemtl", handle_usemtl},
 	{"s", handle_s},
 	{"o", handle_o},
+	{"g", handle_g},
 	{"vn", handle_vn},
+	{"vt", handle_vt},
 	{"v", handle_v},
 	{"f", handle_f},
 	{NULL, NULL}
@@ -21,21 +23,31 @@ int8_t	is_whitespace(char c)
 		return (0);
 }
 
-void	ignore_whitespaces(char **line)
+int	ignore_whitespaces(char **line)
 {
+	int i;
+
+	i = 0;
 	while (**line != '\0')
 	{
-		if (**line == ' ' || ** line == '\t')
+		if (**line == ' ' || **line == '\t' || **line == '\xd')
+		{
 			(*line)++;
+			i++;
+		}
 		else if (**line == '#')
 		{
 			while (**line)
+			{
+				i++;
 				(*line)++;
+			}
 			break;
 		}
 		else
 			break ;
 	}
+	return (i);
 }
 
 int		find_next_ignored_char(char *line)
@@ -104,6 +116,13 @@ void	handle_s(char *line, t_obj *ret)
 	(void)ret;
 }
 
+void	handle_g(char *line, t_obj *ret)
+{
+	//ignore;
+	(void)line;
+	(void)ret;
+}
+
 void	handle_o(char *line, t_obj *ret)
 {
 	int	len;
@@ -124,7 +143,7 @@ void parse_line(char *line, t_obj *ret)
 	ignore_whitespaces(&line);
 	if (line[0] == '\0')
 		return ;
-	printf("handling line : [%s]\n", line);
+	// printf("handling line : [%s]\n", line);
 	i = 0;
 	while (obj_parsing[i].name)
 	{
@@ -145,24 +164,33 @@ void	init_obj(t_obj *obj)
 	i = 0;
 	curr = 0;
 	count = 0;
-	printf("ON A : %u\n", obj->indices_nbr);
-
 	obj->indices = malloc(sizeof(unsigned int) * obj->indices_nbr);
 	obj->counts = malloc(sizeof(GLsizei) * obj->faces_nbr);
 	obj->offset = malloc(sizeof(GLvoid *) * obj->faces_nbr);
+	obj->textures = malloc(sizeof(t_vec2) * obj->indices_nbr);
 	while (i < obj->faces_nbr)
 	{
 		j = 0;
 		while (j < obj->faces[i].v_nbr)
 		{
+			// printf("#%d (i = %d, j = %d): %d\n", curr, i, j, obj->faces[i].v_index[j]);
 			obj->indices[curr] = obj->faces[i].v_index[j];
-			printf("%d: indice add %d\n", curr, obj->indices[curr]);
+			if (obj->faces[i].t_index[j] != -1)
+			{
+				obj->textures[curr].x = obj->tex_vertices[obj->faces[i].t_index[j]].x;
+				obj->textures[curr].y = obj->tex_vertices[obj->faces[i].t_index[j]].y;
+			}
+			else
+			{
+				obj->textures[curr].x = 0;
+				obj->textures[curr].y = 0;
+			}
+			printf("test = %f %f\n", obj->tex_vertices[obj->faces[i].t_index[j]].x, obj->tex_vertices[obj->faces[i].t_index[j]].y);
 			j++;
 			curr++;
 		}
 		obj->counts[i] = j;
 		obj->offset[i] = (GLvoid *)(count * sizeof(unsigned int));
-		printf("count add %d\n",obj->counts[i]);
 		i++;
 		count += j;
 	}
@@ -170,11 +198,35 @@ void	init_obj(t_obj *obj)
 
 t_obj	obj_parser_main(char *file)
 {
-	int fd;
-	char *line;
+	int		fd;
+	char	*line;
 	t_obj	ret;
+	int		i;
 
 	ft_bzero(&ret, sizeof(t_obj));
+	if ((fd = open(file, O_RDONLY)) < 0)
+	{
+		dprintf(2, "Error OBJ file not found\n");
+		ret.error = 1;
+		return (ret);
+	}
+	while (get_next_line(fd, &line) > 0)
+	{
+		i = ignore_whitespaces(&line);
+		if (*line == 'f')
+			ret.faces_nbr++;
+		else if (*line == 'v' && *(line + 1) == 't')
+			ret.tex_vertices_nbr++;
+		else if (*line == 'v' && *(line + 1) == 'n')
+			ret.normales_nbr++;
+		else if (*line == 'v')
+			ret.vertices_nbr++;
+		free(line - i);
+	}
+	ret.faces = malloc(sizeof(struct s_face) * ret.faces_nbr);
+	ret.tex_vertices = malloc(sizeof(t_vec3) * ret.tex_vertices_nbr);
+	ret.normales = malloc(sizeof(t_vec3) * ret.normales_nbr);
+	ret.vertices = malloc(sizeof(t_vec3) * ret.vertices_nbr);
 	if ((fd = open(file, O_RDONLY)) < 0)
 	{
 		dprintf(2, "Error OBJ file not found\n");

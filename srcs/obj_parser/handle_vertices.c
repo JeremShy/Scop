@@ -44,9 +44,25 @@ void	handle_v(char *line, t_obj *ret)
 		ret->error = 1;
 		return ;
 	}
-	ret->vertices[ret->vertices_nbr] = v;
-	ft_vec3_print(ret->vertices[ret->vertices_nbr]);
-	ret->vertices_nbr++;
+	ret->vertices[ret->vertices_curr] = v;
+	// ft_vec3_print(ret->vertices[ret->vertices_curr]);
+	ret->vertices_curr++;
+}
+
+void	handle_vt(char *line, t_obj *ret)
+{
+	t_vec3	v;
+
+	debut_handle(&line, ret, 2);
+	if (ret->error)
+		return ;
+	if (!get_three_floats(line, &v))
+	{
+		ret->error = 1;
+		return ;
+	}
+	ret->tex_vertices[ret->tex_vertices_curr] = v;
+	ret->tex_vertices_curr++;
 }
 
 void	handle_vn(char *line, t_obj *ret)
@@ -61,7 +77,7 @@ void	handle_vn(char *line, t_obj *ret)
 		ret->error = 1;
 		return ;
 	}
-	ret->normales[ret->normales_nbr] = v;
-	ft_vec3_print(ret->normales[ret->normales_nbr]);
-	ret->normales_nbr++;
+	ret->normales[ret->normales_curr] = v;
+	// ft_vec3_print(ret->normales[ret->normales_curr]);
+	ret->normales_curr++;
 }
