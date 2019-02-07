@@ -4,9 +4,11 @@ int	check_float(char *str)
 {
 	int	x;
 	int	dot;
+	int e;
 
 	x = 0;
 	dot = 0;
+	e = 0;
 	if (str[x] == '-' || str[x] == '+')
 		str++;
 	while (str[x] || x == 0)
@@ -21,6 +23,15 @@ int	check_float(char *str)
 				return (0);
 			x++;
 		}
+		else if (str[x] == 'e' || str[x] == 'E')
+		{
+			dot = 1;
+			if (e == 0)
+				e = 1;
+			else
+				return (0);
+			x += str[x + 1] == '-' || str[x + 1] == '+' ? 2 : 1;
+		}
 		else if (ft_isdigit(str[x]))
 			x++;
 		else if (str[x] == '#' && x != 0)
@@ -33,26 +44,35 @@ int	check_float(char *str)
 
 float			ft_atof(char *str)
 {
-	float		n;
-	int			i;
-	int			k;
-	int			signe;
+	int entier;
+	int exp;
+	int curr;
+	float dec;
 
-	i = 0;
-	n = 0;
-	k = 0;
-	signe = 1;
-	signe = (str[i] == '-') ? -signe : signe;
-	i = (str[i] == '-' || str[i] == '+') ? i + 1 : i;
-	while (str[i] > 47 && str[i] < 58)
+	entier = atoi(str);
+	if (entier != 0)
+		str += (int)log10(entier);
+	else
+		str++;
+	if (*str == '.')
 	{
-		n = n * 10 + (str[i++] - 48);
-		if (str[i] == '.' || str[i] == ',')
-			k = i++;
+		str++;
+		dec = 0;
+		curr = 10;
+		while (*str >= 0x30 && *str <= 0x39)
+		{
+			dec += (*str - '0') / curr;
+			curr /= 10;
+			str++;
+		}
 	}
-	while (k != 0 && str[++k])
-		signe = signe * 10;
-	return (n / signe);
+	if (*str == 'e' || *str == 'E')
+	{
+		str++;
+		exp = atoi(str);
+	}
+	dec = (entier > 0) ? (entier + dec) * pow(10, exp) : (entier - dec) * pow(10, exp);
+	return (dec);
 }
 
 int8_t	free_str_dtab(char **tab)

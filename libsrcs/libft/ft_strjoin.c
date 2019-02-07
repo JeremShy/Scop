@@ -36,6 +36,9 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	i = -1;
 	while (s2[++i] != '\0')
 		res[len + i] = s2[i];
-	res[len + i] = '\0';
+	if (res[len + i - 1] == '\xd')
+		res[len + i - 1] = '\0';
+	else
+		res[len + i] = '\0';
 	return (res);
 }

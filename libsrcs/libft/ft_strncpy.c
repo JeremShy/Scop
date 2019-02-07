@@ -14,23 +14,14 @@
 
 char	*ft_strncpy(char *dst, const char *src, size_t n)
 {
-	size_t	i;
-	int		copying;
+	size_t i;
 
 	i = 0;
-	copying = 1;
-	while (i < n)
+	while (src[i] && i < n)
 	{
-		if (copying)
-		{
-			if (src[i] != '\0')
-				dst[i] = src[i];
-			else
-				copying = 0;
-		}
-		if (!copying)
-			dst[i] = '\0';
+		dst[i] = src[i];
 		i++;
 	}
+	dst[i] = '\0';
 	return (dst);
 }

@@ -21,12 +21,12 @@ void				*init_png_parser(const char *name, off_t *size)
 
 	if ((fd = open(name, O_RDONLY)) == -1)
 	{
-		ft_putendl_fd("Error : Couldn't open file", 2);
+		printf("Error couldn't open %s\n", name);
 		return (NULL);
 	}
 	if ((fstat(fd, &buf)) == -1)
 	{
-		ft_putendl_fd("Error : Couldn't open file", 2);
+		printf("Error couldn't open %s\n", name);
 		close(fd);
 		return (NULL);
 	}
@@ -34,7 +34,7 @@ void				*init_png_parser(const char *name, off_t *size)
 	if ((addr = mmap(NULL, buf.st_size, PROT_READ | PROT_WRITE,
 		MAP_PRIVATE, fd, 0)) == MAP_FAILED)
 	{
-		ft_putendl_fd("Error : Couldn't map file", 2);
+		printf("Error couldn't open %s\n", name);
 		close(fd);
 		return (NULL);
 	}

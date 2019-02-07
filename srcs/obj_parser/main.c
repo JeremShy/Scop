@@ -17,7 +17,7 @@ static struct s_obj_parsing obj_parsing[] = {
 
 int8_t	is_whitespace(char c)
 {
-	if (c == ' ' || c == '\t' || c == '#')
+	if (c == ' ' || c == '\t' || c == '\xd')
 		return (1);
 	else
 		return (0);
@@ -28,39 +28,44 @@ int	ignore_whitespaces(char **line)
 	int i;
 
 	i = 0;
-	while (**line != '\0')
+	while (**line)
 	{
-		if (**line == ' ' || **line == '\t' || **line == '\xd')
+		if (is_whitespace(**line))
 		{
 			(*line)++;
 			i++;
 		}
 		else if (**line == '#')
 		{
-			while (**line)
+			while (**line && **line != '\n')
 			{
 				i++;
 				(*line)++;
 			}
-			break;
+			return (i);
 		}
 		else
-			break ;
+			return (i);
 	}
 	return (i);
 }
 
 int		find_next_ignored_char(char *line)
 {
-	int	i;
+	int		i;
+	uint8_t escape;
 
 	i = 0;
-	while (line[i] != '\0')
+	escape = 0;
+	while (line[i] && line[i] != '\n')
 	{
-		if (is_whitespace(line[i]))
+		if (is_whitespace(line[i]) && !escape)
 			return (i);
-		else
-			i++;
+		if (escape)
+			escape = 0;
+		else if (line[i] == '\\')
+			escape = 1;
+		i++;
 	}
 	return (i);
 }
@@ -76,11 +81,6 @@ int8_t	ignored_line(char *line)
 void	debut_handle(char **line, t_obj *ret, int size)
 {
 	*line += size;
-	if (!is_whitespace(*line[0]))
-	{
-		ret->error = 1;
-		return ;
-	}
 	ignore_whitespaces(line);
 	if (*line[0] == '\0')
 	{
@@ -89,24 +89,146 @@ void	debut_handle(char **line, t_obj *ret, int size)
 	}
 }
 
-void	handle_mtllib(char *line, t_obj *ret)
+void	*open_file(char *file, size_t *size)
 {
-	int	len;
+	int						fd;
+	struct stat				buf;
+	void					*ret;
 
-	debut_handle(&line, ret, 6);
-	len = find_next_ignored_char(line);
-	ret->material = ft_strsub(line, 0, len);
-	line += len;
-	ignore_whitespaces(&line);
-	if (line[0] != '\0')
-		ret->error = 1;
+	ret = NULL;
+	fd = open(file, O_RDONLY);
+	if (fd == -1)
+		return (NULL);
+	if (fstat(fd, &buf) == -1)
+		close(fd);
+	else
+	{
+		*size = buf.st_size;
+		if ((ret = mmap(0, buf.st_size + 1000, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE, fd, 0)) == MAP_FAILED)
+			return (NULL);
+	}
+	((char *)ret)[buf.st_size] = 0;
+	close(fd);
+	return (ret);
 }
 
-void	handle_usemtl(char *line, t_obj *ret)
+void	next_line(char **file, size_t *size)
 {
-	//ignore;
-	(void)line;
-	(void)ret;
+	int i;
+
+	i = 0;
+	while (*size && **file != '\n')
+	{
+		(*size)--;
+		(*file)++;
+	}
+	if ((*size))
+	{
+		(*size)--;
+		(*file)++;
+	}
+}
+
+struct s_mtl	*create_mtl(t_obj *obj, char *file, size_t size)
+{
+	uint			nb_array;
+	struct s_mtl	*m;
+
+	nb_array = 0;
+	// printf("size = %zu\n", size);
+	// printf("file = %s\n", file);
+	while (size > 0)
+	{
+		size -= ignore_whitespaces(&file);
+		if (size > 6 && !ft_strncmp(file, "newmtl", 6))
+			nb_array++;
+		next_line(&file, &size);
+	}
+	obj->mtl_nbr = nb_array;
+	m = malloc(sizeof(struct s_mtl) * nb_array);
+	ft_bzero(m, sizeof(struct s_mtl) * nb_array);
+	return (m);
+}
+
+void	fill_mtl(t_obj *obj, char *file, size_t size)
+{
+	uint nb_array;
+	char *tmp;
+
+	nb_array = -1;
+	while (size > 0)
+	{
+		size -= ignore_whitespaces(&file);
+		if (size > 6 && !ft_strncmp(file, "newmtl", 6))
+		{
+			nb_array++;
+			size -= 6;
+			debut_handle(&file, obj, 6);
+			obj->mtls[nb_array].ref = ft_strndup(file, find_next_ignored_char(file));
+		}
+		else if (size > 6 && !ft_strncmp(file, "map_Kd", 6))
+		{
+			size -= 6;
+			debut_handle(&file, obj, 6);
+			tmp = ft_strndup(file, ft_strstr(file, ".png") - file + 4);
+			obj->mtls[nb_array].img_file = ft_strjoin(obj->path, tmp);
+			free(tmp);
+		}
+		next_line(&file, &size);
+	}
+}
+
+void	handle_mtllib(char *line, t_obj *obj)
+{
+	char	*file;
+	size_t 	size;
+	char	*l;
+	char	*tmp;
+
+	if (obj->mtls)
+		return ;
+	debut_handle(&line, obj, 6);
+	tmp = ft_strndup(line, find_next_ignored_char(line));
+	file = ft_strjoin(obj->path, tmp);
+	free(tmp);
+	l = open_file(file, &size);
+	if (!l)
+	{
+		obj->error = 1;
+		return ;
+	}
+	obj->mtls = create_mtl(obj, l, size);
+	fill_mtl(obj, l, size);
+	munmap(l, size);
+}
+
+void	handle_usemtl(char *line, t_obj *obj)
+{
+	char	*tmp;
+	int		i;
+
+	if (!obj->mtls)
+	{
+		printf("No mtllib define!\n");
+		obj->error = 1;
+		return ;
+	}
+	debut_handle(&line, obj, 6);
+	tmp = ft_strndup(line, find_next_ignored_char(line));
+	i = 0;
+	// printf("tmp = %s\n", tmp);
+	while (i < obj->mtl_nbr)
+	{
+		if (!ft_strcmp(tmp, obj->mtls[i].ref))
+		{
+			obj->mtls[i].index = obj->faces_curr;
+			return;
+		}
+		i++;
+	}
+	printf("No reference found!\n");
+	obj->error = 1;
+	return ;
 }
 
 void	handle_s(char *line, t_obj *ret)
@@ -156,8 +278,8 @@ void parse_line(char *line, t_obj *ret)
 
 void	init_obj(t_obj *obj)
 {
-	int		i;
-	int		j;
+	uint		i;
+	uint		j;
 	int		curr;
 	uint	count;
 
@@ -185,7 +307,7 @@ void	init_obj(t_obj *obj)
 				obj->textures[curr].x = 0;
 				obj->textures[curr].y = 0;
 			}
-			printf("test = %f %f\n", obj->tex_vertices[obj->faces[i].t_index[j]].x, obj->tex_vertices[obj->faces[i].t_index[j]].y);
+			// printf("test = %f %f\n", obj->tex_vertices[obj->faces[i].t_index[j]].x, obj->tex_vertices[obj->faces[i].t_index[j]].y);
 			j++;
 			curr++;
 		}
@@ -196,6 +318,30 @@ void	init_obj(t_obj *obj)
 	}
 }
 
+int	init_path(char *param, t_obj *obj)
+{
+	int c;
+	int	end;
+
+	c = 0;
+	if (param)
+	{
+		end = 0;
+		while (param[c])
+		{
+			if (param[c] == '/' && (c == 0 || param[c - 1] != '\\'))
+				end = c;
+			c++;
+		}
+		if (!(obj->path = malloc(end + 1)))
+			return (0);
+		if (end != 0)
+			end++;
+		ft_strncpy(obj->path, param, end);
+	}
+	return (1);
+}
+
 t_obj	obj_parser_main(char *file)
 {
 	int		fd;
@@ -204,6 +350,11 @@ t_obj	obj_parser_main(char *file)
 	int		i;
 
 	ft_bzero(&ret, sizeof(t_obj));
+	if (!init_path(file, &ret))
+	{
+		ret.error = 1;
+		return (ret);
+	}
 	if ((fd = open(file, O_RDONLY)) < 0)
 	{
 		dprintf(2, "Error OBJ file not found\n");
@@ -235,18 +386,18 @@ t_obj	obj_parser_main(char *file)
 	}
 	while (get_next_line(fd, &line) > 0)
 	{
+		// printf("Voici la liggne : %s\n", line);
 		parse_line(line, &ret);
 		if (ret.error)
 		{
+			printf("(line = %s)\n", line);
 			dprintf(2, "ERROR !\n");
-			printf("[%s]\n", ret.material);
 			printf("[%s]\n", ret.name);
 			return (ret);
 		}
 		free(line);
 	}
 	init_obj(&ret);
-	printf("[%s]\n", ret.material);
-	printf("[%s]\n", ret.name);
+	// printf("[%s]\n", ret.name);
 	return (ret);
 }

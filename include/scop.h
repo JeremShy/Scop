@@ -2,7 +2,9 @@
 # define SCOP_H
 
 # include <stdio.h>
+# include <sys/time.h>
 # include <libft.h>
+# include <sys/stat.h>
 # define GLFW_INCLUDE_GLCOREARB
 # include <GLFW/glfw3.h>
 # include <libftmatrices.h>
@@ -28,41 +30,6 @@ typedef struct	s_img {
 	uint8_t		*data;
 }				t_img;
 
-
-typedef struct s_d {
-	GLFWwindow	*window;
-	int			width;
-	int			height;
-
-
-	GLuint		vertex_sh;
-	GLuint		fragment_sh;
-	GLuint		program;
-
-	size_t		nbr_of_objects;
-
-	float		*vertices[MAX_OBJECTS_NBR];
-	float		*colors[MAX_OBJECTS_NBR];
-
-	size_t		sizeof_vertices[MAX_OBJECTS_NBR];
-	size_t		sizeof_colors[MAX_OBJECTS_NBR];
-
-	GLuint		buffer[MAX_OBJECTS_NBR];
-	GLuint		vao[MAX_OBJECTS_NBR];
-
-	t_mat4x4	projection;
-
-	t_mat4x4	modelview[MAX_OBJECTS_NBR];
-
-	float		float_projection[4 * 4];
-	float		float_modelview[MAX_OBJECTS_NBR][4 * 4];
-
-	t_img		img[255];
-	uint16_t	max_img_id;
-	t_vec3		eye;
-	t_vec3		dir;
-}					t_d;
-
 struct	s_cam
 {
 	t_mat4x4	view;
@@ -74,6 +41,34 @@ struct	s_cam
 	t_vec3		up;
 };
 
+typedef struct		s_d {
+	GLFWwindow		*window;
+	int				width;
+	int				height;
+	struct s_cam	cam;
+	GLuint			vertex_sh;
+	GLuint			fragment_sh;
+	GLuint			program;
+
+	size_t			object_nbr;
+	size_t			texture_nbr;
+
+	GLuint			buffer[MAX_OBJECTS_NBR];
+	GLuint			vao[MAX_OBJECTS_NBR];
+
+	t_mat4x4		projection;
+
+	t_mat4x4		modelview[MAX_OBJECTS_NBR];
+
+	float			float_projection[4 * 4];
+	float			float_modelview[MAX_OBJECTS_NBR][4 * 4];
+
+	t_img			*imgs;
+	uint16_t		max_img_id;
+	t_vec3			eye;
+	t_vec3			dir;
+}					t_d;
+
 struct s_face {
 	int		v_index[MAX_VERTICES_FACE];
 	int		t_index[MAX_VERTICES_FACE];
@@ -82,27 +77,36 @@ struct s_face {
 	uint8_t	v_nbr;
 };
 
+struct s_mtl
+{
+	char	*ref;
+	char	*img_file;
+	int		index;
+};
+
 typedef struct	s_obj {
 	char			*name;
-
-	char			*material;
+	char			*path;
 
 	t_vec3			*vertices;
-	int				vertices_nbr;
+	uint			vertices_nbr;
 	int				vertices_curr;
 
 	t_vec2			*textures;
 
-	t_vec3			*tex_vertices;
-	int				tex_vertices_nbr;
+	struct s_mtl	*mtls;
+	uint			mtl_nbr;
+
+	t_vec2			*tex_vertices;
+	uint			tex_vertices_nbr;
 	int				tex_vertices_curr;
 
 	t_vec3			*normales;
-	int				normales_nbr;
+	uint			normales_nbr;
 	int				normales_curr;
 
 	struct s_face	*faces;
-	int				faces_nbr;
+	uint			faces_nbr;
 	int				faces_curr;
 	
 	uint			indices_nbr;
@@ -148,6 +152,8 @@ void	handle_vt(char *line, t_obj *ret);
 void	handle_f(char *line, t_obj *ret);
 
 char	**split_whitespace(char const *s);
+int		ignore_whitespaces(char **line);
+int8_t	is_whitespace(char c);
 
 int		check_float(char *str);
 float	ft_atof(char *str);

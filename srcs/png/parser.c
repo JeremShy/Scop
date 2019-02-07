@@ -111,9 +111,9 @@ static uint8_t	initialize_values(void **addr, const char *name,
 int8_t	create_image(t_d *data, uint16_t id, uint16_t w, uint16_t h)
 {
 	data->max_img_id++;
-	data->img[id].w = w;
-	data->img[id].h = h;
-	if (!(data->img[id].data = malloc(4 * sizeof(float) * w * h)))
+	data->imgs[id].w = w;
+	data->imgs[id].h = h;
+	if (!(data->imgs[id].data = malloc(4 * sizeof(float) * w * h)))
 		return (0);
 	return (1);
 }
@@ -140,7 +140,7 @@ uint8_t			create_image_from_png(t_d *data, int id_img,
 	free(compressed_data);
 	create_image(data, id_img, png_ihdr.width, png_ihdr.height);
 	apply_all_filters(&png_ihdr, img_data);
-	copy_source_in_img(&png_ihdr, img_data, (uint32_t*)data->img[id_img].data);
+	copy_source_in_img(&png_ihdr, img_data, (uint32_t*)data->imgs[id_img].data);
 	free(img_data);
 	return (1);
 }

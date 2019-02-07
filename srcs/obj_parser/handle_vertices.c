@@ -61,7 +61,8 @@ void	handle_vt(char *line, t_obj *ret)
 		ret->error = 1;
 		return ;
 	}
-	ret->tex_vertices[ret->tex_vertices_curr] = v;
+	ret->tex_vertices[ret->tex_vertices_curr].x = v.x;
+	ret->tex_vertices[ret->tex_vertices_curr].y = v.y;
 	ret->tex_vertices_curr++;
 }
 

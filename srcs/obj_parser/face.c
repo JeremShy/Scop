@@ -18,37 +18,57 @@ static void		copy_ret_in_obj(uint ret[3], t_obj *obj)
 		obj->error = 1;
 }
 
+int			move_str_ptr(char **str)
+{
+	while ((**str >= '0' && **str <= '9') || **str == '-' || **str == '+')
+		(*str)++;
+	if (is_whitespace(**str))
+		return (2);
+	if (**str == '/')
+		(*str)++;
+	if ((**str >= '0' && **str <= '9') || **str == '-' || **str == '+' || !**str || **str == '/')
+		return (0);
+	return (1);
+}
+
 static uint8_t	fill_data_point(char **line, t_obj *obj)
 {
-	uint ret[3];
+	int ret[3];
 	int i;
+	int tmp;
 
 	i = 0;
-	t_vec3	v;
-
 	ignore_whitespaces(line);
 	if (obj->error || !(**line))
 		return (0);
+	// printf("*line = %s\n", *line);
 	ft_bzero(ret, sizeof(ret));
-	while ((**line >= '0' && **line <= '9') || **line == '/')
+	while (i < 3 && **line)
 	{
-		if (**line == '/')
+		// printf("line = %s", *line);
+		ret[i] = ft_atoi(*line);
+		if (ret[i] < 0)
 		{
-			i++;
-			if (i > 2)
-			{
-				obj->error = 1;
-				printf("return 0 nbr 0\n");
-				return (0);
-			}
-			(*line)++;
-			continue ;
+			if (i == 0)
+			 	ret[i] = obj->vertices_curr + ret[i] + 1;
+			if (i == 1)
+				ret[i] = obj->tex_vertices_curr + ret[i] + 1;
+			if (i == 2)
+				ret[i] = obj->normales_curr + ret[i] + 1;
 		}
-		ret[i] *= 10;
-		ret[i] += **line - '0';
-		(*line)++;
+		tmp = move_str_ptr(line);
+		if (tmp == 1)
+		{
+			obj->error = 1;
+			printf("Error Parsinf Face\n");
+			return (0);
+		}
+		if (tmp == 2)
+			break ;
+		i++;
 	}
-	copy_ret_in_obj(ret, obj);
+	// printf("}\n");
+	copy_ret_in_obj((uint *)ret, obj);
 	if (obj->error)
 	{
 		printf("return 0 nbr 1\n");
@@ -67,8 +87,3 @@ void	handle_f(char *line, t_obj *ret)
 		;
 	ret->faces_curr++;
 }
-
-// a/b/c
-// a
-// a/b
-// a//c
