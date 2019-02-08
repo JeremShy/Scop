@@ -17,17 +17,14 @@ uniform mat4 projection;
 
 out vec2 texCoord;
 
-
 // Fonction main
 
 void main()
 {
     // Position finale du vertex
 
-	// gl_Position = projection * view * model * vec4(in_Vertex, 1.0);
 	gl_Position = projection * view * model * vec4(in_Vertex, 1.0);
 
     // Envoi de la couleur au Fragment Shader
-
     texCoord = aTexCoord;
 }
