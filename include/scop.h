@@ -67,6 +67,10 @@ typedef struct		s_d {
 	uint16_t		max_img_id;
 	t_vec3			eye;
 	t_vec3			dir;
+
+	GLint			texture_on;
+	int				old_state_t;
+	// int				color_on;
 }					t_d;
 
 struct s_face {

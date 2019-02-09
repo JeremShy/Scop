@@ -155,6 +155,13 @@ void	key_event(t_d *data, uint delta)
 		data->dir = ft_vec3_rotate(data->dir, rot * delta / 1000, ft_vec3_cross(data->dir, (t_vec3){0,1,0}));
 		ft_mat4x4_set_look_at(data->cam.view, data->eye, ft_vec3_sub(data->eye, data->dir), data->cam.up);
 	}
+	int newState = glfwGetKey(data->window, GLFW_KEY_T);
+	if (newState == GLFW_RELEASE && data->old_state_t == GLFW_PRESS)
+	{
+		printf("Texture\n");
+		data->texture_on = (data->texture_on + 1) % 2;
+	}
+	data->old_state_t = newState;
 	ft_mat4x4_to_float_array(data->cam.view_f, data->cam.view);
 }
 
@@ -270,6 +277,7 @@ int main(int ac, char **av)
 		}
 		i++;
 	}
+	// printf("ICI\n");
 
 	glGenVertexArrays(1, &vao);
 	glGenBuffers(1, &ebo);
@@ -285,6 +293,9 @@ int main(int ac, char **av)
 			glEnableVertexAttribArray(1);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(obj[0].indices[0]) * obj[0].indices_nbr, obj[0].indices, GL_STATIC_DRAW);
+
+	// printf("ICI\n");
+
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -309,8 +320,26 @@ int main(int ac, char **av)
 	gettimeofday(&tp, NULL);
 	last = (tp.tv_sec * 1000 + tp.tv_usec / 1000);
 
+	// t_vec3			*tex_vertices;
+	// int				tex_vertices_nbr;
+	// int				tex_vertices_curr;
+
+	// int q = 0;
+	// while (q < obj.tex_vertices_nbr)
+	// {
+	// 	printf("vt #%d: %f %f %f\n", q, obj.tex_vertices[q].x, obj.tex_vertices[q].y, obj.tex_vertices[q].z);
+	// 	q++;
+	// }
+
+
+	int rot;
+	int	texOn = glGetUniformLocation(data.program, "texOn");
+	data.old_state_t = GLFW_RELEASE;
 	while (!glfwWindowShouldClose(data.window))
 	{
+
+		glUniform1i(texOn, data.texture_on);
+		
 		delta = (tp.tv_sec * 1000 + tp.tv_usec / 1000) - last;
 		last = (tp.tv_sec * 1000 + tp.tv_usec / 1000);
 
@@ -323,21 +352,35 @@ int main(int ac, char **av)
 		glActiveTexture(GL_TEXTURE0);
 		glBindVertexArray(vao);
 
+		ft_mat4x4_set_rotation(data.cam.model, rot + 90 * delta / 1000.0, (t_vec3){0, 1, 0});
+		// ft_mat4x4_scale(cam.model, (t_vec3){0.5, 0.5, 0.5});
+		// ft_mat4x4_translate(cam.model, (t_vec3){0, 0, 0});
+		ft_mat4x4_to_float_array(data.cam.model_f, data.cam.model);
+		rot += 90 * delta / 1000.0;
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, data.cam.model_f);
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, data.cam.view_f);
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, data.cam.proj_f);
 
-		x = 0;
-		while (x < obj[0].mtl_nbr)
+		if (!obj[0].mtl_nbr)
+			glMultiDrawElements(GL_TRIANGLE_FAN, obj[0].counts, GL_UNSIGNED_INT, (const GLvoid * const *)obj[0].offset, obj[0].faces_nbr);
+
+		else
 		{
-			if (obj[0].mtls[x].img_file)
+			int x;
+		
+			x = 0;
+			while (x < obj[0].mtl_nbr)
+			{
 				glBindTexture(GL_TEXTURE_2D, texs[x]);
-			if (x + 1 == obj[0].mtl_nbr)
-				nb_face = obj[0].faces_nbr - obj[0].mtls[x].index;
-			else
-				nb_face = obj[0].mtls[x + 1].index - obj[0].mtls[x].index;
-			glMultiDrawElements(GL_TRIANGLE_FAN, &(obj[0].counts[obj[0].mtls[x].index]), GL_UNSIGNED_INT, (const GLvoid * const *)(&(obj[0].offset[obj[0].mtls[x].index])), nb_face);
-			x++;
+				int nb_face;
+	
+				if (x + 1 == obj[0].mtl_nbr)
+					nb_face = obj[0].faces_nbr - obj[0].mtls[x].index;
+				else
+					nb_face = obj[0].mtls[x + 1].index - obj[0].mtls[x].index;
+				glMultiDrawElements(GL_TRIANGLE_FAN, &(obj[0].counts[obj[0].mtls[x].index]), GL_UNSIGNED_INT, (const GLvoid * const *)(&(obj[0].offset[obj[0].mtls[x].index])), nb_face);
+				x++;
+			}
 		}
 
 		glBindVertexArray(0);
