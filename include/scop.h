@@ -69,7 +69,9 @@ typedef struct		s_d {
 	t_vec3			dir;
 
 	GLint			texture_on;
-	int				old_state_t;
+	uint8_t			drawing_mode;
+	float			angle_y;
+	int				last_state[GLFW_KEY_LAST];
 	// int				color_on;
 }					t_d;
 
@@ -88,7 +90,13 @@ struct s_mtl
 	int		index;
 };
 
-typedef struct	s_obj {
+struct				s_ref
+{
+	char			*ref;
+	char			*img;
+}					;
+
+typedef struct		s_obj {
 	char			*name;
 	char			*path;
 
@@ -96,10 +104,7 @@ typedef struct	s_obj {
 	uint			vertices_nbr;
 	int				vertices_curr;
 
-	t_vec2			*textures;
-
-	struct s_mtl	*mtls;
-	uint			mtl_nbr;
+	t_vec2			*textures; // Normale ??
 
 	t_vec2			*tex_vertices;
 	uint			tex_vertices_nbr;
@@ -118,6 +123,13 @@ typedef struct	s_obj {
 	GLvoid			**offset;
 	
 	GLsizei			*counts;
+
+	struct s_ref	*ref;
+	uint			ref_nbr;
+
+	struct s_mtl	*mtls;
+	uint			mtl_nbr;
+	uint			mtl_curr;
 
 	int8_t	error;
 }				t_obj;

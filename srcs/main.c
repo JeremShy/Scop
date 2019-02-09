@@ -116,6 +116,7 @@ void	key_event(t_d *data, uint delta)
 		printf("A\n");
 
 		transl = ft_vec3_cross(data->dir, (t_vec3){0,1,0});
+		ft_vec3_normalize(&transl);
 		transl = ft_vec3_scalar_mult(transl, depl * delta / 1000);
 		data->eye = ft_vec3_add(data->eye, transl);
 		ft_mat4x4_set_look_at(data->cam.view, data->eye, ft_vec3_sub(data->eye, data->dir), data->cam.up);
@@ -125,43 +126,31 @@ void	key_event(t_d *data, uint delta)
 	{
 		printf("D\n");
 		transl = ft_vec3_cross(data->dir, (t_vec3){0,1,0});
+		ft_vec3_normalize(&transl);
 		transl = ft_vec3_scalar_mult(transl,  -depl * delta / 1000);
 		data->eye = ft_vec3_add(data->eye, transl);
 		ft_mat4x4_set_look_at(data->cam.view, data->eye, ft_vec3_sub(data->eye, data->dir), data->cam.up);
 	}
-	if (glfwGetKey(data->window, GLFW_KEY_LEFT))
+	if (glfwGetKey(data->window, GLFW_KEY_V) == GLFW_RELEASE && data->last_state[GLFW_KEY_V] == GLFW_PRESS)
 	{
-		printf("LEFT\n");
-		data->dir = ft_vec3_rotate(data->dir, rot * delta / 1000, (t_vec3){0,1,0});
-		ft_mat4x4_set_look_at(data->cam.view, data->eye, ft_vec3_sub(data->eye, data->dir), data->cam.up);
-
+		!data->drawing_mode ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		data->drawing_mode = !data->drawing_mode;
 	}
-	if (glfwGetKey(data->window, GLFW_KEY_RIGHT))
+	if (glfwGetKey(data->window, GLFW_KEY_R) == GLFW_RELEASE && data->last_state[GLFW_KEY_R] == GLFW_PRESS)
 	{
-		printf("RIGHT\n");
-		data->dir = ft_vec3_rotate(data->dir,  -rot * delta / 1000, (t_vec3){0,1,0});
+		data->eye = (t_vec3){0, 0, -10};
+		data->dir = (t_vec3){0, 0, -1};
 		ft_mat4x4_set_look_at(data->cam.view, data->eye, ft_vec3_sub(data->eye, data->dir), data->cam.up);
+		data->angle_y = 0;
 	}
-	if (glfwGetKey(data->window, GLFW_KEY_UP))
-	{
-		printf("UP\n");
-		data->dir = ft_vec3_rotate(data->dir,  -rot * delta / 1000, ft_vec3_cross(data->dir, (t_vec3){0,1,0}));
-		ft_mat4x4_set_look_at(data->cam.view, data->eye, ft_vec3_sub(data->eye, data->dir), data->cam.up);
-
-	}
-	if (glfwGetKey(data->window, GLFW_KEY_DOWN))
-	{
-		printf("DOWN\n");
-		data->dir = ft_vec3_rotate(data->dir, rot * delta / 1000, ft_vec3_cross(data->dir, (t_vec3){0,1,0}));
-		ft_mat4x4_set_look_at(data->cam.view, data->eye, ft_vec3_sub(data->eye, data->dir), data->cam.up);
-	}
-	int newState = glfwGetKey(data->window, GLFW_KEY_T);
-	if (newState == GLFW_RELEASE && data->old_state_t == GLFW_PRESS)
+	if (glfwGetKey(data->window, GLFW_KEY_T) == GLFW_RELEASE && data->last_state[GLFW_KEY_T] == GLFW_PRESS)
 	{
 		printf("Texture\n");
 		data->texture_on = (data->texture_on + 1) % 2;
 	}
-	data->old_state_t = newState;
+	data->last_state[GLFW_KEY_V] = glfwGetKey(data->window, GLFW_KEY_V);
+	data->last_state[GLFW_KEY_T] = glfwGetKey(data->window, GLFW_KEY_T);
+	data->last_state[GLFW_KEY_R] = glfwGetKey(data->window, GLFW_KEY_R);
 	ft_mat4x4_to_float_array(data->cam.view_f, data->cam.view);
 }
 
@@ -171,20 +160,19 @@ void rotation_cam(t_d *data, uint delta)
 	double			y;
 	static double	last_x = 0;
 	static double	last_y = 0;
-	static float	roty = 0;
 	float			rotx;
 	t_vec3			tmp;
 
 	glfwGetCursorPos(data->window, &x, &y);
-	roty += (y - last_y) * delta / 1000;
+	data->angle_y += (y - last_y) * delta / 1000;
 	rotx = (last_x - x);
 	data->dir = ft_vec3_rotate(data->dir, rotx * delta / 1000, (t_vec3){0, 1, 0});
 	tmp = (t_vec3){data->dir.x, 0, data->dir.z};
 	ft_vec3_normalize(&tmp);
-	if (roty < 90 && roty > -90)
-		data->dir = ft_vec3_rotate(tmp, roty, ft_vec3_cross(data->dir, (t_vec3){0, 1, 0}));
+	if (data->angle_y < 90 && data->angle_y > -90)
+		data->dir = ft_vec3_rotate(tmp, data->angle_y, ft_vec3_cross(data->dir, (t_vec3){0, 1, 0}));
 	else
-		roty = roty >= 90 ? 90 : -90;
+		data->angle_y = data->angle_y >= 90 ? 90 : -90;
 	ft_mat4x4_set_look_at(data->cam.view, data->eye, ft_vec3_sub(data->eye, data->dir), data->cam.up);
 	last_y = y;
 	last_x = x;
@@ -242,35 +230,36 @@ int main(int ac, char **av)
 		return (2);
 	printf("nb = %zu\n", data.texture_nbr);
 	data.imgs = malloc(sizeof(t_img) * data.texture_nbr);
-	texs = malloc(sizeof(uint) * data.texture_nbr); 
-	glGenTextures(data.texture_nbr, texs);
-
-	 unsigned int *texture1;
-	 texture1 = malloc(sizeof(unsigned int) * 4);
-
-	i = 0;
-	i_tex = 0;
-	while (i < data.object_nbr)
+	if (data.texture_nbr)
 	{
-		j = 0;
-		printf("obj[i].mtl_nbr = %d\n", obj[i].mtl_nbr);
-		while (j < obj[i].mtl_nbr)
-		{
-			printf("obj[i].mtls[j].img_file = %s\n", obj[i].mtls[j].img_file);
-			if (obj[i].mtls[j].img_file)
-			{
-				printf("i_tex = %u\nname = %s\n", i_tex, obj[i].mtls[j].img_file);
-				printf("texs[i_tex] = %d\n", texs[i_tex]);
-				glBindTexture(GL_TEXTURE_2D, texs[i_tex]);
-				create_image_from_png(&data, i_tex, obj[i].mtls[j].img_file);
+		printf("nb_text = %zu\n", data.texture_nbr);
+		texs = malloc(sizeof(uint) * data.texture_nbr); 
+		glGenTextures(data.texture_nbr, texs);
 
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data.imgs[i_tex].w, data.imgs[i_tex].h, 0, GL_BGRA, GL_UNSIGNED_BYTE, data.imgs[i_tex].data);
-				glGenerateMipmap(GL_TEXTURE_2D);
-				i_tex++;
+		i = 0;
+		i_tex = 0;
+		while (i < data.object_nbr)
+		{
+			j = 0;
+			printf("obj[i].mtl_nbr = %d\n", obj[i].mtl_nbr);
+			while (j < obj[i].mtl_nbr)
+			{
+				printf("obj[i].mtls[j].img_file = %s\n", obj[i].mtls[j].img_file);
+				if (obj[i].mtls[j].img_file)
+				{
+					printf("i_tex = %u\nname = %s\n", i_tex, obj[i].mtls[j].img_file);
+					printf("texs[i_tex] = %d\n", texs[i_tex]);
+					glBindTexture(GL_TEXTURE_2D, texs[i_tex]);
+					create_image_from_png(&data, i_tex, obj[i].mtls[j].img_file);
+
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data.imgs[i_tex].w, data.imgs[i_tex].h, 0, GL_BGRA, GL_UNSIGNED_BYTE, data.imgs[i_tex].data);
+					glGenerateMipmap(GL_TEXTURE_2D);
+					i_tex++;
+				}
+				j++;
 			}
-			j++;
+			i++;
 		}
-		i++;
 	}
 	// printf("ICI\n");
 
@@ -286,6 +275,8 @@ int main(int ac, char **av)
 			glEnableVertexAttribArray(0);
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (GLvoid*)(sizeof(t_vec3) * obj[0].vertices_nbr));
 			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL);
+			glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(obj[0].indices[0]) * obj[0].indices_nbr, obj[0].indices, GL_STATIC_DRAW);
 
@@ -326,9 +317,8 @@ int main(int ac, char **av)
 	// 	q++;
 	// }
 
-
+	data.drawing_mode = 0;
 	int	texOn = glGetUniformLocation(data.program, "texOn");
-	data.old_state_t = GLFW_RELEASE;
 	while (!glfwWindowShouldClose(data.window))
 	{
 
@@ -346,7 +336,7 @@ int main(int ac, char **av)
 		glActiveTexture(GL_TEXTURE0);
 		glBindVertexArray(vao);
 
-		// ft_mat4x4_rotate(data.cam.model, 90 * delta / 1000.0, (t_vec3){0, 1, 0});
+		ft_mat4x4_rotate(data.cam.model, 90 * delta / 1000.0, (t_vec3){0, 1, 0});
 		// ft_mat4x4_scale(cam.model, (t_vec3){0.5, 0.5, 0.5});
 		// ft_mat4x4_translate(cam.model, (t_vec3){0, 0, 0});
 		ft_mat4x4_to_float_array(data.cam.model_f, data.cam.model);

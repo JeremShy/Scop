@@ -129,31 +129,31 @@ void	next_line(char **file, size_t *size)
 	}
 }
 
-struct s_mtl	*create_mtl(t_obj *obj, char *file, size_t size)
-{
-	uint			nb_array;
-	struct s_mtl	*m;
+// struct s_mtl	*create_mtl(t_obj *obj, char *file, size_t size)
+// {
+// 	uint			nb_array;
+// 	struct s_mtl	*m;
 
-	nb_array = 0;
-	// printf("size = %zu\n", size);
-	// printf("file = %s\n", file);
-	while (size > 0)
-	{
-		size -= ignore_whitespaces(&file);
-		if (size > 6 && !ft_strncmp(file, "newmtl", 6))
-			nb_array++;
-		next_line(&file, &size);
-	}
-	obj->mtl_nbr = nb_array;
-	m = malloc(sizeof(struct s_mtl) * nb_array);
-	ft_bzero(m, sizeof(struct s_mtl) * nb_array);
-	return (m);
-}
+// 	nb_array = 0;
+// 	// printf("size = %zu\n", size);
+// 	// printf("file = %s\n", file);
+// 	while (size > 0)
+// 	{
+// 		size -= ignore_whitespaces(&file);
+// 		if (size > 6 && !ft_strncmp(file, "newmtl", 6))
+// 			nb_array++;
+// 		next_line(&file, &size);
+// 	}
+// 	obj->mtl_nbr = nb_array;
+// 	m = malloc(sizeof(struct s_mtl) * nb_array);
+// 	ft_bzero(m, sizeof(struct s_mtl) * nb_array);
+// 	return (m);
+// }
 
-void	fill_mtl(t_obj *obj, char *file, size_t size)
+void	fill_ref(t_obj *obj, char *file, size_t size)
 {
-	uint nb_array;
 	char *tmp;
+	int nb_array;
 
 	nb_array = -1;
 	while (size > 0)
@@ -164,18 +164,38 @@ void	fill_mtl(t_obj *obj, char *file, size_t size)
 			nb_array++;
 			size -= 6;
 			debut_handle(&file, obj, 6);
-			obj->mtls[nb_array].ref = ft_strndup(file, find_next_ignored_char(file));
+			obj->ref[nb_array].ref = ft_strndup(file, find_next_ignored_char(file));
+			printf("obj->ref[nb_array].ref = %p\n", obj->ref[nb_array].ref);
 		}
 		else if (size > 6 && !ft_strncmp(file, "map_Kd", 6))
 		{
 			size -= 6;
 			debut_handle(&file, obj, 6);
+			// if (ft_strstr(file, ".png") - file == ft_strlen(file)) ////////////////////////TODO
+				// obj->error = 1;
 			tmp = ft_strndup(file, ft_strstr(file, ".png") - file + 4);
-			obj->mtls[nb_array].img_file = ft_strjoin(obj->path, tmp);
+			obj->ref[nb_array].img = ft_strjoin(obj->path, tmp);
 			free(tmp);
 		}
 		next_line(&file, &size);
 	}
+}
+
+void	create_ref(t_obj *obj, char *file, size_t size)
+{
+	uint			nb_array;
+
+	nb_array = 0;
+	while (size > 0)
+	{
+		size -= ignore_whitespaces(&file);
+		if (size > 6 && !ft_strncmp(file, "newmtl", 6))
+			nb_array++;
+		next_line(&file, &size);
+	}
+	obj->ref_nbr = nb_array;
+	obj->ref = malloc(sizeof(struct s_ref) * nb_array);
+	ft_bzero(obj->ref, sizeof(struct s_ref) * nb_array);
 }
 
 void	handle_mtllib(char *line, t_obj *obj)
@@ -185,7 +205,7 @@ void	handle_mtllib(char *line, t_obj *obj)
 	char	*l;
 	char	*tmp;
 
-	if (obj->mtls)
+	if (obj->ref)
 		return ;
 	debut_handle(&line, obj, 6);
 	tmp = ft_strndup(line, find_next_ignored_char(line));
@@ -197,37 +217,20 @@ void	handle_mtllib(char *line, t_obj *obj)
 		obj->error = 1;
 		return ;
 	}
-	obj->mtls = create_mtl(obj, l, size);
-	fill_mtl(obj, l, size);
+	create_ref(obj, l, size);
+	fill_ref(obj, l, size);
 	munmap(l, size);
 }
 
 void	handle_usemtl(char *line, t_obj *obj)
 {
 	char	*tmp;
-	int		i;
 
-	if (!obj->mtls)
-	{
-		printf("No mtllib define!\n");
-		obj->error = 1;
-		return ;
-	}
 	debut_handle(&line, obj, 6);
 	tmp = ft_strndup(line, find_next_ignored_char(line));
-	i = 0;
-	// printf("tmp = %s\n", tmp);
-	while (i < obj->mtl_nbr)
-	{
-		if (!ft_strcmp(tmp, obj->mtls[i].ref))
-		{
-			obj->mtls[i].index = obj->faces_curr;
-			return;
-		}
-		i++;
-	}
-	printf("No reference found!\n");
-	obj->error = 1;
+	obj->mtls[obj->mtl_curr].index = obj->faces_curr;
+	obj->mtls[obj->mtl_curr].ref = tmp;
+	obj->mtl_curr++;
 	return ;
 }
 
@@ -276,6 +279,25 @@ void parse_line(char *line, t_obj *ret)
 	ret->error = 1;
 }
 
+void	fill_mtl(t_obj *obj)
+{
+	int i;
+	int j;
+
+	i = 0;
+	while (i < obj->mtl_nbr)
+	{
+		j = 0;
+		while (j < obj->ref_nbr)
+		{
+			if (!ft_strcmp(obj->ref[j].ref, obj->mtls[i].ref))
+				obj->mtls[i].img_file = obj->ref[j].img;
+			j++;
+		}
+		i++;
+	}
+}
+
 void	init_obj(t_obj *obj)
 {
 	uint		i;
@@ -316,6 +338,7 @@ void	init_obj(t_obj *obj)
 		i++;
 		count += j;
 	}
+	fill_mtl(obj);
 }
 
 int	init_path(char *param, t_obj *obj)
@@ -372,8 +395,12 @@ t_obj	obj_parser_main(char *file)
 			ret.normales_nbr++;
 		else if (*line == 'v')
 			ret.vertices_nbr++;
+		else if (!ft_strncmp(line, "usemtl", 6))
+			ret.mtl_nbr++;
 		free(line - i);
 	}
+	ret.mtls = malloc(sizeof(struct s_mtl) * ret.mtl_nbr);
+	ft_bzero(ret.mtls, sizeof(struct s_mtl) * ret.mtl_nbr);
 	ret.faces = malloc(sizeof(struct s_face) * ret.faces_nbr);
 	ret.tex_vertices = malloc(sizeof(t_vec3) * ret.tex_vertices_nbr);
 	ret.normales = malloc(sizeof(t_vec3) * ret.normales_nbr);
