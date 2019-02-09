@@ -129,27 +129,6 @@ void	next_line(char **file, size_t *size)
 	}
 }
 
-// struct s_mtl	*create_mtl(t_obj *obj, char *file, size_t size)
-// {
-// 	uint			nb_array;
-// 	struct s_mtl	*m;
-
-// 	nb_array = 0;
-// 	// printf("size = %zu\n", size);
-// 	// printf("file = %s\n", file);
-// 	while (size > 0)
-// 	{
-// 		size -= ignore_whitespaces(&file);
-// 		if (size > 6 && !ft_strncmp(file, "newmtl", 6))
-// 			nb_array++;
-// 		next_line(&file, &size);
-// 	}
-// 	obj->mtl_nbr = nb_array;
-// 	m = malloc(sizeof(struct s_mtl) * nb_array);
-// 	ft_bzero(m, sizeof(struct s_mtl) * nb_array);
-// 	return (m);
-// }
-
 void	fill_ref(t_obj *obj, char *file, size_t size)
 {
 	char *tmp;
@@ -165,14 +144,13 @@ void	fill_ref(t_obj *obj, char *file, size_t size)
 			size -= 6;
 			debut_handle(&file, obj, 6);
 			obj->ref[nb_array].ref = ft_strndup(file, find_next_ignored_char(file));
-			printf("obj->ref[nb_array].ref = %p\n", obj->ref[nb_array].ref);
 		}
 		else if (size > 6 && !ft_strncmp(file, "map_Kd", 6))
 		{
 			size -= 6;
 			debut_handle(&file, obj, 6);
-			// if (ft_strstr(file, ".png") - file == ft_strlen(file)) ////////////////////////TODO
-				// obj->error = 1;
+			if (ft_strstr(file, ".png") - file == ft_strlen(file)) ////////////////////////TODO
+				obj->error = 1;
 			tmp = ft_strndup(file, ft_strstr(file, ".png") - file + 4);
 			obj->ref[nb_array].img = ft_strjoin(obj->path, tmp);
 			free(tmp);
@@ -268,7 +246,6 @@ void parse_line(char *line, t_obj *ret)
 	ignore_whitespaces(&line);
 	if (line[0] == '\0')
 		return ;
-	// printf("handling line : [%s]\n", line);
 	i = 0;
 	while (obj_parsing[i].name)
 	{
@@ -317,7 +294,6 @@ void	init_obj(t_obj *obj)
 		j = 0;
 		while (j < obj->faces[i].v_nbr)
 		{
-			// printf("#%d (i = %d, j = %d): %d\n", curr, i, j, obj->faces[i].v_index[j]);
 			obj->indices[curr] = obj->faces[i].v_index[j];
 			if (obj->faces[i].t_index[j] != -1)
 			{
@@ -329,7 +305,6 @@ void	init_obj(t_obj *obj)
 				obj->textures[curr].x = 0;
 				obj->textures[curr].y = 0;
 			}
-			// printf("test = %f %f\n", obj->tex_vertices[obj->faces[i].t_index[j]].x, obj->tex_vertices[obj->faces[i].t_index[j]].y);
 			j++;
 			curr++;
 		}
