@@ -177,17 +177,12 @@ void rotation_cam(t_d *data, uint delta)
 
 	glfwGetCursorPos(data->window, &x, &y);
 	roty += (y - last_y) * delta / 1000;
-	// roty = (int)y - (int)last_y;
 	rotx = (last_x - x);
-	printf("roty = %f\n", roty);
-
-	data->dir = ft_vec3_rotate(data->dir, rotx * delta / 1000, ft_vec3_cross(ft_vec3_cross(data->dir, (t_vec3){0, 1, 0}), data->dir));
+	data->dir = ft_vec3_rotate(data->dir, rotx * delta / 1000, (t_vec3){0, 1, 0});
 	tmp = (t_vec3){data->dir.x, 0, data->dir.z};
 	ft_vec3_normalize(&tmp);
 	if (roty < 90 && roty > -90)
 		data->dir = ft_vec3_rotate(tmp, roty, ft_vec3_cross(data->dir, (t_vec3){0, 1, 0}));
-
-		// data->dir = ft_vec3_rotate((t_vec3){0, 0, -1}, roty, ft_vec3_cross(data->dir, (t_vec3){0, 1, 0}));
 	else
 		roty = roty >= 90 ? 90 : -90;
 	ft_mat4x4_set_look_at(data->cam.view, data->eye, ft_vec3_sub(data->eye, data->dir), data->cam.up);
@@ -332,7 +327,6 @@ int main(int ac, char **av)
 	// }
 
 
-	int rot;
 	int	texOn = glGetUniformLocation(data.program, "texOn");
 	data.old_state_t = GLFW_RELEASE;
 	while (!glfwWindowShouldClose(data.window))
@@ -352,11 +346,10 @@ int main(int ac, char **av)
 		glActiveTexture(GL_TEXTURE0);
 		glBindVertexArray(vao);
 
-		ft_mat4x4_set_rotation(data.cam.model, rot + 90 * delta / 1000.0, (t_vec3){0, 1, 0});
+		// ft_mat4x4_rotate(data.cam.model, 90 * delta / 1000.0, (t_vec3){0, 1, 0});
 		// ft_mat4x4_scale(cam.model, (t_vec3){0.5, 0.5, 0.5});
 		// ft_mat4x4_translate(cam.model, (t_vec3){0, 0, 0});
 		ft_mat4x4_to_float_array(data.cam.model_f, data.cam.model);
-		rot += 90 * delta / 1000.0;
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, data.cam.model_f);
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, data.cam.view_f);
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, data.cam.proj_f);
