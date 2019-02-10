@@ -44,6 +44,18 @@ void	handle_v(char *line, t_obj *ret)
 		ret->error = 1;
 		return ;
 	}
+	if (!ret->init)
+	{
+		ret->max = v;
+		ret->min = v;
+		ret->init = 1;
+	}
+	(v.x < ret->min.x) ? (ret->min.x = v.x) : 0;
+	(v.x > ret->max.x) ? (ret->max.x = v.x) : 0;
+	(v.y < ret->min.y) ? (ret->min.y = v.y) : 0;
+	(v.y > ret->max.y) ? (ret->max.y = v.y) : 0;
+	(v.z < ret->min.z) ? (ret->min.z = v.z) : 0;
+	(v.z > ret->max.z) ? (ret->max.z = v.z) : 0;
 	ret->vertices[ret->vertices_curr] = v;
 	// ft_vec3_print(ret->vertices[ret->vertices_curr]);
 	ret->vertices_curr++;

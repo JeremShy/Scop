@@ -131,6 +131,10 @@ typedef struct		s_obj {
 	uint			mtl_nbr;
 	uint			mtl_curr;
 
+	uint8_t			init;
+	t_vec3			min;
+	t_vec3			max;
+
 	int8_t	error;
 }				t_obj;
 

@@ -244,6 +244,7 @@ int main(int ac, char **av)
 			printf("obj[i].mtl_nbr = %d\n", obj[i].mtl_nbr);
 			while (j < obj[i].mtl_nbr)
 			{
+				data.texture_on = 1;
 				printf("obj[i].mtls[j].img_file = %s\n", obj[i].mtls[j].img_file);
 				if (obj[i].mtls[j].img_file)
 				{
@@ -261,33 +262,42 @@ int main(int ac, char **av)
 			i++;
 		}
 	}
-	// printf("ICI\n");
+	
+	t_vec3	tab[obj[0].vertices_nbr];
+
+	int q = 0;
+	while (q < obj[0].vertices_nbr)
+	{
+		tab[q].x = (q * 1.0) / obj[0].vertices_nbr;
+		tab[q].y = (q * 1.0) / obj[0].vertices_nbr;
+		tab[q].z = (q * 1.0) / obj[0].vertices_nbr;
+		q++;
+	}
 
 	glGenVertexArrays(1, &vao);
 	glGenBuffers(1, &ebo);
 	glGenBuffers(1, &data.buffer[0]);
 	glBindVertexArray(vao);
 		glBindBuffer(GL_ARRAY_BUFFER, data.buffer[0]);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(t_vec3) * obj[0].vertices_nbr + sizeof(t_vec2) * obj[0].tex_vertices_nbr, 0, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(t_vec3) * obj[0].vertices_nbr + sizeof(t_vec2) * obj[0].tex_vertices_nbr + sizeof(t_vec3) * obj[0].vertices_nbr, 0, GL_STATIC_DRAW);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(t_vec3) * obj[0].vertices_nbr, obj[0].vertices);
 			glBufferSubData(GL_ARRAY_BUFFER, sizeof(t_vec3) * obj[0].vertices_nbr, sizeof(t_vec2) * obj[0].tex_vertices_nbr, obj[0].tex_vertices);
+			glBufferSubData(GL_ARRAY_BUFFER, sizeof(t_vec3) * obj[0].vertices_nbr + sizeof(t_vec2) * obj[0].tex_vertices_nbr, sizeof(t_vec3) * obj[0].vertices_nbr, tab);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL);
 			glEnableVertexAttribArray(0);
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (GLvoid*)(sizeof(t_vec3) * obj[0].vertices_nbr));
 			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL);
-			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (GLvoid*)(sizeof(t_vec3) * obj[0].vertices_nbr + sizeof(t_vec2) * obj[0].tex_vertices_nbr));
+			glEnableVertexAttribArray(2);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(obj[0].indices[0]) * obj[0].indices_nbr, obj[0].indices, GL_STATIC_DRAW);
-
-	// printf("ICI\n");
-
-
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	data.eye = (t_vec3){0, 0, -10};
 	data.dir = (t_vec3){0, 0, -1};
+	t_vec3 mid;
 
+	mid = ft_vec3_scalar_mult(ft_vec3_add(obj[0].min, obj[0].max), -0.5);
 	ft_mat4x4_set_identity(data.cam.model);
 	ft_mat4x4_to_float_array(data.cam.model_f, data.cam.model);
 
@@ -306,23 +316,15 @@ int main(int ac, char **av)
 	gettimeofday(&tp, NULL);
 	last = (tp.tv_sec * 1000 + tp.tv_usec / 1000);
 
-	// t_vec3			*tex_vertices;
-	// int				tex_vertices_nbr;
-	// int				tex_vertices_curr;
-
-	// int q = 0;
-	// while (q < obj.tex_vertices_nbr)
-	// {
-	// 	printf("vt #%d: %f %f %f\n", q, obj.tex_vertices[q].x, obj.tex_vertices[q].y, obj.tex_vertices[q].z);
-	// 	q++;
-	// }
-
 	data.drawing_mode = 0;
 	int	texOn = glGetUniformLocation(data.program, "texOn");
+	int	nbface = glGetUniformLocation(data.program, "nb_face");
+	printf("data.texture_on = %d\n", data.texture_on);
 	while (!glfwWindowShouldClose(data.window))
 	{
 
 		glUniform1i(texOn, data.texture_on);
+		glUniform1i(nbface, obj[0].faces_nbr);
 		
 		delta = (tp.tv_sec * 1000 + tp.tv_usec / 1000) - last;
 		last = (tp.tv_sec * 1000 + tp.tv_usec / 1000);
@@ -336,10 +338,12 @@ int main(int ac, char **av)
 		glActiveTexture(GL_TEXTURE0);
 		glBindVertexArray(vao);
 
+		ft_mat4x4_translate(data.cam.model, ft_vec3_scalar_mult(mid, -1));
 		ft_mat4x4_rotate(data.cam.model, 90 * delta / 1000.0, (t_vec3){0, 1, 0});
-		// ft_mat4x4_scale(cam.model, (t_vec3){0.5, 0.5, 0.5});
-		// ft_mat4x4_translate(cam.model, (t_vec3){0, 0, 0});
+		ft_mat4x4_translate(data.cam.model, mid);
+		
 		ft_mat4x4_to_float_array(data.cam.model_f, data.cam.model);
+
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, data.cam.model_f);
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, data.cam.view_f);
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, data.cam.proj_f);
@@ -365,7 +369,7 @@ int main(int ac, char **av)
 				x++;
 			}
 		}
-
+		glDisable(GL_PRIMITIVE_RESTART);
 		glBindVertexArray(0);
 		glfwPollEvents();
 		glfwSwapBuffers(data.window);

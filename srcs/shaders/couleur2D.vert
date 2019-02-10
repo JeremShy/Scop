@@ -8,6 +8,7 @@
 layout (location = 0) in vec3 in_Vertex;
 // layout (location = 1) in vec3 in_Color;
 layout (location = 1) in vec2 aTexCoord;
+layout (location = 2) in vec3 aColor;
 
 // Sortie
 
@@ -16,6 +17,9 @@ uniform mat4 view;
 uniform mat4 projection;
 
 out vec2 texCoord;
+flat out vec4 color;
+// out float color;
+// out int VertexID;
 
 // Fonction main
 
@@ -27,4 +31,7 @@ void main()
 
     // Envoi de la couleur au Fragment Shader
     texCoord = aTexCoord;
+    color = vec4(aColor.x, aColor.y, aColor.z, 0);
+    // color = (in_Vertex.x + in_Vertex.y + in_Vertex.z) / 3;
+	// VertexID = gl_VertexID;
 }
