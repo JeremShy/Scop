@@ -58,8 +58,15 @@ GLuint create_and_link_program(GLuint vertex_sh, GLuint fragment_sh)
 	int		success;
 	GLchar buffer[1024];
 
+	GLuint geometry_sh;
+	geometry_sh = create_and_compile_shader("./srcs/shaders/couleur2D.geo", GL_GEOMETRY_SHADER);
+	if (!check_compilation(geometry_sh, "./srcs/shaders/couleur2D.geo"))
+		return (0);
+
 	ret = glCreateProgram();
+
 	glAttachShader(ret, vertex_sh);
+	glAttachShader(ret, geometry_sh);
 	glAttachShader(ret, fragment_sh);
 	glLinkProgram(ret);
 

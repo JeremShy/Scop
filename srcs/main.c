@@ -222,6 +222,7 @@ int main(int ac, char **av)
 		printf("ERROR !\n");
 		exit(EXIT_FAILURE);
 	}
+	data.texture_nbr++;
 	
 	printf("OPengl version : %s\n", glGetString(GL_VERSION));
 	if (!init_shaders(&data, "./srcs/shaders/couleur2D.frag", "./srcs/shaders/couleur2D.vert"))
@@ -261,16 +262,20 @@ int main(int ac, char **av)
 			}
 			i++;
 		}
+		glBindTexture(GL_TEXTURE_2D, texs[i_tex]);
+		create_image_from_png(&data, i_tex, "./textures/wall.png");
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data.imgs[i_tex].w, data.imgs[i_tex].h, 0, GL_BGRA, GL_UNSIGNED_BYTE, data.imgs[i_tex].data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
 	}
 	
-	t_vec3	tab[obj[0].vertices_nbr];
+	float	tab[obj[0].vertices_nbr];
 
 	int q = 0;
 	while (q < obj[0].vertices_nbr)
 	{
-		tab[q].x = (q * 1.0) / obj[0].vertices_nbr;
-		tab[q].y = (q * 1.0) / obj[0].vertices_nbr;
-		tab[q].z = (q * 1.0) / obj[0].vertices_nbr;
+		tab[q] = (float)rand() / RAND_MAX;
 		q++;
 	}
 
@@ -279,15 +284,15 @@ int main(int ac, char **av)
 	glGenBuffers(1, &data.buffer[0]);
 	glBindVertexArray(vao);
 		glBindBuffer(GL_ARRAY_BUFFER, data.buffer[0]);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(t_vec3) * obj[0].vertices_nbr + sizeof(t_vec2) * obj[0].tex_vertices_nbr + sizeof(t_vec3) * obj[0].vertices_nbr, 0, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(t_vec3) * obj[0].vertices_nbr + sizeof(t_vec2) * obj[0].tex_vertices_nbr + sizeof(float) * obj[0].vertices_nbr, 0, GL_STATIC_DRAW);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(t_vec3) * obj[0].vertices_nbr, obj[0].vertices);
 			glBufferSubData(GL_ARRAY_BUFFER, sizeof(t_vec3) * obj[0].vertices_nbr, sizeof(t_vec2) * obj[0].tex_vertices_nbr, obj[0].tex_vertices);
-			glBufferSubData(GL_ARRAY_BUFFER, sizeof(t_vec3) * obj[0].vertices_nbr + sizeof(t_vec2) * obj[0].tex_vertices_nbr, sizeof(t_vec3) * obj[0].vertices_nbr, tab);
+			glBufferSubData(GL_ARRAY_BUFFER, sizeof(t_vec3) * obj[0].vertices_nbr + sizeof(t_vec2) * obj[0].tex_vertices_nbr, sizeof(float) * obj[0].vertices_nbr, tab);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL);
 			glEnableVertexAttribArray(0);
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (GLvoid*)(sizeof(t_vec3) * obj[0].vertices_nbr));
 			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (GLvoid*)(sizeof(t_vec3) * obj[0].vertices_nbr + sizeof(t_vec2) * obj[0].tex_vertices_nbr));
+			glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(float), (GLvoid*)(sizeof(t_vec3) * obj[0].vertices_nbr + sizeof(t_vec2) * obj[0].tex_vertices_nbr));
 			glEnableVertexAttribArray(2);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(obj[0].indices[0]) * obj[0].indices_nbr, obj[0].indices, GL_STATIC_DRAW);
