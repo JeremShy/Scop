@@ -15,6 +15,7 @@ layout (location = 2) in float aColor;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform bool defTex;
 
 out float tri;
 out vec2 vTexCoord;
@@ -30,7 +31,13 @@ void main()
 	gl_Position = projection * view * model * vec4(in_Vertex, 1.0);
 
     // Envoi de la couleur au Fragment Shader
-    vTexCoord = aTexCoord;
+	if (defTex)
+	{
+		vTexCoord.x = in_Vertex.y;
+		vTexCoord.y = in_Vertex.z;
+	}
+	else
+		vTexCoord = aTexCoord;
     tri = aColor;
     // color = (in_Vertex.x + in_Vertex.y + in_Vertex.z) / 3;
 	// VertexID = gl_VertexID;

@@ -323,13 +323,13 @@ int main(int ac, char **av)
 
 	data.drawing_mode = 0;
 	int	texOn = glGetUniformLocation(data.program, "texOn");
-	int	nbface = glGetUniformLocation(data.program, "nb_face");
+	int	defTex = glGetUniformLocation(data.program, "defTex");
 	printf("data.texture_on = %d\n", data.texture_on);
 	while (!glfwWindowShouldClose(data.window))
 	{
 
 		glUniform1i(texOn, data.texture_on);
-		glUniform1i(nbface, obj[0].faces_nbr);
+		glUniform1i(defTex, data.texture_nbr == 1 ? 1 : 0);
 		
 		delta = (tp.tv_sec * 1000 + tp.tv_usec / 1000) - last;
 		last = (tp.tv_sec * 1000 + tp.tv_usec / 1000);
