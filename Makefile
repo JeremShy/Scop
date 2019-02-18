@@ -1,5 +1,6 @@
 SRC_NAME = main.c \
 			shaders.c \
+			keys_func.c \
 			binary_tools.c \
 			\
 			obj_parser/main.c \

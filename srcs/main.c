@@ -3,9 +3,38 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 
+struct s_key_event keys[] = {	
+	{GLFW_KEY_G, NULL},
+	{GLFW_KEY_T, t},
+	{GLFW_KEY_V, v},
+	{GLFW_KEY_ESCAPE, echap},
+	{GLFW_KEY_0, key_0},
+	{GLFW_KEY_1, key_1},
+	{GLFW_KEY_2, key_2},
+	{GLFW_KEY_3, key_3},
+	{GLFW_KEY_4, key_4},
+	{GLFW_KEY_5, key_5},
+	{GLFW_KEY_6, key_6},
+	{GLFW_KEY_7, key_7},
+	{GLFW_KEY_8, key_8},
+	{GLFW_KEY_9, key_9},
+	{GLFW_KEY_MINUS, minus},
+	{GLFW_KEY_EQUAL, equal},
+	{GLFW_KEY_W, w},
+	{GLFW_KEY_S, s},
+	{GLFW_KEY_A, a},
+	{GLFW_KEY_D, d},
+	{GLFW_KEY_R, r},
+	{GLFW_KEY_UP, key_up},
+	{GLFW_KEY_DOWN, key_down},
+	{GLFW_KEY_RIGHT, key_right},
+	{GLFW_KEY_LEFT, key_left},
+								};
+
 int8_t	init_data(t_d *data)
 {
 	ft_bzero(data, sizeof(t_d));
+	data->depl = 1;
 	return (1);
 }
 
@@ -77,80 +106,27 @@ int8_t    init_shaders(t_d *data, const char *frag, const char *vert)
 	return (1);
 }
 
-void	key_event(t_d *data, uint delta)
+
+
+void	key_event(t_d *data, uint delta, t_obj *objs)
 {
 	// t_mat4x4 rotation;
-	t_vec3	transl;
-	static float depl = 1;
-	static float rot = 30;
+	int			i;
+	static char *prev;
 
-	if (glfwGetKey(data->window, GLFW_KEY_ESCAPE))
-		glfwSetWindowShouldClose(data->window, true);
-	if (glfwGetKey(data->window, GLFW_KEY_MINUS))
+	if (!prev)
 	{
-		printf("minus\n");
-		depl /= 1.01;
+		prev = malloc(sizeof(keys) / sizeof(struct s_key_event));
+		ft_bzero(prev, sizeof(keys) / sizeof(struct s_key_event));
 	}
-	if (glfwGetKey(data->window, GLFW_KEY_EQUAL))
+	i = 0;
+	while (i < sizeof(keys) / sizeof(struct s_key_event))
 	{
-		printf("plus\n");
-		depl *= 1.01;
+		if (glfwGetKey(data->window, keys[i].key) && keys[i].func)
+			keys[i].func(data, objs, delta, prev);
+		prev[i] = glfwGetKey(data->window, keys[i].key);
+		i++;
 	}
-	if (glfwGetKey(data->window, GLFW_KEY_W))
-	{
-		printf("W\n");
-		transl = ft_vec3_scalar_mult(data->dir, -depl * delta / 1000);
-		data->eye = ft_vec3_add(data->eye, transl);
-		ft_mat4x4_set_look_at(data->cam.view, data->eye, ft_vec3_sub(data->eye, data->dir), data->cam.up);
-
-	}
-	if (glfwGetKey(data->window, GLFW_KEY_S))
-	{
-		printf("S\n");
-		transl = ft_vec3_scalar_mult(data->dir, depl * delta / 1000);
-		data->eye = ft_vec3_add(data->eye, transl);
-		ft_mat4x4_set_look_at(data->cam.view, data->eye, ft_vec3_sub(data->eye, data->dir), data->cam.up);
-	}
-	if (glfwGetKey(data->window, GLFW_KEY_A))
-	{
-		printf("A\n");
-
-		transl = ft_vec3_cross(data->dir, (t_vec3){0,1,0});
-		ft_vec3_normalize(&transl);
-		transl = ft_vec3_scalar_mult(transl, depl * delta / 1000);
-		data->eye = ft_vec3_add(data->eye, transl);
-		ft_mat4x4_set_look_at(data->cam.view, data->eye, ft_vec3_sub(data->eye, data->dir), data->cam.up);
-
-	}
-	if (glfwGetKey(data->window, GLFW_KEY_D))
-	{
-		printf("D\n");
-		transl = ft_vec3_cross(data->dir, (t_vec3){0,1,0});
-		ft_vec3_normalize(&transl);
-		transl = ft_vec3_scalar_mult(transl,  -depl * delta / 1000);
-		data->eye = ft_vec3_add(data->eye, transl);
-		ft_mat4x4_set_look_at(data->cam.view, data->eye, ft_vec3_sub(data->eye, data->dir), data->cam.up);
-	}
-	if (glfwGetKey(data->window, GLFW_KEY_V) == GLFW_RELEASE && data->last_state[GLFW_KEY_V] == GLFW_PRESS)
-	{
-		!data->drawing_mode ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		data->drawing_mode = !data->drawing_mode;
-	}
-	if (glfwGetKey(data->window, GLFW_KEY_R) == GLFW_RELEASE && data->last_state[GLFW_KEY_R] == GLFW_PRESS)
-	{
-		data->eye = (t_vec3){0, 0, -10};
-		data->dir = (t_vec3){0, 0, -1};
-		ft_mat4x4_set_look_at(data->cam.view, data->eye, ft_vec3_sub(data->eye, data->dir), data->cam.up);
-		data->angle_y = 0;
-	}
-	if (glfwGetKey(data->window, GLFW_KEY_T) == GLFW_RELEASE && data->last_state[GLFW_KEY_T] == GLFW_PRESS)
-	{
-		printf("Texture\n");
-		data->texture_on = (data->texture_on + 1) % 2;
-	}
-	data->last_state[GLFW_KEY_V] = glfwGetKey(data->window, GLFW_KEY_V);
-	data->last_state[GLFW_KEY_T] = glfwGetKey(data->window, GLFW_KEY_T);
-	data->last_state[GLFW_KEY_R] = glfwGetKey(data->window, GLFW_KEY_R);
 	ft_mat4x4_to_float_array(data->cam.view_f, data->cam.view);
 }
 
@@ -178,207 +154,260 @@ void rotation_cam(t_d *data, uint delta)
 	last_x = x;
 }
 
-int main(int ac, char **av)
+t_obj*	get_all_obj(t_d *data, int ac, char **av)
 {
-	t_d				data;
-	uint			last;
-	uint			delta;
-	struct timeval	tp;
-	t_obj*			obj;
-	uint			j;
-	uint			i;
-	unsigned int	*texs;
-	GLuint ebo = 0;
-	GLuint vao = 0;
-	uint	i_tex;
-	int x;
-	int nb_face;
+	t_obj*			objs;
+	uint i;
+	uint j;
 
-	i = 0;
-	init_all(&data);
-	obj = malloc(sizeof(t_obj) * (ac - 1));
+	objs = malloc(sizeof(t_obj) * (ac - 1));
+	data->texture_nbr = 1;
 	av++;
+	i = 0;
 	while (*av)
 	{
-		obj[i] = obj_parser_main(*av);
+		objs[i] = obj_parser_main(*av);
 		j = 0;
-		printf("obj #%d :\n\tname = %s\n", i, obj[i].name);
-		while (j < obj[i].mtl_nbr)
+		printf("obj #%d :\n\tname = %s\n", i, objs[i].name);
+		while (j < objs[i].mtl_nbr)
 		{
-			if (obj[i].mtls[j].img_file)
-				data.texture_nbr++;
-			printf("\tmtls[%d].ref = %s\n", j, obj[i].mtls[j].ref);
-			printf("\tmtls[%d].img_file = %s\n", j, obj[i].mtls[j].img_file);
-			printf("\tmtls[%d].index = %d\n", j, obj[i].mtls[j].index);
+			if (objs[i].mtls[j].img_file)
+			{
+				objs[i].textures_nbr++;
+				data->texture_nbr++;
+			}
+			printf("\tmtls[%d].ref = %s\n", j, objs[i].mtls[j].ref);
+			printf("\tmtls[%d].img_file = %s\n", j, objs[i].mtls[j].img_file);
+			printf("\tmtls[%d].index = %d\n", j, objs[i].mtls[j].index);
 			j++;
 		}
-		if (!obj[i].error)
+		if (!objs[i].error)
 			i++;
 		av++;
 	}
-	data.object_nbr = i;
-	if (obj[0].error)
+	data->object_nbr = i;
+	return (objs);
+}
+
+void init_vbo(t_obj *obj, size_t size[3], float *tab)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, obj->gl_buff.vbo);
+	glBufferData(GL_ARRAY_BUFFER, size[0] + size[1] + size[2], 0, GL_STATIC_DRAW);
+	
+	glBufferSubData(GL_ARRAY_BUFFER, 0, size[0], obj->vertices);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL);
+	glEnableVertexAttribArray(0);
+	
+	glBufferSubData(GL_ARRAY_BUFFER, size[0], size[1], obj->tex_vertices);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (GLvoid*)(size[0]));
+	glEnableVertexAttribArray(1);
+
+	glBufferSubData(GL_ARRAY_BUFFER, size[0] + size[1], size[2], tab);
+	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(float), (GLvoid*)(size[0] + size[1]));
+	glEnableVertexAttribArray(2);
+}
+
+void init_vao(t_obj *obj)
+{
+	size_t size[3];
+	float	tab[obj->vertices_nbr];
+	uint q = 0;
+
+	while (q < obj->vertices_nbr)
+		tab[q++] = (float)rand() / RAND_MAX;
+	size[0] = sizeof(t_vec3) * obj->vertices_nbr;
+	size[1] = sizeof(t_vec2) * obj->tex_vertices_nbr;
+	size[2] = sizeof(float) * obj->vertices_nbr;
+	glGenVertexArrays(1, &obj->gl_buff.vao);
+	glGenBuffers(1, &obj->gl_buff.ebo);
+	glGenBuffers(1, &obj->gl_buff.vbo);
+	glBindVertexArray(obj->gl_buff.vao);
+	init_vbo(obj, size, tab);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, obj->gl_buff.ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(obj->indices[0]) * obj->indices_nbr, obj->indices, GL_STATIC_DRAW);
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void get_glTexImage(uint *texs, uint *i_tex, t_d *data, char *file)
+{
+	glBindTexture(GL_TEXTURE_2D, texs[*i_tex]);
+	create_image_from_png(data, *i_tex, file);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data->imgs[*i_tex].w, data->imgs[*
+	i_tex].h, 0, GL_BGRA, GL_UNSIGNED_BYTE, data->imgs[*i_tex].data);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	(*i_tex)++;
+}
+
+uint *init_texs(t_d *data, t_obj *objs)
+{
+	uint		*texs;
+	uint	i_tex;
+	uint	i;
+	uint	j;
+
+	data->imgs = malloc(sizeof(t_img) * data->texture_nbr);
+	texs = malloc(sizeof(uint) * data->texture_nbr); 
+	glGenTextures(data->texture_nbr, texs);
+	i = -1;
+	i_tex = 0;
+	get_glTexImage(texs, &i_tex, data, "./textures/bien.png");
+	while (++i < data->object_nbr)
+	{
+		j = -1;
+		while (++j < objs[i].mtl_nbr)
+		{
+			objs[i].texOn = 1;
+			if (objs[i].mtls[j].img_file)
+				get_glTexImage(texs, &i_tex, data, objs[i].mtls[j].img_file);
+		}
+	}
+	return(texs);
+}
+
+void	init_uniform_data(t_d *data)
+{
+	data->eye = (t_vec3){0, 0, -10};
+	data->dir = (t_vec3){0, 0, -1};
+	data->cam.up = (t_vec3){0,1,0};
+	ft_mat4x4_set_look_at(data->cam.view, data->eye, ft_vec3_sub(data->eye, data->dir), data->cam.up);
+	ft_mat4x4_to_float_array(data->cam.view_f, data->cam.view);
+	ft_mat4x4_set_projection(data->cam.proj, (float[]){45, (float)data->width / data->height, .1f, 1000.0f});
+	ft_mat4x4_to_float_array(data->cam.proj_f, data->cam.proj);
+	data->viewLoc = glGetUniformLocation(data->program, "view");
+	data->projLoc = glGetUniformLocation(data->program, "projection");
+}
+
+void	init_uniform_obj(t_d *data, t_obj *obj)
+{
+	obj->mid = ft_vec3_scalar_mult(ft_vec3_add(obj->min, obj->max), -0.5);
+	// ft_mat4x4_set_identity(obj->model);
+	ft_mat4x4_to_float_array(obj->model_f, obj->model);
+	obj->modelLoc = glGetUniformLocation(data->program, "model");
+	obj->texOnLoc = glGetUniformLocation(data->program, "texOn");
+	obj->defTex = glGetUniformLocation(data->program, "defTex");
+}
+
+void	draw_part_obj(t_obj *obj, uint *x, uint *texs)
+{
+	uint	y;
+	int	nb_face;
+	
+	y = 0;
+	while (y < obj->mtl_nbr)
+	{
+		if (y + 1 == obj->mtl_nbr)
+			nb_face = obj->faces_nbr - obj->mtls[y].index;
+		else
+			nb_face = obj->mtls[y + 1].index - obj->mtls[y].index;
+		if (obj->mtls[y].img_file)
+		{
+			glBindTexture(GL_TEXTURE_2D, texs[*x]);
+			(*x)++;
+		}
+		else
+			glBindTexture(GL_TEXTURE_2D, texs[0]);
+		glMultiDrawElements(GL_TRIANGLE_FAN, &(obj->counts[obj->mtls[y].
+		index]), GL_UNSIGNED_INT, (const GLvoid * const *)(&(obj->offset[
+		obj->mtls[y].index])), nb_face);
+		y++;
+	}
+}
+
+void	draw_obj(t_d *data, t_obj *obj, uint delta, uint *x, uint *texs)
+{
+	static float angle = 0;
+
+	glUniform1i(obj->texOnLoc, obj->texOn);
+	glUniform1i(obj->defTex, obj->textures_nbr == 0 ? 1 : 0);
+	glBindVertexArray(obj->gl_buff.vao);
+	ft_mat4x4_set_translation(obj->model, obj->pos);
+	ft_mat4x4_translate(obj->model, ft_vec3_scalar_mult(obj->mid, -1));
+	ft_mat4x4_rotate(obj->model, angle, (t_vec3){0, 1, 0});
+	ft_mat4x4_translate(obj->model, obj->mid);
+	ft_mat4x4_to_float_array(obj->model_f, obj->model);
+	glUniformMatrix4fv(obj->modelLoc, 1, GL_FALSE, obj->model_f);
+	angle += 90 * delta / 1000.0;
+	if (!obj->mtl_nbr)
+	{
+		glBindTexture(GL_TEXTURE_2D, texs[0]);
+		glMultiDrawElements(GL_TRIANGLE_FAN, obj->counts, GL_UNSIGNED_INT,
+			(const GLvoid * const *)obj->offset, obj->faces_nbr);
+	}
+	else
+		draw_part_obj(obj, x, texs);
+}
+
+void	init_frame(t_d *data, uint delta, t_obj *objs)
+{
+	key_event(data, delta, objs);
+	rotation_cam(data, delta);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glUseProgram(data->program);
+	glActiveTexture(GL_TEXTURE0);
+	glUniformMatrix4fv(data->viewLoc, 1, GL_FALSE, data->cam.view_f);
+	glUniformMatrix4fv(data->projLoc, 1, GL_FALSE, data->cam.proj_f);
+}
+
+void	update_frame(t_d *data, t_obj *objs, uint *texs)
+{
+	uint						x;
+	uint					delta;
+	static struct timeval	tp = {0, 0};
+	static uint				last = 0;
+	size_t						i;
+
+	delta = (tp.tv_sec * 1000 + tp.tv_usec / 1000) - last;
+	last = (tp.tv_sec * 1000 + tp.tv_usec / 1000);
+	init_frame(data, delta, objs);
+	x = 1;
+	i = -1;
+	while (++i < data->object_nbr)
+	{
+		draw_obj(data, &objs[i], delta, &x, texs);
+		glDisable(GL_PRIMITIVE_RESTART);
+		glBindVertexArray(0);
+	}
+	glfwPollEvents();
+	glfwSwapBuffers(data->window);
+	gettimeofday(&tp, NULL);
+}
+
+int main(int ac, char **av)
+{
+	t_d				data;
+	t_obj*			objs;
+	uint			*texs;
+	size_t				i;
+
+	init_all(&data);
+	objs = get_all_obj(&data, ac, av);
+	if (objs[0].error)
 	{
 		printf("ERROR !\n");
 		exit(EXIT_FAILURE);
 	}
-	data.texture_nbr++;
-	
 	printf("OPengl version : %s\n", glGetString(GL_VERSION));
 	if (!init_shaders(&data, "./srcs/shaders/couleur2D.frag", "./srcs/shaders/couleur2D.vert"))
 		return (1);
 	if (!(data.program = create_and_link_program(data.vertex_sh, data.fragment_sh)))
 		return (2);
 	printf("nb = %zu\n", data.texture_nbr);
-	data.imgs = malloc(sizeof(t_img) * data.texture_nbr);
-	if (data.texture_nbr)
+	texs = init_texs(&data, objs);
+	init_uniform_data(&data);
+	i = 0;
+	printf("data.object_nbr = %zu\n", data.object_nbr);
+	while (i < data.object_nbr)
 	{
-		printf("nb_text = %zu\n", data.texture_nbr);
-		texs = malloc(sizeof(uint) * data.texture_nbr); 
-		glGenTextures(data.texture_nbr, texs);
-
-		i = 0;
-		i_tex = 0;
-		while (i < data.object_nbr)
-		{
-			j = 0;
-			printf("obj[i].mtl_nbr = %d\n", obj[i].mtl_nbr);
-			while (j < obj[i].mtl_nbr)
-			{
-				data.texture_on = 1;
-				printf("obj[i].mtls[j].img_file = %s\n", obj[i].mtls[j].img_file);
-				if (obj[i].mtls[j].img_file)
-				{
-					printf("i_tex = %u\nname = %s\n", i_tex, obj[i].mtls[j].img_file);
-					printf("texs[i_tex] = %d\n", texs[i_tex]);
-					glBindTexture(GL_TEXTURE_2D, texs[i_tex]);
-					create_image_from_png(&data, i_tex, obj[i].mtls[j].img_file);
-
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data.imgs[i_tex].w, data.imgs[i_tex].h, 0, GL_BGRA, GL_UNSIGNED_BYTE, data.imgs[i_tex].data);
-					glGenerateMipmap(GL_TEXTURE_2D);
-					i_tex++;
-				}
-				j++;
-			}
-			i++;
-		}
-		glBindTexture(GL_TEXTURE_2D, texs[i_tex]);
-		create_image_from_png(&data, i_tex, "./textures/wall.png");
-
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data.imgs[i_tex].w, data.imgs[i_tex].h, 0, GL_BGRA, GL_UNSIGNED_BYTE, data.imgs[i_tex].data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
+		init_vao(&objs[i]);
+		init_uniform_obj(&data, &objs[i]);
+		i++;
 	}
-	
-	float	tab[obj[0].vertices_nbr];
-
-	int q = 0;
-	while (q < obj[0].vertices_nbr)
-	{
-		tab[q] = (float)rand() / RAND_MAX;
-		q++;
-	}
-
-	glGenVertexArrays(1, &vao);
-	glGenBuffers(1, &ebo);
-	glGenBuffers(1, &data.buffer[0]);
-	glBindVertexArray(vao);
-		glBindBuffer(GL_ARRAY_BUFFER, data.buffer[0]);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(t_vec3) * obj[0].vertices_nbr + sizeof(t_vec2) * obj[0].tex_vertices_nbr + sizeof(float) * obj[0].vertices_nbr, 0, GL_STATIC_DRAW);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(t_vec3) * obj[0].vertices_nbr, obj[0].vertices);
-			glBufferSubData(GL_ARRAY_BUFFER, sizeof(t_vec3) * obj[0].vertices_nbr, sizeof(t_vec2) * obj[0].tex_vertices_nbr, obj[0].tex_vertices);
-			glBufferSubData(GL_ARRAY_BUFFER, sizeof(t_vec3) * obj[0].vertices_nbr + sizeof(t_vec2) * obj[0].tex_vertices_nbr, sizeof(float) * obj[0].vertices_nbr, tab);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL);
-			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (GLvoid*)(sizeof(t_vec3) * obj[0].vertices_nbr));
-			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(float), (GLvoid*)(sizeof(t_vec3) * obj[0].vertices_nbr + sizeof(t_vec2) * obj[0].tex_vertices_nbr));
-			glEnableVertexAttribArray(2);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(obj[0].indices[0]) * obj[0].indices_nbr, obj[0].indices, GL_STATIC_DRAW);
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	data.eye = (t_vec3){0, 0, -10};
-	data.dir = (t_vec3){0, 0, -1};
-	t_vec3 mid;
-
-	mid = ft_vec3_scalar_mult(ft_vec3_add(obj[0].min, obj[0].max), -0.5);
-	ft_mat4x4_set_identity(data.cam.model);
-	ft_mat4x4_to_float_array(data.cam.model_f, data.cam.model);
-
-	data.cam.up = (t_vec3){0,1,0};
-	ft_mat4x4_set_look_at(data.cam.view, data.eye, ft_vec3_sub(data.eye, data.dir), data.cam.up);
-	ft_mat4x4_to_float_array(data.cam.view_f, data.cam.view);
-
-	ft_mat4x4_set_projection(data.cam.proj, (float[]){45, (float)data.width / data.height, .1f, 1000.0f});
-	ft_mat4x4_to_float_array(data.cam.proj_f, data.cam.proj);
-
-	int modelLoc = glGetUniformLocation(data.program, "model");
-	int viewLoc = glGetUniformLocation(data.program, "view");
-	int projLoc = glGetUniformLocation(data.program, "projection");
-
 	glClearColor(.2, .3, .3, 1);
-	gettimeofday(&tp, NULL);
-	last = (tp.tv_sec * 1000 + tp.tv_usec / 1000);
-
 	data.drawing_mode = 0;
-	int	texOn = glGetUniformLocation(data.program, "texOn");
-	int	defTex = glGetUniformLocation(data.program, "defTex");
-	printf("data.texture_on = %d\n", data.texture_on);
 	while (!glfwWindowShouldClose(data.window))
 	{
-
-		glUniform1i(texOn, data.texture_on);
-		glUniform1i(defTex, data.texture_nbr == 1 ? 1 : 0);
-		
-		delta = (tp.tv_sec * 1000 + tp.tv_usec / 1000) - last;
-		last = (tp.tv_sec * 1000 + tp.tv_usec / 1000);
-
-		key_event(&data, delta);
-		rotation_cam(&data, delta);
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glUseProgram(data.program);
-		glActiveTexture(GL_TEXTURE0);
-		glBindVertexArray(vao);
-
-		ft_mat4x4_translate(data.cam.model, ft_vec3_scalar_mult(mid, -1));
-		ft_mat4x4_rotate(data.cam.model, 90 * delta / 1000.0, (t_vec3){0, 1, 0});
-		ft_mat4x4_translate(data.cam.model, mid);
-		
-		ft_mat4x4_to_float_array(data.cam.model_f, data.cam.model);
-
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, data.cam.model_f);
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, data.cam.view_f);
-		glUniformMatrix4fv(projLoc, 1, GL_FALSE, data.cam.proj_f);
-
-		if (!obj[0].mtl_nbr)
-			glMultiDrawElements(GL_TRIANGLE_FAN, obj[0].counts, GL_UNSIGNED_INT, (const GLvoid * const *)obj[0].offset, obj[0].faces_nbr);
-
-		else
-		{
-			int x;
-		
-			x = 0;
-			while (x < obj[0].mtl_nbr)
-			{
-				glBindTexture(GL_TEXTURE_2D, texs[x]);
-				int nb_face;
-	
-				if (x + 1 == obj[0].mtl_nbr)
-					nb_face = obj[0].faces_nbr - obj[0].mtls[x].index;
-				else
-					nb_face = obj[0].mtls[x + 1].index - obj[0].mtls[x].index;
-				glMultiDrawElements(GL_TRIANGLE_FAN, &(obj[0].counts[obj[0].mtls[x].index]), GL_UNSIGNED_INT, (const GLvoid * const *)(&(obj[0].offset[obj[0].mtls[x].index])), nb_face);
-				x++;
-			}
-		}
-		glDisable(GL_PRIMITIVE_RESTART);
-		glBindVertexArray(0);
-		glfwPollEvents();
-		glfwSwapBuffers(data.window);
-		gettimeofday(&tp, NULL);
+		update_frame(&data, objs, texs);
 	}
 	printf("Closing window.\n");
 
