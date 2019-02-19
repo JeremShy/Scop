@@ -10,7 +10,7 @@ static void		copy_ret_in_obj(uint ret[3], t_obj *obj)
 		obj->error = 1;
 	face = &obj->faces[obj->faces_curr];
 	face->v_index[face->v_nbr] = ret[0] - 1;
-	face->t_index[face->v_nbr] = ret[1] - 1;
+	face->vt_index[face->v_nbr] = ret[1] - 1;
 	face->vn_index[face->v_nbr] = ret[2] - 1;
 	face->v_nbr++;
 	obj->indices_nbr++;

@@ -285,26 +285,31 @@ void	init_obj(t_obj *obj)
 	i = 0;
 	curr = 0;
 	count = 0;
-	obj->indices = malloc(sizeof(unsigned int) * obj->indices_nbr);
+	obj->points = malloc(sizeof(struct s_point) * obj->indices_nbr);
+	obj->indices = malloc(sizeof(uint) * obj->indices_nbr);
 	obj->counts = malloc(sizeof(GLsizei) * obj->faces_nbr);
 	obj->offset = malloc(sizeof(GLvoid *) * obj->faces_nbr);
-	obj->textures = malloc(sizeof(t_vec2) * obj->indices_nbr);
 	while (i < obj->faces_nbr)
 	{
 		j = 0;
 		while (j < obj->faces[i].v_nbr)
 		{
-			obj->indices[curr] = obj->faces[i].v_index[j];
-			if (obj->faces[i].t_index[j] != -1)
-			{
-				obj->textures[curr].x = obj->tex_vertices[obj->faces[i].t_index[j]].x;
-				obj->textures[curr].y = obj->tex_vertices[obj->faces[i].t_index[j]].y;
-			}
+			obj->indices[curr] = curr;
+			obj->points[curr].vertex = obj->vertices[obj->faces[i].v_index[j]];
+			if (obj->faces[i].vt_index[j] == -1)
+				obj->points[curr].tex_vertex = (t_vec2){0, 0};
 			else
-			{
-				obj->textures[curr].x = 0;
-				obj->textures[curr].y = 0;
-			}
+				obj->points[curr].tex_vertex = obj->tex_vertices[obj->faces[i].vt_index[j]];
+			if (obj->faces[i].vn_index[j] == -1)
+				obj->points[curr].normal = (t_vec3){0, 0, 0};
+			else
+				obj->points[curr].normal = obj->normales[obj->faces[i].vn_index[j]];
+			obj->points[curr].rand = (float)rand() / RAND_MAX;
+			printf("current = %d\nvertice = %f,%f,%f\ntexture_vertice = %f,%f\nnormale = %f,%f,%f\n\n", 
+				curr, 
+				obj->points[curr].vertex.x, obj->points[curr].vertex.y, obj->points[curr].vertex.z,
+				obj->points[curr].tex_vertex.x, obj->points[curr].tex_vertex.y,
+				obj->points[curr].normal.x, obj->points[curr].normal.y, obj->points[curr].normal.z);
 			j++;
 			curr++;
 		}

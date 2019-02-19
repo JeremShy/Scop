@@ -78,13 +78,31 @@ void	key_9(t_d *data, t_obj *objs, uint delta, char *prev)
 void	equal(t_d *data, t_obj *objs, uint delta, char *prev)
 {
 	printf("plus\n");
-	data->depl *= 1.01;
+	if (prev[F_OFFSET])
+	{
+		if (data->current)
+		{
+			printf("Object plus gros\n");
+			data->current->scale *= 1.01;
+		}
+	}
+	else
+		data->depl *= 1.01;
 }
 
 void	minus(t_d *data, t_obj *objs, uint delta, char *prev)
 {
 	printf("minus\n");
-	data->depl /= 1.01;
+	if (prev[F_OFFSET])
+	{
+		if (data->current)
+		{
+			printf("Object plus petit\n");
+			data->current->scale *= 1/1.01;
+		}
+	}
+	else
+		data->depl /= 1.01;
 }
 
 void	w(t_d *data, t_obj *objs, uint delta, char *prev)
@@ -154,6 +172,14 @@ void	v(t_d *data, t_obj *objs, uint delta, char *prev)
 		return ;
 	!data->drawing_mode ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	data->drawing_mode = !data->drawing_mode;
+}
+
+void	o(t_d *data, t_obj *objs, uint delta, char *prev)
+{
+	if (prev[O_OFFSET])
+		return ;
+	if (data->current)
+		data->current->rotOn ^= 1;
 }
 
 void	key_up(t_d *data, t_obj *objs, uint delta, char *prev)

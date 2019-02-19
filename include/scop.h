@@ -20,6 +20,8 @@
 #define G_OFFSET 0
 #define T_OFFSET 1
 #define V_OFFSET 2
+#define O_OFFSET 3
+#define F_OFFSET 4
 
 
 typedef struct	s_ivec2 {
@@ -52,7 +54,7 @@ struct s_gl_buff
 
 struct s_face {
 	int		v_index[MAX_VERTICES_FACE];
-	int		t_index[MAX_VERTICES_FACE];
+	int		vt_index[MAX_VERTICES_FACE];
 	int		vn_index[MAX_VERTICES_FACE];
 
 	uint8_t	v_nbr;
@@ -71,6 +73,14 @@ struct				s_ref
 	char			*img;
 }					;
 
+struct				s_point
+{
+	t_vec3			vertex;
+	t_vec2			tex_vertex;
+	t_vec3			normal;
+	float			rand;
+};
+
 typedef struct		s_obj {
 	char				*name;
 	char				*path;
@@ -79,7 +89,6 @@ typedef struct		s_obj {
 	uint				vertices_nbr;
 	int					vertices_curr;
 
-	t_vec2				*textures; // Normale ??
 	uint				textures_nbr;
 
 	t_vec2				*tex_vertices;
@@ -96,8 +105,10 @@ typedef struct		s_obj {
 	
 	uint				indices_nbr;
 	uint				*indices;
+
+	struct s_point		*points;
+
 	GLvoid				**offset;
-	
 	GLsizei				*counts;
 
 	struct s_ref		*ref;
@@ -115,6 +126,8 @@ typedef struct		s_obj {
 	struct s_gl_buff	gl_buff;
 	t_vec3				mid;
 	t_vec3				pos;
+	float				scale;
+	int					rotOn;
 	int					texOn;
 	int					texOnLoc;
 	int					modelLoc;
@@ -155,9 +168,11 @@ typedef struct		s_d {
 	float				angle_y;
 	int					viewLoc;
 	int					projLoc;
+	int					ambLoc;
 
 	t_obj				*current;
 	float				depl;
+	float				ambient;
 	// int					color_on;
 }					t_d;
 
@@ -228,6 +243,7 @@ void	d(t_d *data, t_obj *objs, uint delta, char *prev);
 void	t(t_d *data, t_obj *objs, uint delta, char *prev);
 void	r(t_d *data, t_obj *objs, uint delta, char *prev);
 void	v(t_d *data, t_obj *objs, uint delta, char *prev);
+void	o(t_d *data, t_obj *objs, uint delta, char *prev);
 void	key_up(t_d *data, t_obj *objs, uint delta, char *prev);
 void	key_down(t_d *data, t_obj *objs, uint delta, char *prev);
 void	key_right(t_d *data, t_obj *objs, uint delta, char *prev);
