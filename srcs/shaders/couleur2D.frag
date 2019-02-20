@@ -15,6 +15,7 @@ uniform int texOn;
 uniform float ambientStrength;
 uniform vec3 lightPos;
 uniform vec3 lightColor;
+uniform vec3 viewPos;
 
 // Sortie 
 
@@ -33,11 +34,18 @@ void main()
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diff * lightColor;
 
+    // specular
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(viewPos - gFragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);  
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * spec * lightColor;  
+
     // Couleur finale du pixel
     if (texOn == 1)
-    	aColor = texture(tex, gTexCoord) * vec4(ambient + diffuse, 1.0);
+    	aColor = texture(tex, gTexCoord) * vec4(ambient + diffuse + specular, 1.0);
    	else
-   		aColor = gColor * vec4(ambient + diffuse, 1.0);
+   		aColor = gColor * vec4(ambient + diffuse + specular, 1.0);
    		// aColor = vec4(gl_PrimitiveID / (nb_face * 1.0), gl_PrimitiveID / (nb_face * 1.0), gl_PrimitiveID / (nb_face * 1.0), 0);
    		// aColor = vec4(gl_PrimitiveID / 2.0, gl_PrimitiveID / 2.0, gl_PrimitiveID / 2.0, 0);
 }

@@ -271,6 +271,7 @@ void	init_uniform_data(t_d *data)
 	data->viewLoc = glGetUniformLocation(data->program, "view");
 	data->projLoc = glGetUniformLocation(data->program, "projection");
 	data->ambLoc = glGetUniformLocation(data->program, "ambientStrength");
+	data->eyeLoc = glGetUniformLocation(data->program, "viewPos");
 	data->lightLoc = glGetUniformLocation(data->program, "lightPos");
 	data->lightColorLoc = glGetUniformLocation(data->program, "lightColor");
 }
@@ -345,6 +346,7 @@ void	init_frame(t_d *data, uint delta, t_obj *objs)
 	glUniformMatrix4fv(data->viewLoc, 1, GL_FALSE, data->cam.view_f);
 	glUniformMatrix4fv(data->projLoc, 1, GL_FALSE, data->cam.proj_f);
 	glUniform1f(data->ambLoc, data->ambient);
+	glUniform3f(data->eyeLoc, data->eye.x, data->eye.y, data->eye.z);
 	glUniform3f(data->lightLoc, data->lightPos.x, data->lightPos.y, data->lightPos.z);
 	glUniform3f(data->lightColorLoc, data->lightColor.x, data->lightColor.y, data->lightColor.z);
 }

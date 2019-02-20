@@ -171,6 +171,7 @@ typedef struct		s_d {
 	int					ambLoc;
 	int					lightLoc;
 	int					lightColorLoc;
+	int					eyeLoc;
 
 	t_obj				*current;
 	float				depl;
