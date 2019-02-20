@@ -6,8 +6,8 @@
 // Entrées
 
 layout (location = 0) in vec3 in_Vertex;
-// layout (location = 1) in vec3 in_Color;
 layout (location = 1) in vec2 aTexCoord;
+layout (location = 2) in vec3 aNormal;
 layout (location = 3) in float aColor;
 
 // Sortie
@@ -19,8 +19,6 @@ uniform bool defTex;
 
 out float tri;
 out vec2 vTexCoord;
-// out float color;
-// out int VertexID;
 
 // Fonction main
 

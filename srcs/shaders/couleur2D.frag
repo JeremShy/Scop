@@ -6,16 +6,13 @@
 // Entrée
 
 in vec2 gTexCoord;
-// in float color;
 in vec4 gColor;
 
 uniform sampler2D tex;
 uniform int texOn;
 uniform float ambient;
-// uniform int nb_face;
+uniform vec3 lightPos;
 
-// in int gl_VertexID;in int gl_VertexID;
-// in flat VertexID;
 // Sortie 
 
 out vec4 aColor;

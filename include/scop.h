@@ -169,10 +169,12 @@ typedef struct		s_d {
 	int					viewLoc;
 	int					projLoc;
 	int					ambLoc;
+	int					lightLoc;
 
 	t_obj				*current;
 	float				depl;
 	float				ambient;
+	t_vec3				lightPos;
 	// int					color_on;
 }					t_d;
 

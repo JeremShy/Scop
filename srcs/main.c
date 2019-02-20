@@ -269,6 +269,7 @@ void	init_uniform_data(t_d *data)
 	data->viewLoc = glGetUniformLocation(data->program, "view");
 	data->projLoc = glGetUniformLocation(data->program, "projection");
 	data->ambLoc = glGetUniformLocation(data->program, "ambient");
+	data->lightLoc = glGetUniformLocation(data->program, "light");
 }
 
 void	init_uniform_obj(t_d *data, t_obj *obj)
@@ -341,6 +342,7 @@ void	init_frame(t_d *data, uint delta, t_obj *objs)
 	glUniformMatrix4fv(data->viewLoc, 1, GL_FALSE, data->cam.view_f);
 	glUniformMatrix4fv(data->projLoc, 1, GL_FALSE, data->cam.proj_f);
 	glUniform1f(data->ambLoc, data->ambient);
+	glUniform3f(data->lightLoc, data->lightPos.x, data->lightPos.y, data->lightPos.z);
 }
 
 void	update_frame(t_d *data, t_obj *objs, uint *texs)
