@@ -38,6 +38,7 @@ void main()
 	else
 		vTexCoord = aTexCoord;
     tri = aColor;
+    vNormal = aNormal;
     // color = (in_Vertex.x + in_Vertex.y + in_Vertex.z) / 3;
 	// VertexID = gl_VertexID;
 }
