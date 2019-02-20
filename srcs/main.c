@@ -37,9 +37,9 @@ int8_t	init_data(t_d *data)
 {
 	ft_bzero(data, sizeof(t_d));
 	data->depl = 1;
-	data->ambient = 0.2;
+	data->ambient = 0;
 	data->lightColor = (t_vec3){1,1,1};
-	data->lightPos = (t_vec3){0,0,0};
+	data->lightPos = (t_vec3){50,0,0};
 	return (1);
 }
 
@@ -345,8 +345,8 @@ void	init_frame(t_d *data, uint delta, t_obj *objs)
 	glUniformMatrix4fv(data->viewLoc, 1, GL_FALSE, data->cam.view_f);
 	glUniformMatrix4fv(data->projLoc, 1, GL_FALSE, data->cam.proj_f);
 	glUniform1f(data->ambLoc, data->ambient);
-	glUniform3f(data->lightLoc, data->lightPos.x, data->lightPos.y, data->lightPos.z);
-	glUniform3f(data->lightColorLoc, data->lightColor.x, data->lightColor.y, data->lightColor.z);
+	glUniform4f(data->lightLoc, data->lightPos.x, data->lightPos.y, data->lightPos.z, 1.0);
+	glUniform4f(data->lightColorLoc, data->lightColor.x, data->lightColor.y, data->lightColor.z, 1.0);
 }
 
 void	update_frame(t_d *data, t_obj *objs, uint *texs)
