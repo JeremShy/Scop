@@ -14,6 +14,18 @@ static struct s_obj_parsing obj_parsing[] = {
 	{NULL, NULL}
 };
 
+size_t	find_next_line(char *line)
+{
+	size_t	s;
+
+	s = 0;
+	while (*line && *line != '\xd' && *line != '\n')
+	{
+		line++;
+		s++;
+	}
+	return (s);
+}
 
 int8_t	is_whitespace(char c)
 {
@@ -143,7 +155,7 @@ void	fill_ref(t_obj *obj, char *file, size_t size)
 			nb_array++;
 			size -= 6;
 			debut_handle(&file, obj, 6);
-			obj->ref[nb_array].ref = ft_strndup(file, find_next_ignored_char(file));
+			obj->ref[nb_array].ref = ft_strndup(file, find_next_line(file));
 		}
 		else if (size > 6 && !ft_strncmp(file, "map_Kd", 6))
 		{
@@ -186,7 +198,7 @@ void	handle_mtllib(char *line, t_obj *obj)
 	if (obj->ref)
 		return ;
 	debut_handle(&line, obj, 6);
-	tmp = ft_strndup(line, find_next_ignored_char(line));
+	tmp = ft_strndup(line, find_next_line(line));
 	file = ft_strjoin(obj->path, tmp);
 	free(tmp);
 	l = open_file(file, &size);
@@ -205,7 +217,7 @@ void	handle_usemtl(char *line, t_obj *obj)
 	char	*tmp;
 
 	debut_handle(&line, obj, 6);
-	tmp = ft_strndup(line, find_next_ignored_char(line));
+	tmp = ft_strndup(line, find_next_line(line));
 	obj->mtls[obj->mtl_curr].index = obj->faces_curr;
 	obj->mtls[obj->mtl_curr].ref = tmp;
 	obj->mtl_curr++;
@@ -305,11 +317,6 @@ void	init_obj(t_obj *obj)
 			else
 				obj->points[curr].normal = obj->normales[obj->faces[i].vn_index[j]];
 			obj->points[curr].rand = (float)rand() / RAND_MAX;
-			printf("current = %d\nvertice = %f,%f,%f\ntexture_vertice = %f,%f\nnormale = %f,%f,%f\n\n", 
-				curr, 
-				obj->points[curr].vertex.x, obj->points[curr].vertex.y, obj->points[curr].vertex.z,
-				obj->points[curr].tex_vertex.x, obj->points[curr].tex_vertex.y,
-				obj->points[curr].normal.x, obj->points[curr].normal.y, obj->points[curr].normal.z);
 			j++;
 			curr++;
 		}
@@ -336,7 +343,7 @@ int	init_path(char *param, t_obj *obj)
 				end = c;
 			c++;
 		}
-		if (!(obj->path = malloc(end + 1)))
+		if (!(obj->path = malloc(end + 2)))
 			return (0);
 		if (end != 0)
 			end++;

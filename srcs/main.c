@@ -78,7 +78,7 @@ int8_t	init_glfw(t_d *data)
 	glfwMakeContextCurrent(data->window);
 	glfwGetWindowSize(data->window, &data->width, &data->height);
 	printf("Window size : %d - %d\n", data->width, data->height);
-	glViewport(0, 0, data->width, data->height);
+	// glViewport(0, 0, data->width, data->height);
 	return (1);
 }
 
