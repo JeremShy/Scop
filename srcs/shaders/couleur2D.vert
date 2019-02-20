@@ -19,6 +19,7 @@ uniform bool defTex;
 
 out float tri;
 out vec2 vTexCoord;
+out vec3 vNormal;
 
 // Fonction main
 

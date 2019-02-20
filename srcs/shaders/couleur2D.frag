@@ -6,6 +6,7 @@
 // Entrée
 
 in vec2 gTexCoord;
+in vec3 gNormal;
 in vec4 gColor;
 
 uniform sampler2D tex;
