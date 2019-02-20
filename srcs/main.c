@@ -37,7 +37,9 @@ int8_t	init_data(t_d *data)
 {
 	ft_bzero(data, sizeof(t_d));
 	data->depl = 1;
-	data->ambient = 1;
+	data->ambient = 0.2;
+	data->lightColor = (t_vec3){1,1,1};
+	data->lightPos = (t_vec3){0,0,0};
 	return (1);
 }
 
@@ -268,8 +270,9 @@ void	init_uniform_data(t_d *data)
 	ft_mat4x4_to_float_array(data->cam.proj_f, data->cam.proj);
 	data->viewLoc = glGetUniformLocation(data->program, "view");
 	data->projLoc = glGetUniformLocation(data->program, "projection");
-	data->ambLoc = glGetUniformLocation(data->program, "ambient");
-	data->lightLoc = glGetUniformLocation(data->program, "light");
+	data->ambLoc = glGetUniformLocation(data->program, "ambientStrength");
+	data->lightLoc = glGetUniformLocation(data->program, "lightPos");
+	data->lightColorLoc = glGetUniformLocation(data->program, "lightColor");
 }
 
 void	init_uniform_obj(t_d *data, t_obj *obj)
@@ -343,6 +346,7 @@ void	init_frame(t_d *data, uint delta, t_obj *objs)
 	glUniformMatrix4fv(data->projLoc, 1, GL_FALSE, data->cam.proj_f);
 	glUniform1f(data->ambLoc, data->ambient);
 	glUniform3f(data->lightLoc, data->lightPos.x, data->lightPos.y, data->lightPos.z);
+	glUniform3f(data->lightColorLoc, data->lightColor.x, data->lightColor.y, data->lightColor.z);
 }
 
 void	update_frame(t_d *data, t_obj *objs, uint *texs)

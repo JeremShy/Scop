@@ -5,7 +5,7 @@
 
 // Entrées
 
-layout (location = 0) in vec3 in_Vertex;
+layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec2 aTexCoord;
 layout (location = 2) in vec3 aNormal;
 layout (location = 3) in float aColor;
@@ -20,6 +20,7 @@ uniform bool defTex;
 out float tri;
 out vec2 vTexCoord;
 out vec3 vNormal;
+out vec3 vFragPos;
 
 // Fonction main
 
@@ -27,18 +28,18 @@ void main()
 {
     // Position finale du vertex
 
-	gl_Position = projection * view * model * vec4(in_Vertex, 1.0);
-
+	gl_Position = projection * view * model * vec4(aPos, 1.0);
+	vFragPos = vec3(model * vec4(aPos, 1.0));
     // Envoi de la couleur au Fragment Shader
 	if (defTex)
 	{
-		vTexCoord.x = in_Vertex.y;
-		vTexCoord.y = in_Vertex.z;
+		vTexCoord.x = aPos.y;
+		vTexCoord.y = aPos.z;
 	}
 	else
 		vTexCoord = aTexCoord;
     tri = aColor;
     vNormal = aNormal;
-    // color = (in_Vertex.x + in_Vertex.y + in_Vertex.z) / 3;
+    // color = (aPos.x + aPos.y + aPos.z) / 3;
 	// VertexID = gl_VertexID;
 }
