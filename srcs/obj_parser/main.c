@@ -149,7 +149,7 @@ void	fill_ref(t_obj *obj, char *file, size_t size)
 		{
 			size -= 6;
 			debut_handle(&file, obj, 6);
-			if (ft_strstr(file, ".png") - file == ft_strlen(file)) ////////////////////////TODO
+			if ((size_t)(ft_strstr(file, ".png") - file) == ft_strlen(file)) ////////////////////////TODO
 				obj->error = 1;
 			tmp = ft_strndup(file, ft_strstr(file, ".png") - file + 4);
 			obj->ref[nb_array].img = ft_strjoin(obj->path, tmp);
@@ -258,8 +258,8 @@ void parse_line(char *line, t_obj *ret)
 
 void	fill_mtl(t_obj *obj)
 {
-	int i;
-	int j;
+	uint i;
+	uint j;
 
 	i = 0;
 	while (i < obj->mtl_nbr)

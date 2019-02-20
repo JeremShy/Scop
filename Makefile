@@ -29,7 +29,7 @@ NAME = scop
 
 CC = gcc
 CFLAGS =  -Wextra -Wall -g -fsanitize=address
-LFLAGS = -lft -framework OpenGL -framework AppKit -lglfw -lftmatrices -lm
+LFLAGS = -lft -framework OpenGL -framework AppKit -lglfw -lftmatrices -lm 
 LIB_DIR=./lib/
 
 OBJ_NAME = $(SRC_NAME:.c=.o)

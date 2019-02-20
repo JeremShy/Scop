@@ -1,6 +1,6 @@
 #ifndef SCOP_H
 # define SCOP_H
-
+# define GL_SILENCE_DEPRECATION
 # include <stdio.h>
 # include <sys/time.h>
 # include <libft.h>

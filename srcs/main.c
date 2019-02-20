@@ -114,7 +114,7 @@ int8_t    init_shaders(t_d *data, const char *frag, const char *vert)
 void	key_event(t_d *data, uint delta, t_obj *objs)
 {
 	// t_mat4x4 rotation;
-	int			i;
+	uint			i;
 	static char *prev;
 
 	if (!prev)
@@ -197,13 +197,13 @@ void init_vbo(t_obj *obj)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, obj->gl_buff.vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(struct s_point) * obj->indices_nbr, obj->points, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(struct s_point), NULL);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(struct s_point), (void*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(struct s_point), NULL + sizeof(t_vec3));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(struct s_point), (void*)sizeof(t_vec3));
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(struct s_point), NULL + sizeof(t_vec3) + sizeof(t_vec2));
+	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(struct s_point), (void*)sizeof(t_vec3) + sizeof(t_vec2));
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(struct s_point), NULL + 2 * sizeof(t_vec3) + sizeof(t_vec2));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(struct s_point), (void*)(2 * sizeof(t_vec3) + sizeof(t_vec2)));
 	glEnableVertexAttribArray(3);
 }
 
@@ -307,7 +307,7 @@ void	draw_part_obj(t_obj *obj, uint *x, uint *texs)
 	}
 }
 
-void	draw_obj(t_d *data, t_obj *obj, float angle, uint *x, uint *texs)
+void	draw_obj(t_obj *obj, float angle, uint *x, uint *texs)
 {
 
 	glUniform1i(obj->texOnLoc, obj->texOn);
@@ -359,7 +359,7 @@ void	update_frame(t_d *data, t_obj *objs, uint *texs)
 	i = -1;
 	while (++i < data->object_nbr)
 	{
-		draw_obj(data, &objs[i], angle, &x, texs);
+		draw_obj(&objs[i], angle, &x, texs);
 		glDisable(GL_PRIMITIVE_RESTART);
 		glBindVertexArray(0);
 	}
