@@ -271,6 +271,7 @@ void	init_uniform_data(t_d *data)
 	data->viewLoc = glGetUniformLocation(data->program, "view");
 	data->projLoc = glGetUniformLocation(data->program, "projection");
 	data->ambLoc = glGetUniformLocation(data->program, "ambientStrength");
+	data->eyeLoc = glGetUniformLocation(data->program, "viewPos");
 	data->lightLoc = glGetUniformLocation(data->program, "lightPos");
 	data->lightColorLoc = glGetUniformLocation(data->program, "lightColor");
 }

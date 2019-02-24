@@ -32,6 +32,13 @@ void main()
     float diff = dot(norm, lightDir);
     vec4 diffuse = lightColor * diff;
 
+    // specular
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(viewPos - gFragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);  
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * spec * lightColor;  
+
     // Couleur finale du pixel
     if (texOn == 1)
     	aColor = texture(tex, gTexCoord) * (ambient + diffuse);
