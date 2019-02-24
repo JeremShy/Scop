@@ -37,9 +37,9 @@ int8_t	init_data(t_d *data)
 {
 	ft_bzero(data, sizeof(t_d));
 	data->depl = 1;
-	data->ambient = 0;
+	data->ambient = 0.5;
 	data->lightColor = (t_vec3){1,1,1};
-	data->lightPos = (t_vec3){50,0,0};
+	data->lightPos = (t_vec3){50,0,50};
 	return (1);
 }
 
@@ -165,6 +165,8 @@ t_obj*	get_all_obj(t_d *data, int ac, char **av)
 	uint i;
 	uint j;
 
+	if (ac == 1)
+		return (NULL);
 	objs = malloc(sizeof(t_obj) * (ac - 1));
 	data->texture_nbr = 1;
 	av++;
@@ -205,7 +207,7 @@ void init_vbo(t_obj *obj)
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(struct s_point), (void*)sizeof(t_vec3) + sizeof(t_vec2));
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(struct s_point), (void*)(2 * sizeof(t_vec3) + sizeof(t_vec2)));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(struct s_point), (void*)(sizeof(t_vec3) + sizeof(t_vec3)));
 	glEnableVertexAttribArray(3);
 }
 
@@ -347,7 +349,7 @@ void	init_frame(t_d *data, uint delta, t_obj *objs)
 	glUniformMatrix4fv(data->projLoc, 1, GL_FALSE, data->cam.proj_f);
 	glUniform1f(data->ambLoc, data->ambient);
 	glUniform4f(data->lightLoc, data->lightPos.x, data->lightPos.y, data->lightPos.z, 1.0);
-	glUniform4f(data->lightColorLoc, data->lightColor.x, data->lightColor.y, data->lightColor.z, 1.0);
+	glUniform4f(data->lightColorLoc, data->lightColor.x, data->lightColor.y, data->lightColor.z, 0.0);
 }
 
 void	update_frame(t_d *data, t_obj *objs, uint *texs)
@@ -385,7 +387,7 @@ int main(int ac, char **av)
 
 	init_all(&data);
 	objs = get_all_obj(&data, ac, av);
-	if (objs[0].error)
+	if (!objs || objs[0].error)
 	{
 		printf("ERROR !\n");
 		exit(EXIT_FAILURE);

@@ -77,8 +77,8 @@ struct				s_point
 {
 	t_vec3			vertex;
 	t_vec2			tex_vertex;
-	t_vec3			normal;
 	float			rand;
+	t_vec3			normal;
 };
 
 typedef struct		s_obj {
