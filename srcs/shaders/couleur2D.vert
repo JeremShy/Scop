@@ -20,6 +20,7 @@ uniform bool defTex;
 out float rand;
 out vec2 vTexCoord;
 out vec4 vNormal;
+out vec4 vPos;
 
 // Fonction main
 
@@ -38,6 +39,7 @@ void main()
 		vTexCoord = aTexCoord;
     rand = aRand;
     vNormal = normalize(model * vec4(normalize(aNormal), 0.0));
+    vPos = model * vec4(aPos , 1);
     // color = (aPos.x + aPos.y + aPos.z) / 3;
 	// VertexID = gl_VertexID;
 }

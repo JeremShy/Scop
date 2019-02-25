@@ -348,6 +348,7 @@ void	init_frame(t_d *data, uint delta, t_obj *objs)
 	glUniformMatrix4fv(data->viewLoc, 1, GL_FALSE, data->cam.view_f);
 	glUniformMatrix4fv(data->projLoc, 1, GL_FALSE, data->cam.proj_f);
 	glUniform1f(data->ambLoc, data->ambient);
+	glUniform4f(data->viewLoc, data->eye.x, data->eye.y, data->eye.z, 1.0);
 	glUniform4f(data->lightLoc, data->lightPos.x, data->lightPos.y, data->lightPos.z, 1.0);
 	glUniform4f(data->lightColorLoc, data->lightColor.x, data->lightColor.y, data->lightColor.z, 0.0);
 }
