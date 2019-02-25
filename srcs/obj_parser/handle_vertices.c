@@ -5,11 +5,10 @@ static int8_t	get_three_floats(char *line, t_vec3 *ret)
 	char	**tab;
 	int		i;
 
-	tab = split_whitespace(line);
-	if (!tab)
+	if (!(tab = split_whitespace(line)))
 		return (0);
-	i = 0;
-	while (tab[i])
+	i = -1;
+	while (tab[++i])
 	{
 		if (i == 3 && tab[i][0] != '#')
 			return (free_str_dtab(tab));
@@ -26,13 +25,11 @@ static int8_t	get_three_floats(char *line, t_vec3 *ret)
 		}
 		else
 			return (free_str_dtab(tab));
-		i++;
 	}
-	free_str_dtab(tab);
-	return (1);
+	return (free_str_dtab(tab) + 1);
 }
 
-void	handle_v(char *line, t_obj *ret)
+void			handle_v(char *line, t_obj *ret)
 {
 	t_vec3	v;
 
@@ -57,11 +54,10 @@ void	handle_v(char *line, t_obj *ret)
 	(v.z < ret->min.z) ? (ret->min.z = v.z) : 0;
 	(v.z > ret->max.z) ? (ret->max.z = v.z) : 0;
 	ret->vertices[ret->vertices_curr] = v;
-	// ft_vec3_print(ret->vertices[ret->vertices_curr]);
 	ret->vertices_curr++;
 }
 
-void	handle_vt(char *line, t_obj *ret)
+void			handle_vt(char *line, t_obj *ret)
 {
 	t_vec3	v;
 
@@ -78,7 +74,7 @@ void	handle_vt(char *line, t_obj *ret)
 	ret->tex_vertices_curr++;
 }
 
-void	handle_vn(char *line, t_obj *ret)
+void			handle_vn(char *line, t_obj *ret)
 {
 	t_vec3	v;
 
@@ -91,6 +87,5 @@ void	handle_vn(char *line, t_obj *ret)
 		return ;
 	}
 	ret->normales[ret->normales_curr] = v;
-	// ft_vec3_print(ret->normales[ret->normales_curr]);
 	ret->normales_curr++;
 }

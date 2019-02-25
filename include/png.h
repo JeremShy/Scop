@@ -121,6 +121,8 @@ uint8_t								prior(uint8_t *data, size_t i,
 uint8_t								prior_left(uint8_t *data, size_t i,
 	struct s_png_ihdr *png_ihdr);
 uint8_t								paeth_predictor(int a, int b, int c);
+void								apply_all_filters(struct s_png_ihdr
+	*png_ihdr, uint8_t *img_data);
 
 extern const struct s_length_code	g_a_init[19];
 extern const int					g_length_codes_base_len[][2];

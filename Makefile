@@ -8,6 +8,11 @@ SRC_NAME = main.c \
 			obj_parser/split_whitespace.c \
 			obj_parser/tools.c \
 			obj_parser/face.c \
+			obj_parser/init.c \
+			obj_parser/str_tools.c \
+			obj_parser/line_tools.c \
+			obj_parser/handles.c \
+			obj_parser/fill.c \
 			png/filter.c \
 			png/filter_2.c \
 			png/globals_inflate.c \
@@ -16,6 +21,7 @@ SRC_NAME = main.c \
 			png/inflate_2.c \
 			png/parser.c \
 			png/parser_2.c \
+			png/parser_3.c \
 			png/resize.c \
 			png/tree.c
 

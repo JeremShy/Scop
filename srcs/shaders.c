@@ -1,26 +1,27 @@
 #include <scop.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-int8_t	check_compilation(GLuint shader, const char *filename)
+
+int8_t			check_compilation(GLuint shader, const char *filename)
 {
-	GLsizei i;
-	GLchar buffer[1024];
+	GLsizei		i;
+	GLchar		buffer[1024];
 
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &i);
 	if (i == GL_TRUE)
 		return (shader);
 	glGetShaderInfoLog(shader, 1024, &i, buffer);
-	printf("COMPILATION ERROR  [%s] : \n%s\n", filename, buffer);
 	return (0);
 }
 
-static GLuint close_and_return(int fd, GLuint ret)
+static GLuint	close_and_return(int fd, GLuint ret)
 {
 	close(fd);
 	return (ret);
 }
 
-GLuint	create_and_compile_shader(const char *filename, GLenum shaderType) //Returns 0 on error
+GLuint			create_and_compile_shader(const char *filename,
+	GLenum shadertype)
 {
 	GLuint		ret;
 	int			fd;
@@ -29,7 +30,7 @@ GLuint	create_and_compile_shader(const char *filename, GLenum shaderType) //Retu
 	int			r;
 	GLint		length;
 
-	ret = glCreateShader(shaderType);
+	ret = glCreateShader(shadertype);
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
 		return (0);
@@ -51,33 +52,31 @@ GLuint	create_and_compile_shader(const char *filename, GLenum shaderType) //Retu
 	return (check_compilation(ret, filename));
 }
 
-GLuint create_and_link_program(GLuint vertex_sh, GLuint fragment_sh)
+GLuint			create_and_link_program(GLuint vertex_sh, GLuint fragment_sh)
 {
 	GLuint	ret;
 	GLint	i;
 	int		success;
-	GLchar buffer[1024];
+	GLchar	buffer[1024];
+	GLuint	geometry_sh;
 
-	GLuint geometry_sh;
-	geometry_sh = create_and_compile_shader("./srcs/shaders/couleur2D.geo", GL_GEOMETRY_SHADER);
+	geometry_sh = create_and_compile_shader("./srcs/shaders/couleur2D.geo",
+		GL_GEOMETRY_SHADER);
 	if (!check_compilation(geometry_sh, "./srcs/shaders/couleur2D.geo"))
 		return (0);
-
 	ret = glCreateProgram();
-
 	glAttachShader(ret, vertex_sh);
 	glAttachShader(ret, geometry_sh);
 	glAttachShader(ret, fragment_sh);
 	glLinkProgram(ret);
-
 	glGetProgramiv(ret, GL_LINK_STATUS, &success);
-	if(!success) {
+	if (!success)
+	{
 		glGetProgramInfoLog(ret, 1024, NULL, buffer);
 		printf("Error while linking : %s\n", buffer);
 	}
 	glDeleteShader(vertex_sh);
 	glDeleteShader(fragment_sh);
-
 	glGetProgramiv(ret, GL_LINK_STATUS, &i);
 	if (i != GL_TRUE)
 		return (0);

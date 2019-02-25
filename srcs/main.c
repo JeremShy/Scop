@@ -4,7 +4,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 
-struct s_key_event keys[] = {
+struct s_key_event g_keys[] = {
 	{GLFW_KEY_G, NULL},
 	{GLFW_KEY_T, t},
 	{GLFW_KEY_V, v},
@@ -106,15 +106,15 @@ void	key_event(t_d *data, uint delta, t_obj *objs)
 
 	if (!prev)
 	{
-		prev = malloc(sizeof(keys) / sizeof(struct s_key_event));
-		ft_bzero(prev, sizeof(keys) / sizeof(struct s_key_event));
+		prev = malloc(sizeof(g_keys) / sizeof(struct s_key_event));
+		ft_bzero(prev, sizeof(g_keys) / sizeof(struct s_key_event));
 	}
 	i = 0;
-	while (i < sizeof(keys) / sizeof(struct s_key_event))
+	while (i < sizeof(g_keys) / sizeof(struct s_key_event))
 	{
-		if (glfwGetKey(data->window, keys[i].key) && keys[i].func)
-			keys[i].func(data, objs, delta, prev);
-		prev[i] = glfwGetKey(data->window, keys[i].key);
+		if (glfwGetKey(data->window, g_keys[i].key) && g_keys[i].func)
+			g_keys[i].func(data, objs, delta, prev);
+		prev[i] = glfwGetKey(data->window, g_keys[i].key);
 		i++;
 	}
 	ft_mat4x4_to_float_array(data->cam.view_f, data->cam.view);
@@ -177,7 +177,7 @@ t_obj	*get_all_obj(t_d *data, int ac, char **av)
 
 void	init_vbo(t_obj *obj)
 {
-	struct s_point 	point;
+	struct s_point	point;
 
 	glBindBuffer(GL_ARRAY_BUFFER, obj->gl_buff.vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(struct s_point) * obj->indices_nbr,

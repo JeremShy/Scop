@@ -4,6 +4,7 @@
 # include <stdio.h>
 # include <sys/time.h>
 # include <libft.h>
+# include <fcntl.h>
 # include <sys/stat.h>
 # define GLFW_INCLUDE_GLCOREARB
 # include <GLFW/glfw3.h>
@@ -217,12 +218,30 @@ void	handle_o(char *line, t_obj *ret);
 void	handle_v(char *line, t_obj *ret);
 void	handle_vn(char *line, t_obj *ret);
 void	handle_vt(char *line, t_obj *ret);
-
 void	handle_f(char *line, t_obj *ret);
 
-char	**split_whitespace(char const *s);
-int		ignore_whitespaces(char **line);
-int8_t	is_whitespace(char c);
+void		init_obj(t_obj *obj);
+int			init_path(char *param, t_obj *obj);
+void		init_malloc(t_obj *ret, char *file);
+
+size_t		find_next_line(char *line);
+int8_t		is_whitespace(char c);
+int			ignore_whitespaces(char **line);
+int			find_next_ignored_char(char *line);
+int8_t		ignored_line(char *line);
+char		**split_whitespace(char const *s);
+
+void		fill_ref(t_obj *obj, char *file, size_t size);
+void		create_ref(t_obj *obj, char *file, size_t size);
+void		fill_mtl(t_obj *obj);
+void		fill_point_from_face(t_obj *obj, uint i, int *curr);
+
+void		debut_handle(char **line, t_obj *ret, int size);
+void		next_line(char **file, size_t *size);
+void		parse_line(char *line, t_obj *ret);
+
+void		*open_file(char *file, size_t *size);
+int			get_values_for_malloc(t_obj *ret, char *file);
 
 int		check_float(char *str);
 float	ft_atof(char *str);

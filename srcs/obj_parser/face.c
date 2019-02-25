@@ -6,7 +6,8 @@ static void		copy_ret_in_obj(uint ret[3], t_obj *obj)
 
 	if (ret[0] == 0)
 		obj->error = 1;
-	else if (ret[0] > obj->vertices_nbr || ret[1] > obj->tex_vertices_nbr || ret[2] > obj->normales_nbr)
+	else if (ret[0] > obj->vertices_nbr || ret[1] > obj->tex_vertices_nbr
+		|| ret[2] > obj->normales_nbr)
 		obj->error = 1;
 	face = &obj->faces[obj->faces_curr];
 	face->v_index[face->v_nbr] = ret[0] - 1;
@@ -18,7 +19,7 @@ static void		copy_ret_in_obj(uint ret[3], t_obj *obj)
 		obj->error = 1;
 }
 
-int			move_str_ptr(char **str)
+static	int		move_str_ptr(char **str)
 {
 	while ((**str >= '0' && **str <= '9') || **str == '-' || **str == '+')
 		(*str)++;
@@ -26,9 +27,25 @@ int			move_str_ptr(char **str)
 		return (2);
 	if (**str == '/')
 		(*str)++;
-	if ((**str >= '0' && **str <= '9') || **str == '-' || **str == '+' || !**str || **str == '/')
+	if ((**str >= '0' && **str <= '9') || **str == '-' || **str == '+' ||
+		!**str || **str == '/')
 		return (0);
 	return (1);
+}
+
+static int		parse_indexes(int ret[3], int i, char **line, t_obj *obj)
+{
+	ret[i] = ft_atoi(*line);
+	if (ret[i] < 0)
+	{
+		if (i == 0)
+			ret[i] = obj->vertices_curr + ret[i] + 1;
+		if (i == 1)
+			ret[i] = obj->tex_vertices_curr + ret[i] + 1;
+		if (i == 2)
+			ret[i] = obj->normales_curr + ret[i] + 1;
+	}
+	return (move_str_ptr(line));
 }
 
 static uint8_t	fill_data_point(char **line, t_obj *obj)
@@ -41,43 +58,24 @@ static uint8_t	fill_data_point(char **line, t_obj *obj)
 	ignore_whitespaces(line);
 	if (obj->error || !(**line))
 		return (0);
-	// printf("*line = %s\n", *line);
 	ft_bzero(ret, sizeof(ret));
 	while (i < 3 && **line)
 	{
-		// printf("line = %s", *line);
-		ret[i] = ft_atoi(*line);
-		if (ret[i] < 0)
-		{
-			if (i == 0)
-			 	ret[i] = obj->vertices_curr + ret[i] + 1;
-			if (i == 1)
-				ret[i] = obj->tex_vertices_curr + ret[i] + 1;
-			if (i == 2)
-				ret[i] = obj->normales_curr + ret[i] + 1;
-		}
-		tmp = move_str_ptr(line);
+		tmp = parse_indexes(ret, i, line, obj);
 		if (tmp == 1)
 		{
 			obj->error = 1;
-			printf("Error Parsinf Face\n");
 			return (0);
 		}
 		if (tmp == 2)
 			break ;
 		i++;
 	}
-	// printf("}\n");
 	copy_ret_in_obj((uint *)ret, obj);
-	if (obj->error)
-	{
-		printf("return 0 nbr 1\n");
-		return (0);
-	}
-	return(1);
+	return (!obj->error);
 }
 
-void	handle_f(char *line, t_obj *ret)
+void			handle_f(char *line, t_obj *ret)
 {
 	debut_handle(&line, ret, 1);
 	if (ret->error)
