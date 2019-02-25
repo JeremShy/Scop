@@ -5,10 +5,10 @@
 
 // Entrées
 
-layout (location = 0) in vec3 in_Vertex;
-// layout (location = 1) in vec3 in_Color;
+layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec2 aTexCoord;
-layout (location = 3) in float aColor;
+layout (location = 2) in float aRand;
+layout (location = 3) in vec3 aNormal;
 
 // Sortie
 
@@ -17,10 +17,9 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform bool defTex;
 
-out float tri;
+out float rand;
 out vec2 vTexCoord;
-// out float color;
-// out int VertexID;
+out vec4 vNormal;
 
 // Fonction main
 
@@ -28,17 +27,17 @@ void main()
 {
     // Position finale du vertex
 
-	gl_Position = projection * view * model * vec4(in_Vertex, 1.0);
-
+	gl_Position = projection * view * model * vec4(aPos, 1.0);
     // Envoi de la couleur au Fragment Shader
 	if (defTex)
 	{
-		vTexCoord.x = in_Vertex.y;
-		vTexCoord.y = in_Vertex.z;
+		vTexCoord.x = aPos.y;
+		vTexCoord.y = aPos.z;
 	}
 	else
 		vTexCoord = aTexCoord;
-    tri = aColor;
-    // color = (in_Vertex.x + in_Vertex.y + in_Vertex.z) / 3;
+    rand = aRand;
+    vNormal = normalize(model * vec4(normalize(aNormal), 0.0));
+    // color = (aPos.x + aPos.y + aPos.z) / 3;
 	// VertexID = gl_VertexID;
 }

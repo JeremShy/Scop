@@ -3,17 +3,29 @@
 
 void	echap(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	glfwSetWindowShouldClose(data->window, true);
 }
 
 void	key_0(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	printf("data->current = 0\n");
 	data->current = NULL;
 }
 
 void	key_1(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	printf("data->current = 1\n");
 	if (data->object_nbr > 0)
 		data->current = &objs[0];
@@ -21,6 +33,10 @@ void	key_1(t_d *data, t_obj *objs, uint delta, char *prev)
 
 void	key_2(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	printf("data->current = 2\n");
 	if (data->object_nbr > 1)
 		data->current = &objs[1];
@@ -28,6 +44,10 @@ void	key_2(t_d *data, t_obj *objs, uint delta, char *prev)
 
 void	key_3(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	printf("data->current = 3\n");
 	if (data->object_nbr > 2)
 		data->current = &objs[2];
@@ -35,6 +55,10 @@ void	key_3(t_d *data, t_obj *objs, uint delta, char *prev)
 
 void	key_4(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	printf("data->current = 4\n");
 	if (data->object_nbr > 3)
 		data->current = &objs[3];
@@ -42,6 +66,10 @@ void	key_4(t_d *data, t_obj *objs, uint delta, char *prev)
 
 void	key_5(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	printf("data->current = 5\n");
 	if (data->object_nbr > 4)
 		data->current = &objs[4];
@@ -49,6 +77,10 @@ void	key_5(t_d *data, t_obj *objs, uint delta, char *prev)
 
 void	key_6(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	printf("data->current = 6\n");
 	if (data->object_nbr > 5)
 		data->current = &objs[5];
@@ -56,6 +88,10 @@ void	key_6(t_d *data, t_obj *objs, uint delta, char *prev)
 
 void	key_7(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	printf("data->current = 7\n");
 	if (data->object_nbr > 6)
 		data->current = &objs[6];
@@ -63,6 +99,10 @@ void	key_7(t_d *data, t_obj *objs, uint delta, char *prev)
 
 void	key_8(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	printf("data->current = 8\n");
 	if (data->object_nbr > 7)
 		data->current = &objs[7];
@@ -70,6 +110,10 @@ void	key_8(t_d *data, t_obj *objs, uint delta, char *prev)
 
 void	key_9(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	printf("data->current = 9\n");
 	if (data->object_nbr > 8)
 		data->current = &objs[8];
@@ -77,6 +121,10 @@ void	key_9(t_d *data, t_obj *objs, uint delta, char *prev)
 
 void	equal(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	printf("plus\n");
 	if (prev[F_OFFSET])
 	{
@@ -92,6 +140,10 @@ void	equal(t_d *data, t_obj *objs, uint delta, char *prev)
 
 void	minus(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	printf("minus\n");
 	if (prev[F_OFFSET])
 	{
@@ -109,6 +161,10 @@ void	w(t_d *data, t_obj *objs, uint delta, char *prev)
 {
 	t_vec3	transl;
 
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	printf("W\n");
 	transl = ft_vec3_scalar_mult(data->dir, -data->depl * delta / 1000);
 	data->eye = ft_vec3_add(data->eye, transl);
@@ -119,6 +175,10 @@ void	s(t_d *data, t_obj *objs, uint delta, char *prev)
 {
 	t_vec3	transl;
 
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	printf("S\n");
 	transl = ft_vec3_scalar_mult(data->dir, data->depl * delta / 1000);
 	data->eye = ft_vec3_add(data->eye, transl);
@@ -129,6 +189,10 @@ void	a(t_d *data, t_obj *objs, uint delta, char *prev)
 {
 	t_vec3	transl;
 
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	printf("A\n");
 	transl = ft_vec3_cross(data->dir, (t_vec3){0,1,0});
 	ft_vec3_normalize(&transl);
@@ -141,6 +205,10 @@ void	d(t_d *data, t_obj *objs, uint delta, char *prev)
 {
 	t_vec3	transl;
 
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	printf("D\n");
 	transl = ft_vec3_cross(data->dir, (t_vec3){0,1,0});
 	ft_vec3_normalize(&transl);
@@ -151,6 +219,10 @@ void	d(t_d *data, t_obj *objs, uint delta, char *prev)
 
 void	t(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	if (prev[T_OFFSET])
 		return ;
 	printf("Texture\n");
@@ -160,6 +232,10 @@ void	t(t_d *data, t_obj *objs, uint delta, char *prev)
 
 void	r(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	data->eye = (t_vec3){0, 0, -10};
 	data->dir = (t_vec3){0, 0, -1};
 	ft_mat4x4_set_look_at(data->cam.view, data->eye, ft_vec3_sub(data->eye, data->dir), data->cam.up);
@@ -168,6 +244,10 @@ void	r(t_d *data, t_obj *objs, uint delta, char *prev)
 
 void	v(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	if (prev[V_OFFSET])
 		return ;
 	!data->drawing_mode ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -176,6 +256,10 @@ void	v(t_d *data, t_obj *objs, uint delta, char *prev)
 
 void	o(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	if (prev[O_OFFSET])
 		return ;
 	if (data->current)
@@ -184,6 +268,10 @@ void	o(t_d *data, t_obj *objs, uint delta, char *prev)
 
 void	key_up(t_d *data, t_obj *objs, uint delta, char *prev)
 {
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	t_vec3	transl;
 
 	if (!prev[G_OFFSET])
@@ -201,6 +289,10 @@ void	key_down(t_d *data, t_obj *objs, uint delta, char *prev)
 {
 	t_vec3	transl;
 
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	if (!prev[G_OFFSET])
 		return ;
 	if (!data->current)
@@ -216,6 +308,10 @@ void	key_right(t_d *data, t_obj *objs, uint delta, char *prev)
 {
 	t_vec3	transl;
 
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	if (!prev[G_OFFSET])
 		return ;
 	if (!data->current)
@@ -231,6 +327,10 @@ void	key_left(t_d *data, t_obj *objs, uint delta, char *prev)
 {
 	t_vec3	transl;
 
+	(void)data;
+	(void)objs;
+	(void)delta;
+	(void)prev;
 	if (!prev[G_OFFSET])
 		return ;
 	if (!data->current)

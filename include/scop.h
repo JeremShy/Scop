@@ -1,6 +1,6 @@
 #ifndef SCOP_H
 # define SCOP_H
-
+# define GL_SILENCE_DEPRECATION
 # include <stdio.h>
 # include <sys/time.h>
 # include <libft.h>
@@ -77,8 +77,8 @@ struct				s_point
 {
 	t_vec3			vertex;
 	t_vec2			tex_vertex;
-	t_vec3			normal;
 	float			rand;
+	t_vec3			normal;
 };
 
 typedef struct		s_obj {
@@ -169,10 +169,15 @@ typedef struct		s_d {
 	int					viewLoc;
 	int					projLoc;
 	int					ambLoc;
+	int					lightLoc;
+	int					lightColorLoc;
+	int					eyeLoc;
 
 	t_obj				*current;
 	float				depl;
 	float				ambient;
+	t_vec3				lightPos;
+	t_vec3				lightColor;
 	// int					color_on;
 }					t_d;
 
