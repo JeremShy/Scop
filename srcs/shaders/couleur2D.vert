@@ -26,14 +26,14 @@ out vec4 vPos;
 
 void main()
 {
-    // Position finale du vertex
+	// Position finale du vertex
 
 	gl_Position = projection * view * model * vec4(aPos, 1.0);
-    // Envoi de la couleur au Fragment Shader
+	// Envoi de la couleur au Fragment Shader
 	vTexCoord = aTexCoord;
-    rand = aRand;
-    vNormal = normalize(model * vec4(normalize(aNormal), 0.0));
-    vPos = model * vec4(aPos , 1);
-    // color = (aPos.x + aPos.y + aPos.z) / 3;
+	rand = aRand;
+	vNormal = normalize(model * vec4(normalize(aNormal), 0.0));
+	vPos = model * vec4(aPos , 1);
+	// color = (aPos.x + aPos.y + aPos.z) / 3;
 	// VertexID = gl_VertexID;
 }
