@@ -202,6 +202,8 @@ uint8_t		reverse_byte(const uint8_t in);
 
 
 uint8_t			create_image_from_png(t_d *data, int id_img, const char *name);
+uint8_t			create_image_from_bmp(t_d *data, int id_img,
+	const char *pathname);
 
 GLuint	create_and_compile_shader(const char *filename, GLenum shaderType);
 GLuint	create_and_link_program(GLuint vertex_sh, GLuint fragment_sh);
