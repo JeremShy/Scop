@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: magouin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/02/26 15:49:20 by magouin           #+#    #+#             */
+/*   Updated: 2019/02/26 15:49:53 by magouin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PNG_H
 # define PNG_H
 
@@ -81,9 +93,6 @@ struct s_tree						*create_tree(
 	struct s_length_code *codes, size_t s);
 void								delete_tree(struct s_tree	*tree);
 
-// void								resize_image(struct s_png_ihdr *png_ihdr,
-// 	t_img *dest_img, uint8_t *img_data);
-
 void								copy_source_in_img(
 	struct s_png_ihdr *png_ihdr, uint8_t *src_img, uint32_t *dest_img);
 void								*init_png_parser(
@@ -123,6 +132,8 @@ uint8_t								prior_left(uint8_t *data, size_t i,
 uint8_t								paeth_predictor(int a, int b, int c);
 void								apply_all_filters(struct s_png_ihdr
 	*png_ihdr, uint8_t *img_data);
+uint8_t								*get_compressed_data(void *addr,
+	size_t file_size);
 
 extern const struct s_length_code	g_a_init[19];
 extern const int					g_length_codes_base_len[][2];

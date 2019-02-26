@@ -1,8 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: magouin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/02/26 15:49:20 by magouin           #+#    #+#             */
+/*   Updated: 2019/02/26 15:49:53 by magouin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include <scop.h>
-#include <cglm/cglm.h>   /* for inline */
-
-#define STB_IMAGE_IMPLEMENTATION
 
 struct s_key_event g_keys[] = {
 	{GLFW_KEY_G, NULL},
@@ -32,72 +40,6 @@ struct s_key_event g_keys[] = {
 	{GLFW_KEY_DOWN, key_down},
 	{GLFW_KEY_RIGHT, key_right},
 	{GLFW_KEY_LEFT, key_left}};
-
-int8_t	init_data(t_d *data)
-{
-	ft_bzero(data, sizeof(t_d));
-	data->depl = 1;
-	data->ambient = 0.1;
-	data->lightColor = (t_vec3){1, 1, 1};
-	data->lightPos = (t_vec3){0, 0, 50};
-	data->drawing_mode = 0;
-	return (1);
-}
-
-void	error_callback(int error, const char *description)
-{
-	fprintf(stderr, "Error: %s - errno = %d\n", description, error);
-}
-
-int8_t	init_glfw(t_d *data)
-{
-	if (!glfwInit())
-		return (0);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_SAMPLES, 3);
-	glfwSetErrorCallback(error_callback);
-	data->window = glfwCreateWindow(1600, 900, "Scop", NULL, NULL);
-	if (!data->window)
-	{
-		glfwTerminate();
-		return (0);
-	}
-	glfwSetInputMode(data->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwMakeContextCurrent(data->window);
-	glfwGetWindowSize(data->window, &data->width, &data->height);
-	glClearColor(0.3, 0.3, 0.3, 1);
-	return (1);
-}
-
-int8_t	init_all(t_d *data)
-{
-	if (!init_data(data))
-		return (0);
-	if (!init_glfw(data))
-		return (0);
-	glEnable(GL_MULTISAMPLE);
-	glEnable(GL_DEPTH_TEST);
-	return (1);
-}
-
-int8_t	init_shaders(t_d *data, const char *frag, const char *vert)
-{
-	if (!(data->vertex_sh = create_and_compile_shader(vert, GL_VERTEX_SHADER)))
-	{
-		dprintf(2, "Error while trying to create vertex shader.\n");
-		return (0);
-	}
-	if (!(data->fragment_sh = create_and_compile_shader(frag,
-		GL_FRAGMENT_SHADER)))
-	{
-		dprintf(2, "Error while trying to create fragment shader.\n");
-		return (0);
-	}
-	return (1);
-}
 
 void	key_event(t_d *data, uint delta, t_obj *objs)
 {
@@ -144,201 +86,6 @@ void	rotation_cam(t_d *data, uint delta)
 		data->dir), data->cam.up);
 	last.y = y;
 	last.x = x;
-}
-
-t_obj	*get_all_obj(t_d *data, int ac, char **av)
-{
-	t_obj	*objs;
-	uint	i;
-	uint	j;
-
-	if (ac == 1)
-		return (NULL);
-	objs = malloc(sizeof(t_obj) * (ac - 1));
-	data->texture_nbr = 1;
-	i = 0;
-	while (*(++av))
-	{
-		objs[i] = obj_parser_main(*av);
-		objs[i].scale = 1;
-		j = -1;
-		while (++j < objs[i].mtl_nbr)
-			if (objs[i].mtls[j].img_file)
-			{
-				objs[i].textures_nbr++;
-				data->texture_nbr++;
-			}
-		if (!objs[i].error)
-			i++;
-	}
-	data->object_nbr = i;
-	return (objs);
-}
-
-void	init_vbo(t_obj *obj)
-{
-	struct s_point	point;
-
-	glBindBuffer(GL_ARRAY_BUFFER, obj->gl_buff.vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(struct s_point) * obj->indices_nbr,
-		obj->points, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(struct s_point),
-		(GLvoid *)((void *)&point.vertex - (void *)&point));
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(struct s_point),
-		(GLvoid *)((void *)&point.tex_vertex - (void *)&point));
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(struct s_point),
-		(GLvoid *)((void *)&point.rand - (void *)&point));
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(struct s_point),
-		(GLvoid *)((void *)&point.normal - (void *)&point));
-	glEnableVertexAttribArray(3);
-}
-
-void	init_vao(t_obj *obj)
-{
-	glGenVertexArrays(1, &obj->gl_buff.vao);
-	glGenBuffers(1, &obj->gl_buff.ebo);
-	glGenBuffers(1, &obj->gl_buff.vbo);
-	glBindVertexArray(obj->gl_buff.vao);
-	init_vbo(obj);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, obj->gl_buff.ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(obj->indices[0])
-		* obj->indices_nbr, obj->indices, GL_STATIC_DRAW);
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void	get_glteximage(uint *texs, uint *i_tex, t_d *data, char *file)
-{
-	glBindTexture(GL_TEXTURE_2D, texs[*i_tex]);
-	create_image_from_png(data, *i_tex, file);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data->imgs[*i_tex].w, data->imgs
-		[*i_tex].h, 0, GL_BGRA, GL_UNSIGNED_BYTE, data->imgs[*i_tex].data);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	(*i_tex)++;
-}
-
-uint	*init_texs(t_d *data, t_obj *objs)
-{
-	uint	*texs;
-	uint	i_tex;
-	uint	i;
-	uint	j;
-
-	data->imgs = malloc(sizeof(t_img) * data->texture_nbr);
-	texs = malloc(sizeof(uint) * data->texture_nbr);
-	glGenTextures(data->texture_nbr, texs);
-	i = -1;
-	i_tex = 0;
-	get_glteximage(texs, &i_tex, data, "./textures/bien.png");
-	while (++i < data->object_nbr)
-	{
-		j = -1;
-		while (++j < objs[i].mtl_nbr)
-		{
-			objs[i].texOn = 1;
-			if (objs[i].mtls[j].img_file)
-				get_glteximage(texs, &i_tex, data, objs[i].mtls[j].img_file);
-		}
-	}
-	return (texs);
-}
-
-void	init_uniform_data(t_d *data)
-{
-	data->eye = (t_vec3){0, 0, -10};
-	data->dir = (t_vec3){0, 0, -1};
-	data->cam.up = (t_vec3){0, 1, 0};
-	ft_mat4x4_set_look_at(data->cam.view, data->eye, ft_vec3_sub(data->eye,
-		data->dir), data->cam.up);
-	ft_mat4x4_to_float_array(data->cam.view_f, data->cam.view);
-	ft_mat4x4_set_projection(data->cam.proj, (float[]){45, (float)data->width
-		/ data->height, .1f, 1000.0f});
-	ft_mat4x4_to_float_array(data->cam.proj_f, data->cam.proj);
-	data->viewLoc = glGetUniformLocation(data->program, "view");
-	data->projLoc = glGetUniformLocation(data->program, "projection");
-	data->ambLoc = glGetUniformLocation(data->program, "ambientStrength");
-	data->eyeLoc = glGetUniformLocation(data->program, "viewPos");
-	data->lightLoc = glGetUniformLocation(data->program, "lightPos");
-	data->lightColorLoc = glGetUniformLocation(data->program, "lightColor");
-}
-
-void	init_uniform_obj(t_d *data, t_obj *obj)
-{
-	obj->mid = ft_vec3_scalar_mult(ft_vec3_add(obj->min, obj->max), -0.5);
-	ft_mat4x4_to_float_array(obj->model_f, obj->model);
-	obj->modelLoc = glGetUniformLocation(data->program, "model");
-	obj->texOnLoc = glGetUniformLocation(data->program, "texOn");
-	obj->defTex = glGetUniformLocation(data->program, "defTex");
-}
-
-void	draw_part_obj(t_obj *obj, uint *x, uint *texs)
-{
-	uint	y;
-	int		nb_face;
-
-	y = 0;
-	while (y < obj->mtl_nbr)
-	{
-		if (y + 1 == obj->mtl_nbr)
-			nb_face = obj->faces_nbr - obj->mtls[y].index;
-		else
-			nb_face = obj->mtls[y + 1].index - obj->mtls[y].index;
-		if (obj->mtls[y].img_file)
-		{
-			glBindTexture(GL_TEXTURE_2D, texs[*x]);
-			(*x)++;
-		}
-		else
-			glBindTexture(GL_TEXTURE_2D, texs[0]);
-		glMultiDrawElements(GL_TRIANGLE_FAN, &(obj->counts[obj->mtls[y].
-		index]), GL_UNSIGNED_INT, (const GLvoid *const *)(&(obj->offset[
-		obj->mtls[y].index])), nb_face);
-		y++;
-	}
-}
-
-void	draw_obj(t_obj *obj, float angle, uint *x, uint *texs)
-{
-	glUniform1i(obj->texOnLoc, obj->texOn);
-	glUniform1i(obj->defTex, obj->textures_nbr == 0 ? 1 : 0);
-	glBindVertexArray(obj->gl_buff.vao);
-	ft_mat4x4_set_translation(obj->model, obj->pos);
-	ft_mat4x4_translate(obj->model,
-		ft_vec3_scalar_mult(obj->mid, -obj->scale));
-	if (obj->rotOn)
-		ft_mat4x4_rotate(obj->model, angle, (t_vec3){0, 1, 0});
-	ft_mat4x4_translate(obj->model, ft_vec3_scalar_mult(obj->mid, obj->scale));
-	ft_mat4x4_scale(obj->model, (t_vec3){obj->scale, obj->scale, obj->scale});
-	ft_mat4x4_to_float_array(obj->model_f, obj->model);
-	glUniformMatrix4fv(obj->modelLoc, 1, GL_FALSE, obj->model_f);
-	if (!obj->mtl_nbr)
-	{
-		glBindTexture(GL_TEXTURE_2D, texs[0]);
-		glMultiDrawElements(GL_TRIANGLE_FAN, obj->counts, GL_UNSIGNED_INT,
-			(const GLvoid *const *)obj->offset, obj->faces_nbr);
-	}
-	else
-		draw_part_obj(obj, x, texs);
-}
-
-void	init_frame(t_d *data, uint delta, t_obj *objs)
-{
-	key_event(data, delta, objs);
-	rotation_cam(data, delta);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glUseProgram(data->program);
-	glActiveTexture(GL_TEXTURE0);
-	glUniformMatrix4fv(data->viewLoc, 1, GL_FALSE, data->cam.view_f);
-	glUniformMatrix4fv(data->projLoc, 1, GL_FALSE, data->cam.proj_f);
-	glUniform1f(data->ambLoc, data->ambient);
-	glUniform4f(data->viewLoc, data->eye.x, data->eye.y, data->eye.z, 1.0);
-	glUniform4f(data->lightLoc, data->lightPos.x, data->lightPos.y,
-		data->lightPos.z, 1.0);
-	glUniform4f(data->lightColorLoc, data->lightColor.x, data->lightColor.y,
-		data->lightColor.z, 0.0);
 }
 
 void	update_time(t_d *data, t_obj *objs, uint *delta, struct timeval *tp)

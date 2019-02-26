@@ -34,6 +34,4 @@ void main()
 	rand = aRand;
 	vNormal = normalize(model * vec4(normalize(aNormal), 0.0));
 	vPos = model * vec4(aPos , 1);
-	// color = (aPos.x + aPos.y + aPos.z) / 3;
-	// VertexID = gl_VertexID;
 }

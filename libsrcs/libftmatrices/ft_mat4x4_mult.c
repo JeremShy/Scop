@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: magouin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/08/31 18:52:58 by magouin           #+#    #+#             */
+/*   Updated: 2016/08/31 18:53:03 by magouin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <libftmatrices.h>
 
-static void	compound_mult(t_mat4x4 ret, const t_mat4x4 m2) // not : ret == m1
+static void		compound_mult(t_mat4x4 ret, const t_mat4x4 m2)
 {
 	t_mat4x4	tmp;
 
@@ -8,7 +20,8 @@ static void	compound_mult(t_mat4x4 ret, const t_mat4x4 m2) // not : ret == m1
 	ft_mat4x4_mult(ret, tmp, m2);
 }
 
-static float	get_res_at(const t_mat4x4 a, const t_mat4x4 b, int8_t i, int8_t j)
+static float	get_res_at(const t_mat4x4 a,
+	const t_mat4x4 b, int8_t i, int8_t j)
 {
 	int8_t	k;
 	float	sum;
@@ -23,7 +36,8 @@ static float	get_res_at(const t_mat4x4 a, const t_mat4x4 b, int8_t i, int8_t j)
 	return (sum);
 }
 
-void		ft_mat4x4_mult(t_mat4x4 ret, const t_mat4x4 m1, const t_mat4x4 m2)
+void			ft_mat4x4_mult(t_mat4x4 ret,
+	const t_mat4x4 m1, const t_mat4x4 m2)
 {
 	int8_t	i;
 	int8_t	j;

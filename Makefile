@@ -1,7 +1,14 @@
 SRC_NAME = main.c \
 			shaders.c \
-			keys_func.c \
+			keys_func_0.c \
+			keys_func_1.c \
+			keys_func_2.c \
+			keys_func_3.c \
+			keys_func_4.c \
 			binary_tools.c \
+			object.c \
+			init_buffer.c \
+			init.c \
 			\
 			obj_parser/main.c \
 			obj_parser/handle_vertices.c \

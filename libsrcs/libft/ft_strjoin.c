@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcamhi <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: magouin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2015/11/24 16:45:47 by jcamhi            #+#    #+#             */
-/*   Updated: 2015/11/25 09:47:57 by jcamhi           ###   ########.fr       */
+/*   Created: 2015/11/24 16:45:47 by magouin           #+#    #+#             */
+/*   Updated: 2015/11/25 09:47:57 by magouin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	i = -1;
 	while (s2[++i] != '\0')
 		res[len + i] = s2[i];
-	if (res[len + i - 1] == '\xd')
-		res[len + i - 1] = '\0';
-	else
-		res[len + i] = '\0';
+	res[(res[len + i - 1] == '\xd') ? (len + i - 1) : len + i] = '\0';
 	return (res);
 }
