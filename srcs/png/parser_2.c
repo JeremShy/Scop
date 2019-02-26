@@ -19,6 +19,7 @@ void				*init_png_parser(const char *name, off_t *size)
 	struct stat		buf;
 	void			*addr;
 
+	printf("%s\n", name);
 	if ((fd = open(name, O_RDONLY)) == -1)
 	{
 		printf("Error couldn't open %s\n", name);

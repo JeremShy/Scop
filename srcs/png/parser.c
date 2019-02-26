@@ -35,6 +35,7 @@ void			copy_source_in_img(struct s_png_ihdr *png_ihdr,
 			if (png_ihdr->bpp == 2)
 				dest_img[id_dest] = get_color_code(src_img[id_source],
 					src_img[id_source], src_img[id_source], 1);
+			printf("%hhu %hhu %hhu\n", src_img[id_source], src_img[id_source + 1], src_img[id_source + 2]);
 			id_source += png_ihdr->bpp;
 			x++;
 		}

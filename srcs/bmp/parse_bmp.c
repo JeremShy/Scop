@@ -9,9 +9,13 @@ void	*read_bmp(const char *pathname, off_t *size)
 	void			*ptr;
 
 	if ((fd = open(pathname, O_RDONLY)) == -1)
+	{
+		printf("On peut pas ouvrir : %s\n", pathname);
 		return (NULL);
+	}
 	if ((fstat(fd, &buf)) == -1)
 	{
+		printf("On peut pas ouvrir : %s\n", pathname);
 		close(fd);
 		return (NULL);
 	}
@@ -19,6 +23,7 @@ void	*read_bmp(const char *pathname, off_t *size)
 	if ((ptr = mmap(NULL, buf.st_size, PROT_READ | PROT_WRITE,
 		MAP_PRIVATE, fd, 0)) == MAP_FAILED)
 	{
+		printf("On peut pas ouvrir : %s\n", pathname);
 		close(fd);
 		return (NULL);
 	}
@@ -34,7 +39,10 @@ void	*parse_bmp(const char *pathname, t_img *img)
 	off_t		size;
 
 	if (!(ptr = read_bmp(pathname, &size)))
+	{
+		printf("euh ?\n");
 		return (NULL);
+	}
 	header = *(t_header *)ptr;
 	dib = *(t_info *)(ptr + 14);
 	printf("header\n");
@@ -72,17 +80,22 @@ int		fill_img(const char *pathname, t_img *img)
 	int 		n;
 
 	if (!(ptr = parse_bmp(pathname, img)))
+	{
 		return (0);
+	}
 
 	if (!(img->data = (uint8_t *)malloc(sizeof(uint8_t) * (img->w * img->h * 4))))
-		return (0);
+		{
+			return (0);
+		}
 	n = 0;
 	while (n < (img->w * img->h) * 4)
 	{
-		img->data[n] = *(uint8_t *)(ptr + 36);
-		img->data[n + 1] = *(uint8_t *)(ptr + 1 + 36);
+		img->data[n + 1] = *(uint8_t *)(ptr + 36);
+		img->data[n] = *(uint8_t *)(ptr + 1 + 36);
 		img->data[n + 2] = *(uint8_t *)(ptr + 2 + 36);
 		img->data[n + 3] = 0;
+		printf("%hhu %hhu %hhu\n", img->data[n], img->data[n + 1], img->data[n+ 2]);
 		n += 4;
 		ptr += 3;
 	}
@@ -93,6 +106,10 @@ uint8_t			create_image_from_bmp(t_d *data, int id_img,
 	const char *pathname)
 {
 	if (!(fill_img(pathname, &data->imgs[id_img])))
-		return (0);
+		{
+			printf("Fail\n");
+			return (0);
+		}
+	printf("Success\n");
 	return (1);
 }

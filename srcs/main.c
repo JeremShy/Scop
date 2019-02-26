@@ -37,7 +37,7 @@ int8_t	init_data(t_d *data)
 {
 	ft_bzero(data, sizeof(t_d));
 	data->depl = 1;
-	data->ambient = 0.1;
+	data->ambient = 0.7;
 	data->lightColor = (t_vec3){1, 1, 1};
 	data->lightPos = (t_vec3){0, 0, 50};
 	data->drawing_mode = 0;
@@ -213,7 +213,8 @@ void	init_vao(t_obj *obj)
 void	get_glteximage(uint *texs, uint *i_tex, t_d *data, char *file)
 {
 	glBindTexture(GL_TEXTURE_2D, texs[*i_tex]);
-	create_image_from_png(data, *i_tex, file);
+	create_image_from_bmp(data, *i_tex, file);
+	// create_image_from_png(data, *i_tex, file);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data->imgs[*i_tex].w, data->imgs
 		[*i_tex].h, 0, GL_BGRA, GL_UNSIGNED_BYTE, data->imgs[*i_tex].data);
 	glGenerateMipmap(GL_TEXTURE_2D);
@@ -232,7 +233,8 @@ uint	*init_texs(t_d *data, t_obj *objs)
 	glGenTextures(data->texture_nbr, texs);
 	i = -1;
 	i_tex = 0;
-	get_glteximage(texs, &i_tex, data, "./textures/bien.png");
+	// get_glteximage(texs, &i_tex, data, "srcs/bmp/Cat_diffuse.png");
+	get_glteximage(texs, &i_tex, data, "srcs/bmp/Cat_diffuse.bmp");
 	while (++i < data->object_nbr)
 	{
 		j = -1;
