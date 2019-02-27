@@ -110,6 +110,9 @@ void	update_frame(t_d *data, t_obj *objs, uint *texs)
 	i = -1;
 	while (++i < data->object_nbr)
 	{
+		objs[i].texfade += objs[i].texon ? ((1 / 1.5) * delta / 1000.0)
+			: -((1 / 1.5) * delta / 1000.0);
+		fclamp(&objs[i].texfade, 0, 1);
 		draw_obj(&objs[i], angle, &x, texs);
 		glDisable(GL_PRIMITIVE_RESTART);
 		glBindVertexArray(0);

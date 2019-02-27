@@ -30,7 +30,8 @@ SRC_NAME = main.c \
 			png/parser_2.c \
 			png/parser_3.c \
 			png/resize.c \
-			png/tree.c
+			png/tree.c \
+			bmp/parse_bmp.c
 
 OBJ_PATH = ./obj/
 

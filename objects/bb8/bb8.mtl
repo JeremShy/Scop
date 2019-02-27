@@ -10,7 +10,7 @@ newmtl wire_153228153
 	Ka 0.6000 0.8941 0.6000
 	Kd 0.6000 0.8941 0.6000
 	Ks 0.3500 0.3500 0.3500
-	map_Kd Body diff MAP.png
+	map_Kd Body diff MAP.bmp
 
 newmtl Material__61
 	Ns 10.0000
@@ -23,7 +23,7 @@ newmtl Material__61
 	Kd 0.7176 0.6902 0.6588
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Kd HEAD diff MAP.png
+	map_Kd HEAD diff MAP.bmp
 
 newmtl Material__62
 	Ns 10.0000
@@ -36,7 +36,7 @@ newmtl Material__62
 	Kd 0.0275 0.0275 0.0275
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Kd head top diff MAP.png
+	map_Kd head top diff MAP.bmp
 
 newmtl wire_028149177
 	Ns 32
@@ -47,4 +47,4 @@ newmtl wire_028149177
 	Ka 0.1098 0.5843 0.6941
 	Kd 0.1098 0.5843 0.6941
 	Ks 0.3500 0.3500 0.3500
-	map_Kd Body diff MAP.png
+	map_Kd Body diff MAP.bmp

@@ -44,7 +44,7 @@ t_obj	*get_all_obj(t_d *data, int ac, char **av)
 void	get_glteximage(uint *texs, uint *i_tex, t_d *data, char *file)
 {
 	glBindTexture(GL_TEXTURE_2D, texs[*i_tex]);
-	create_image_from_png(data, *i_tex, file);
+	create_image_from_bmp(data, *i_tex, file);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data->imgs[*i_tex].w, data->imgs
 		[*i_tex].h, 0, GL_BGRA, GL_UNSIGNED_BYTE, data->imgs[*i_tex].data);
 	glGenerateMipmap(GL_TEXTURE_2D);
@@ -63,7 +63,7 @@ uint	*init_texs(t_d *data, t_obj *objs)
 	glGenTextures(data->texture_nbr, texs);
 	i = -1;
 	i_tex = 0;
-	get_glteximage(texs, &i_tex, data, "./textures/bien.png");
+	get_glteximage(texs, &i_tex, data, "./textures/unicorn_style.bmp");
 	while (++i < data->object_nbr)
 	{
 		j = -1;
@@ -105,7 +105,7 @@ void	draw_part_obj(t_obj *obj, uint *x, uint *texs)
 
 void	draw_obj(t_obj *obj, float angle, uint *x, uint *texs)
 {
-	glUniform1i(obj->texonloc, obj->texon);
+	glUniform1f(obj->texonloc, obj->texfade);
 	glUniform1i(obj->deftex, obj->textures_nbr == 0 ? 1 : 0);
 	glBindVertexArray(obj->gl_buff.vao);
 	ft_mat4x4_set_translation(obj->model, obj->pos);
