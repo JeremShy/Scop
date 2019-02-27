@@ -63,7 +63,7 @@ uint	*init_texs(t_d *data, t_obj *objs)
 	glGenTextures(data->texture_nbr, texs);
 	i = -1;
 	i_tex = 0;
-	get_glteximage(texs, &i_tex, data, "./textures/bien.png");
+	get_glteximage(texs, &i_tex, data, "./textures/kitten.png");
 	while (++i < data->object_nbr)
 	{
 		j = -1;
