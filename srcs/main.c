@@ -234,7 +234,7 @@ uint	*init_texs(t_d *data, t_obj *objs)
 	i = -1;
 	i_tex = 0;
 	// get_glteximage(texs, &i_tex, data, "srcs/bmp/Cat_diffuse.png");
-	get_glteximage(texs, &i_tex, data, "srcs/bmp/Cat_diffuse.bmp");
+	get_glteximage(texs, &i_tex, data, "textures/unicorn_style.bmp");
 	while (++i < data->object_nbr)
 	{
 		j = -1;

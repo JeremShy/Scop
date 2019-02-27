@@ -161,9 +161,9 @@ void	fill_ref(t_obj *obj, char *file, size_t size)
 		{
 			size -= 6;
 			debut_handle(&file, obj, 6);
-			if ((size_t)(ft_strstr(file, ".png") - file) == ft_strlen(file)) ////////////////////////TODO
+			if ((size_t)(ft_strstr(file, ".bmp") - file) == ft_strlen(file))
 				obj->error = 1;
-			tmp = ft_strndup(file, ft_strstr(file, ".png") - file + 4);
+			tmp = ft_strndup(file, ft_strstr(file, ".bmp") - file + 4);
 			obj->ref[nb_array].img = ft_strjoin(obj->path, tmp);
 			free(tmp);
 		}

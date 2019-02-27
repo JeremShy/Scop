@@ -2,6 +2,11 @@
 #include <scop.h>
 #include <stdio.h>
 
+static uint32_t	get_color_code(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+	return (((int)b << 0) | ((int)g << 8) | ((int)r << 16) | ((int)a << 24));
+}
+
 void	*read_bmp(const char *pathname, off_t *size)
 {
 	int				fd;
@@ -74,10 +79,22 @@ void	*parse_bmp(const char *pathname, t_img *img)
 	return (ptr);
 }
 
-int		fill_img(const char *pathname, t_img *img)
+void		fill_img(t_img *img, void *ptr, uint32_t *dest_img)
+{
+	int 		n;
+
+	n = 0;
+	while (n < (img->w * img->h))
+	{
+		dest_img[n] = (get_color_code(*(uint8_t *)(ptr + 1 + 36), *(uint8_t *)(ptr + 36), *(uint8_t *)(ptr + 2 + 36), 0));
+		n += 1;
+		ptr += 3;
+	}
+}
+
+int			create_img(const char *pathname, t_img *img)
 {
 	void		*ptr;
-	int 		n;
 
 	if (!(ptr = parse_bmp(pathname, img)))
 	{
@@ -85,31 +102,23 @@ int		fill_img(const char *pathname, t_img *img)
 	}
 
 	if (!(img->data = (uint8_t *)malloc(sizeof(uint8_t) * (img->w * img->h * 4))))
-		{
-			return (0);
-		}
-	n = 0;
-	while (n < (img->w * img->h) * 4)
 	{
-		img->data[n + 1] = *(uint8_t *)(ptr + 36);
-		img->data[n] = *(uint8_t *)(ptr + 1 + 36);
-		img->data[n + 2] = *(uint8_t *)(ptr + 2 + 36);
-		img->data[n + 3] = 0;
-		printf("%hhu %hhu %hhu\n", img->data[n], img->data[n + 1], img->data[n+ 2]);
-		n += 4;
-		ptr += 3;
+		return (0);
 	}
+
+	fill_img(img, ptr, (uint32_t*)img->data);
+
 	return (1);
 }
 
 uint8_t			create_image_from_bmp(t_d *data, int id_img,
 	const char *pathname)
 {
-	if (!(fill_img(pathname, &data->imgs[id_img])))
-		{
-			printf("Fail\n");
-			return (0);
-		}
+	if (!(create_img(pathname, &data->imgs[id_img])))
+	{
+		printf("Fail\n");
+		return (0);
+	}
 	printf("Success\n");
 	return (1);
 }

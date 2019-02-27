@@ -1,0 +1,23 @@
+header
+	magic:	19778
+	size	48
+	reserved1	0
+	reserved2	26
+	offset	786432
+DIB header
+	size:	12
+	w	1024
+	h	1024
+	color	1
+	bpp	24
+Success
+data->current = 1
+data->current = 1
+data->current = 1
+data->current = 1
+data->current = 1
+Texture
+Texture
+Texture
+Texture
+Texture
