@@ -218,7 +218,6 @@ uint8_t			reverse_byte_ptr(const uint8_t *input);
 uint8_t			reverse_byte(const uint8_t in);
 void			fclamp(float *f, float min, float max);
 
-uint8_t			create_image_from_png(t_d *data, int id_img, const char *name);
 uint8_t			create_image_from_bmp(t_d *data, int id_img, const char *name);
 
 GLuint			create_and_compile_shader(const char *filename,

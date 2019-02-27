@@ -16,7 +16,7 @@ int8_t	init_data(t_d *data)
 {
 	ft_bzero(data, sizeof(t_d));
 	data->depl = 1;
-	data->ambient = 0.7;
+	data->ambient = 0.4;
 	data->lightcolor = (t_vec3){1, 1, 1};
 	data->lightpos = (t_vec3){0, 0, 50};
 	data->drawing_mode = 0;

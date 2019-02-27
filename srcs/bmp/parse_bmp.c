@@ -44,24 +44,9 @@ void	*parse_bmp(const char *pathname, t_img *img)
 	off_t		size;
 
 	if (!(ptr = read_bmp(pathname, &size)))
-	{
-		printf("euh ?\n");
 		return (NULL);
-	}
 	header = *(t_header *)ptr;
 	dib = *(t_info *)(ptr + 14);
-	printf("header\n");
-	printf("\tmagic:\t%hd\n", header.magic);
-	printf("\tsize\t%d\n", header.size);
-	printf("\treserved1\t%hd\n", header.reserved1);
-	printf("\treserved2\t%hd\n", header.reserved2);
-	printf("\toffset\t%d\n", header.offset);
-	printf("DIB header\n");
-	printf("\tsize:\t%d\n", dib.size);
-	printf("\tw\t%hd\n", dib.w);
-	printf("\th\t%hd\n", dib.h);
-	printf("\tcolor\t%hd\n", dib.color);
-	printf("\tbpp\t%hd\n", dib.bpp);
 
 	if (dib.size != 12)
 	{
@@ -84,17 +69,17 @@ void		fill_img(t_img *img, void *ptr, uint32_t *dest_img)
 	int 		x;
 	int 		y;
 
-	y = 0;
-	while (y < img->h)
+	x = 0;
+	while (x < img->w)
 	{
-		x = 0;
-		while (x < img->w)
+		y = img->h - 1;
+		while (y >= 0)
 		{
 			dest_img[(x) + ((y) * img->w)] = (get_color_code(*(uint8_t *)(ptr + 1 + 36), *(uint8_t *)(ptr + 36), *(uint8_t *)(ptr + 2 + 36), 0));
 			ptr += 3;
-			x++;
+			y--;
 		}
-		y++;
+		x++;
 	}
 }
 
@@ -121,6 +106,7 @@ int			create_img(const char *pathname, t_img *img)
 {
 	void		*ptr;
 
+	printf("Trying to read %s:\t", pathname);
 	if (!(ptr = parse_bmp(pathname, img)))
 	{
 		return (0);
@@ -130,9 +116,7 @@ int			create_img(const char *pathname, t_img *img)
 	{
 		return (0);
 	}
-
 	fill_img(img, ptr, (uint32_t*)img->data);
-
 	return (1);
 }
 
@@ -141,9 +125,9 @@ uint8_t			create_image_from_bmp(t_d *data, int id_img,
 {
 	if (!(create_img(pathname, &data->imgs[id_img])))
 	{
-		printf("Fail\n");
+		printf("Error\n");
 		return (0);
 	}
-	printf("Success\n");
+	printf("✔\n");
 	return (1);
 }

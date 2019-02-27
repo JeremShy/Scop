@@ -20,17 +20,6 @@ SRC_NAME = main.c \
 			obj_parser/line_tools.c \
 			obj_parser/handles.c \
 			obj_parser/fill.c \
-			png/filter.c \
-			png/filter_2.c \
-			png/globals_inflate.c \
-			png/huffman_get_code_from_length.c \
-			png/inflate.c \
-			png/inflate_2.c \
-			png/parser.c \
-			png/parser_2.c \
-			png/parser_3.c \
-			png/resize.c \
-			png/tree.c \
 			bmp/parse_bmp.c
 
 OBJ_PATH = ./obj/
