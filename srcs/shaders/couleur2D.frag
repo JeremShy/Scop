@@ -11,7 +11,7 @@ in vec4 gColor;
 in vec4 gPos;
 
 uniform sampler2D tex;
-uniform int texOn;
+uniform float texOn;
 uniform float ambientStrength;
 uniform vec4 lightPos;
 uniform vec4 lightColor;
@@ -44,8 +44,6 @@ void main()
 	vec4 specular = specularStrength * spec * lightColor;
 
 	// Couleur finale du pixel
-	if (texOn == 1)
-		aColor = texture(tex, gTexCoord) * min(ambient + diffuse + specular, 1);
-	else
-		aColor = gColor * min(ambient + diffuse + specular, 1);
+
+	aColor = (texture(tex, gTexCoord) * texOn + gColor * (1 - texOn)) * min(ambient + diffuse + specular, 1);
 }

@@ -30,7 +30,13 @@ void main()
 
 	gl_Position = projection * view * model * vec4(aPos, 1.0);
 	// Envoi de la couleur au Fragment Shader
-	vTexCoord = aTexCoord;
+	if (defTex)
+	{
+		vTexCoord.x = aPos.y;
+		vTexCoord.y = aPos.z;
+	}
+	else
+		vTexCoord = aTexCoord;
 	rand = aRand;
 	vNormal = normalize(model * vec4(normalize(aNormal), 0.0));
 	vPos = model * vec4(aPos , 1);

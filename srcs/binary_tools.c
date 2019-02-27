@@ -43,3 +43,9 @@ uint8_t		reverse_byte(const uint8_t in)
 	| ((in & 8) << 1) | ((in & 4) << 3) | ((in & 1) << 5) | (in << 7);
 	return (ret);
 }
+
+void		fclamp(float *f, float min, float max)
+{
+	*f = min > *f ? min : *f;
+	*f = max < *f ? max : *f;
+}

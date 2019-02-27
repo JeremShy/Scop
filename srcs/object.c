@@ -105,7 +105,7 @@ void	draw_part_obj(t_obj *obj, uint *x, uint *texs)
 
 void	draw_obj(t_obj *obj, float angle, uint *x, uint *texs)
 {
-	glUniform1i(obj->texonloc, obj->texon);
+	glUniform1f(obj->texonloc, obj->texfade);
 	glUniform1i(obj->deftex, obj->textures_nbr == 0 ? 1 : 0);
 	glBindVertexArray(obj->gl_buff.vao);
 	ft_mat4x4_set_translation(obj->model, obj->pos);

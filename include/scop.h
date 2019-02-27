@@ -145,6 +145,7 @@ typedef struct	s_obj
 	float				scale;
 	int					roton;
 	int					texon;
+	float				texfade;
 	int					texonloc;
 	int					modelloc;
 	int					deftex;
@@ -215,6 +216,7 @@ uint32_t		get_conv_32(const uint32_t *nbr);
 uint64_t		get_conv_64(const uint64_t *nbr);
 uint8_t			reverse_byte_ptr(const uint8_t *input);
 uint8_t			reverse_byte(const uint8_t in);
+void			fclamp(float *f, float min, float max);
 
 uint8_t			create_image_from_png(t_d *data, int id_img, const char *name);
 
