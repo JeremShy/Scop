@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: magouin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: marnaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/02/26 15:49:20 by magouin           #+#    #+#             */
-/*   Updated: 2019/02/26 15:49:53 by magouin          ###   ########.fr       */
+/*   Created: 2019/02/26 15:49:20 by marnaud           #+#    #+#             */
+/*   Updated: 2019/02/26 15:49:53 by marnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	echap(t_d *data, t_obj *objs, uint delta, char *prev)
 	(void)objs;
 	(void)delta;
 	(void)prev;
-	glfwSetWindowShouldClose(data->window, true);
+	glfwSetWindowShouldClose(data->window, 1);
 }
 
 void	key_0(t_d *data, t_obj *objs, uint delta, char *prev)

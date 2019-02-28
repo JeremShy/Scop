@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   bmp.h                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: marnaud <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/02/28 12:52:47 by marnaud           #+#    #+#             */
+/*   Updated: 2019/02/28 12:52:48 by marnaud          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef BMP_H
 # define BMP_H
 
@@ -5,9 +17,9 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <unistd.h>
-#include <stdlib.h>
+# include <stdlib.h>
 # include <fcntl.h>
-#include <sys/mman.h>
+# include <sys/mman.h>
 
 typedef struct	s_header
 {
@@ -18,7 +30,7 @@ typedef struct	s_header
 	uint32_t	offset;
 }				t_header;
 
-typedef struct s_info
+typedef struct	s_info
 {
 	uint32_t	size;
 	uint16_t	w;

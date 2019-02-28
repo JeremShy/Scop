@@ -29,11 +29,10 @@ void main()
 	// Position finale du vertex
 
 	gl_Position = projection * view * model * vec4(aPos, 1.0);
-	// Envoi de la couleur au Fragment Shader
 	if (defTex)
 	{
-		vTexCoord.x = aPos.y;
-		vTexCoord.y = aPos.z;
+		vTexCoord.y = aPos.y;
+		vTexCoord.x = aPos.z;
 	}
 	else
 		vTexCoord = aTexCoord;
