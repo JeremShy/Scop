@@ -18,7 +18,7 @@ void	echap(t_d *data, t_obj *objs, uint delta, char *prev)
 	(void)objs;
 	(void)delta;
 	(void)prev;
-	glfwSetWindowShouldClose(data->window, true);
+	glfwSetWindowShouldClose(data->window, 1);
 }
 
 void	key_0(t_d *data, t_obj *objs, uint delta, char *prev)
