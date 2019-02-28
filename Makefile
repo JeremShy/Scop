@@ -41,7 +41,7 @@ SRC_PATH = ./srcs/
 NAME = scop
 
 CC = gcc
-CFLAGS =  -Wextra -Wall
+CFLAGS =  -Wextra -Wall -fsanitize=address -g
 LFLAGS = -lft -framework OpenGL -framework AppKit -lglfw -lftmatrices -lm 
 LIB_DIR=./lib/
 

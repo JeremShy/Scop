@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <scop.h>
 #include <png.h>
 
 uint8_t	sub(uint8_t *data, size_t i, struct s_png_ihdr *png_ihdr)
