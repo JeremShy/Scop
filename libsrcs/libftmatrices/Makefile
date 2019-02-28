@@ -64,7 +64,7 @@ NAME = ../../lib/libftmatrices.a
 
 CC = gcc
 
-CFLAGS = -Werror -Wall -Wextra -c -g
+CFLAGS = -Werror -Wall -Wextra -c
 # CFLAGS = -Wall -Wextra -c -g
 
 OBJ_NAME = $(SRC_NAME:.c=.o)

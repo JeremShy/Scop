@@ -96,7 +96,7 @@ NAME = ../../lib/libft.a
 
 CC = gcc
 
-CFLAGS = -Werror -Wall -Wextra -c -g
+CFLAGS = -Werror -Wall -Wextra -c
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 
